@@ -19,13 +19,13 @@
   <div class="page-width">
     <div class="grid md:grid-cols-2 gap-8">
       <div>
-        {% if section.settings.image != blank %}
+        {% if product.images.size > 1 %}
           <img
             class="w-full h-full rounded-lg object-cover"
-            src="{{ section.settings.image | image_url }}"
+            src="{{ product.images[1] | image_url }}"
             alt="Scent Breakdown"
-            height="{{ section.settings.image.height }}"
-            width="{{ section.settings.image.width }}">
+            height="{{ product.images[1].height }}"
+            width="{{ product.images[1].width }}">
         {% endif %}
       </div>
       <div>
@@ -41,12 +41,10 @@
               Top notes
             </h3>
           </div>
-          {% for note in product.metafields.custom.top_notes.value %}
-            <div class="col-span-2">
-              <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ note.heading }}</h4>
-              <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ note.description | metafield_text }}</p>
-            </div>
-          {% endfor %}
+          <div class="col-span-2">
+            <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ product.metafields.custom.top_notes.value.heading }}</h4>
+            <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ product.metafields.custom.top_notes.value.description | metafield_text }}</p>
+          </div>
         </div>
         <div class="bg-white p-4 rounded-lg grid grid-cols-3 gap-4 !mb-3">
           <div>
@@ -54,12 +52,10 @@
               Middle notes
             </h3>
           </div>
-          {% for note in product.metafields.custom.middle_notes.value %}
-            <div class="col-span-2">
-              <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ note.heading }}</h4>
-              <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ note.description | metafield_text }}</p>
-            </div>
-          {% endfor %}
+          <div class="col-span-2">
+            <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ product.metafields.custom.middle_notes.value.heading }}</h4>
+            <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ product.metafields.custom.middle_notes.value.description | metafield_text }}</p>
+          </div>
         </div>
         <div class="bg-white p-4 rounded-lg grid grid-cols-3 gap-4 !mb-0">
           <div>
@@ -67,12 +63,10 @@
               Base notes
             </h3>
           </div>
-          {% for note in product.metafields.custom.base_notes.value %}
-            <div class="col-span-2">
-              <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ note.heading }}</h4>
-              <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ note.description | metafield_text }}</p>
-            </div>
-          {% endfor %}
+          <div class="col-span-2">
+            <h4 class="m-0 pb-2 border-0 border-b border-solid border-gray-300">{{ product.metafields.custom.base_notes.value.heading }}</h4>
+            <p class="mb-0 mt-2 tracking-normal text-[#888888] leading-snug text-sm">{{ product.metafields.custom.base_notes.value.description | metafield_text }}</p>
+          </div>
         </div>
       </div>
     </div>
