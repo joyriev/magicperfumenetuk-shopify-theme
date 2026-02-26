@@ -634,7 +634,7 @@
           "label": "Wischen auf Mobilgeräten aktivieren"
         },
         "show_view_all": {
-          "label": "Aktiviere die Schaltfläche \"Alle anzeigen\", wenn die Liste mehr Kollektionen enthält, als angezeigt werden"
+          "label": "Aktiviere die Schaltfläche \"Shop Now\", wenn die Liste mehr Kollektionen enthält, als angezeigt werden"
         },
         "columns_desktop": {
           "label": "Anzahl der Spalten auf dem Desktop"
@@ -704,7 +704,7 @@
           "label": "Anzahl der anzuzeigenden Blog-Beiträge"
         },
         "show_view_all": {
-          "label": "Aktiviere die Schaltfläche \"Alle anzeigen\", wenn der Blog mehr Blog-Beiträge enthält, als angezeigt werden"
+          "label": "Aktiviere die Schaltfläche \"Shop Now\", wenn der Blog mehr Blog-Beiträge enthält, als angezeigt werden"
         },
         "show_image": {
           "label": "Feature-Bild anzeigen",

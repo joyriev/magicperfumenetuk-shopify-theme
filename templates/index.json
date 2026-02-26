@@ -43,7 +43,7 @@
         "button_rGwjWF": {
           "type": "button",
           "settings": {
-            "button_text": "Alle anzeigen",
+            "button_text": "Shop Now",
             "button_url": "shopify://collections",
             "button_color": "#ffffff",
             "text_color": "#000000"
