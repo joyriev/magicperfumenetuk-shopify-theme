@@ -11,11 +11,29 @@
   "sections": {
     "home_hero_banner_ahfGnr": {
       "type": "home-hero-banner",
+      "disabled": true,
       "name": "Home Hero Banner",
       "settings": {
         "image": "shopify://shop_images/magic_banner_english.png",
         "mobile_image": "shopify://shop_images/magic_banner_mobile_english.png",
         "link": "shopify://collections/best-sellers"
+      }
+    },
+    "home_hero_WB9hXg": {
+      "type": "home-hero",
+      "name": "Homepage Hero",
+      "settings": {
+        "background_color": "#0b0b0b",
+        "background_image": "shopify://shop_images/Gemini_Generated_Image_kxe5abkxe5abkxe5.png",
+        "mobile_background_image": "shopify://shop_images/Gemini_Generated_Image_5jbsc75jbsc75jbs.png",
+        "title": "Homepage Hero",
+        "subtitle": "Buy 3 + 1 FREE",
+        "button_text": "FOR GENTS",
+        "button_link": "shopify://collections/man",
+        "second_button_text": "FOR LADIES",
+        "second_button_link": "shopify://collections/woman",
+        "padding_top": 36,
+        "padding_bottom": 36
       }
     },
     "image_and_text_nj4mfM": {
@@ -131,6 +149,8 @@
         "heading": "BESTSELLERS",
         "subheading": "",
         "collection": "best-sellers",
+        "show_all_button_text": "View All Bestsellers",
+        "show_all_button_url": "",
         "padding_top": 72,
         "padding_bottom": 72
       }
@@ -756,6 +776,7 @@
   },
   "order": [
     "home_hero_banner_ahfGnr",
+    "home_hero_WB9hXg",
     "image_and_text_nj4mfM",
     "feature_heighlights_EpJcyT",
     "popular_products_3gqnEi",
