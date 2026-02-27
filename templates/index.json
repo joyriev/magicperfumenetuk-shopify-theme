@@ -150,7 +150,6 @@
         "subheading": "",
         "collection": "best-sellers",
         "show_all_button_text": "View All Bestsellers",
-        "show_all_button_url": "",
         "padding_top": 72,
         "padding_bottom": 72
       }
@@ -244,21 +243,24 @@
           "type": "collection",
           "settings": {
             "tab_title": "🔥 BESTSELLERS",
-            "collection": "best-sellers"
+            "collection": "best-sellers",
+            "button_text": "View All"
           }
         },
         "collection_xgUpzQ": {
           "type": "collection",
           "settings": {
             "tab_title": "FOR WOMEN",
-            "collection": "woman"
+            "collection": "woman",
+            "button_text": "View All"
           }
         },
         "collection_3WBTm3": {
           "type": "collection",
           "settings": {
             "tab_title": "FOR MEN",
-            "collection": "man"
+            "collection": "man",
+            "button_text": "View All"
           }
         }
       },
@@ -552,7 +554,7 @@
         "review_9T4pt3": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Ihre Produkte sind von guter Qualität zu einem sehr erschwinglichen Preis.\"</p>",
+            "content": "<p>\"Their products are of good quality at a very affordable price.\"</p>",
             "author": "Amanda G",
             "date": "5 Months ago",
             "rating": 4,
@@ -563,7 +565,7 @@
         "review_aietxq": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Tolle Düfte, tolle Produkte, keine Probleme.\"</p>",
+            "content": "<p>\"Great scents, great products, no problems.\"</p>",
             "author": "Alex S.",
             "date": "6 Months ago",
             "rating": 5,
@@ -574,7 +576,7 @@
         "review_YtFw34": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Das Produkt kam schön verpackt an. Das Parfüm war nicht kaputt, ist nicht ausgelaufen und war in gutem Zustand. Der Duft ist perfekt und roch nicht schlecht. Ich liebe es, hohe Qualität\"</p>",
+            "content": "<p>\"The product arrived beautifully packaged. The perfume was undamaged, hadn't leaked, and was in good condition. The scent is perfect and didn't smell bad at all. I love it, high quality.\"</p>",
             "author": "Roxanne S",
             "date": "5 Months ago",
             "rating": 5,
@@ -585,7 +587,7 @@
         "review_WnPpEf": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Vom Service bis zum Produkt war die Erfahrung phänomenal. Kaufe gerne jederzeit wieder.\"</p>",
+            "content": "<p>\"From the service to the product, the experience was phenomenal. I would gladly buy again anytime.\"</p>",
             "author": "Benjamin M",
             "date": "5 Months ago",
             "rating": 5,
@@ -596,7 +598,7 @@
         "review_jRgbTk": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Großartiges Produkt! Super erschwingliche Alternative zu den Markenparfüms. Der Duft hält lange und man bekommt viel für sein Geld\"</p>",
+            "content": "<p>\"Great product! A super affordable alternative to brand-name perfumes. The scent lasts a long time and you get a lot for your money.\"</p>",
             "author": "EM",
             "date": "4 Months ago",
             "rating": 5,
@@ -607,7 +609,7 @@
         "review_GbhyC3": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Omg ich liebte es Wow! Genau wie das Original und es hält den ganzen Tag!❤️‍🔥❤️‍🔥\"</p>",
+            "content": "<p>\"Omg I loved it! Wow! Just like the original and it lasts all day! ❤️‍🔥❤️‍🔥\"</p>",
             "author": "شيطانة YT",
             "date": "4 Months ago",
             "rating": 4,
@@ -618,9 +620,20 @@
         "review_C3bd9b": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Der Duft dieses Parfüms ist super reichhaltig und ich liebe wie schön die Flasche und ihr Design ist.. Ich würde es wirklich wieder verwenden.\"</p>",
+            "content": "<p>\"The scent of this perfume is super rich and I love how beautiful the bottle and its design are. I would definitely use it again.\"</p>",
             "author": "Eliannys Y",
             "date": "7 Months ago",
+            "rating": 5,
+            "show_verified_badge": true,
+            "product": ""
+          }
+        },
+        "review_TYqY6X": {
+          "type": "review",
+          "settings": {
+            "content": "<p>\"The fit is exactly what I was looking for. Shipping was incredibly fast, arrived in 2 days.\"</p>",
+            "author": "Alex Thompson",
+            "date": "2 days ago",
             "rating": 5,
             "show_verified_badge": true,
             "product": ""
@@ -640,7 +653,7 @@
         "review_EniFK9": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Tolles Produkt, riecht fantastisch. Ich bekomme immer Leute, die mir Fragen zu meinem Duft stellen und was ich benutze\"</p>",
+            "content": "<p>\"Great product, smells fantastic. I always get people asking me questions about my fragrance and what I use.\"</p>",
             "author": "Damario R",
             "date": "7 Months ago",
             "rating": 5,
@@ -651,7 +664,7 @@
         "review_r8Gi8i": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Tolle Marke und tolle Produkte!\"</p>",
+            "content": "<p>\"Great brand and great products!\"</p>",
             "author": "Juliana B",
             "date": "4 Months ago",
             "rating": 5,
@@ -662,7 +675,7 @@
         "review_LRkiUH": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Nach einer kleinen Verzögerung habe ich endlich meine Magic Perfume-Parfüms und sie sind genau richtig! Ich kann fast nicht glauben, wie genau sie den Originalen entsprechen, zur Referenz habe ich \"Ylang Ylang Rose Jasmine\" und \"Aldehydes Rose Sandalwood\" bekommen, es sind wirklich schöne Düfte\"</p>",
+            "content": "<p>\"After a slight delay, I finally received my Magic Perfume perfumes and they are exactly right! I can hardly believe how closely they match the originals.\"</p>",
             "author": "Gabriella K",
             "date": "7 Months ago",
             "rating": 5,
@@ -673,7 +686,7 @@
         "review_Vb9HW7": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Sehr gute Marke, ich liebe die Verpackung und das Aroma\"</p>",
+            "content": "<p>\"Very good brand, I love the packaging and the aroma\"</p>",
             "author": "Rosa B",
             "date": "7 Months ago",
             "rating": 5,
@@ -684,7 +697,7 @@
         "review_JdiNyt": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Ich bin ein großer Kölnisch-Wasser-Fan, also bin ich ein wählerischer Typ, wenn es um Klone geht, aber Magic Perfume hat mich komplett überzeugt. Ich habe ursprünglich den Sauvage-Klon auf der Homepage bestellt und den Duft beim Sprühen sofort erkannt. Ich besitze jetzt insgesamt 4 Magic Perfume-Düfte und ich liebe sie alle. Habe dank ihrer Bundle-Angebote 3 weitere auf dem Weg. Wenn du etwas willst, das mit kleinem Budget funktioniert und Designer-Leistung liefert, könnte ich sie nicht mehr empfehlen.\"</p>",
+            "content": "<p>\"I'm a huge fan of cologne, so I'm a picky guy when it comes to clones, but Magic Perfume completely won me over. I originally ordered the Sauvage clone from their website and instantly recognized the scent when I sprayed it. I now own a total of four Magic Perfume fragrances and I love them all. Thanks to their bundle offers, I have three more on the way. If you want something that works on a budget and delivers designer quality, I couldn't recommend them more.\"</p>",
             "author": "Sean P",
             "date": "4 Months ago",
             "rating": 5,
@@ -695,7 +708,7 @@
         "review_bNVhH6": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Ich bin sehr zufrieden mit dem Parfüm von dieser Marke, sie haben einen so schönen Duft wie das Original und günstiger, ich werde es definitiv wieder kaufen\"</p>",
+            "content": "<p>\"I am very satisfied with the perfume from this brand; it has such a beautiful scent as the original and is cheaper. I will definitely buy it again.\"</p>",
             "author": "Angel",
             "date": "8 Months ago",
             "rating": 5,
@@ -706,7 +719,7 @@
         "review_PiLjha": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Diesen Sommer bekam ich eine Probe von Creed Aventus als Geschenk und ich mochte es wirklich, aber ich konnte das Original nicht kaufen, also suchte ich nach Dupes. Ich fand Magic Perfume und bestellte \"Pineapple Smoke Vanilla\", es kam in etwa einer Woche zu mir und es riecht wirklich gut, auch nah an meiner Originalprobe, sehr zufrieden mit dem Produkt, besonders für den Preis\"</p>",
+            "content": "<p>\"This summer I received a sample of Creed Aventus as a gift and I really liked it, but I couldn't buy the original, so I looked for dupes. I found Magic Perfume and ordered \"No. O49\". It arrived in about a week and it smells really good, very close to my original sample. I'm very happy with the product, especially for the price.\"</p>",
             "author": "Hwan H",
             "date": "8 Months ago",
             "rating": 5,
@@ -717,7 +730,7 @@
         "review_AEQxcH": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Ich habe ihre 7,5ml Proben-Düfte ausprobiert und zu meiner Überraschung mochte ich sie. Habe eine 2. Bestellung aufgegeben, aber dieses Mal habe ich die größeren Flaschen genommen. Ich muss sagen, ich bekam meine Bestellungen pünktlich und sie lieferten die Düfte, die ich mag!\"</p>",
+            "content": "<p>\"I tried their 30ml sample fragrances and to my surprise, I liked them. I placed a second order, but this time I ordered the larger bottles. I must say, my orders arrived on time and they delivered the fragrances I like!\"</p>",
             "author": "Lauri E",
             "date": "8 Months ago",
             "rating": 5,
@@ -752,6 +765,7 @@
         "review_jRgbTk",
         "review_GbhyC3",
         "review_C3bd9b",
+        "review_TYqY6X",
         "review_NYCPwJ",
         "review_EniFK9",
         "review_r8Gi8i",
