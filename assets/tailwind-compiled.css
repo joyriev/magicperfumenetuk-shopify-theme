@@ -500,6 +500,10 @@
     max-width: 780px
 }
 
+.max-w-\[700px\] {
+    max-width: 700px
+}
+
 .flex-1 {
     flex: 1 1 0%
 }
@@ -755,6 +759,10 @@
     border-top-width: 0px
 }
 
+.border-t-2 {
+    border-top-width: 2px
+}
+
 .border-solid {
     border-style: solid
 }
@@ -835,6 +843,11 @@
 
 .border-transparent {
     border-color: transparent
+}
+
+.border-\[\#e2a351\] {
+    --tw-border-opacity: 1;
+    border-color: rgb(226 163 81 / var(--tw-border-opacity, 1))
 }
 
 .bg-\[\#0F172A\] {
@@ -1178,6 +1191,10 @@
     padding-top: 24px
 }
 
+.pt-8 {
+    padding-top: 32px
+}
+
 .text-left {
     text-align: left
 }
@@ -1454,6 +1471,11 @@
 
 .text-white\/50 {
     color: rgb(255 255 255 / 0.5)
+}
+
+.text-\[\#e2a351\] {
+    --tw-text-opacity: 1;
+    color: rgb(226 163 81 / var(--tw-text-opacity, 1))
 }
 
 .line-through {
@@ -1733,6 +1755,10 @@
 
     .md\:items-end {
         align-items: flex-end
+    }
+
+    .md\:justify-start {
+        justify-content: flex-start
     }
 
     .md\:gap-12 {
