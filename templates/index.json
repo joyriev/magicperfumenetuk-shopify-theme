@@ -150,7 +150,6 @@
         "subheading": "",
         "collection": "best-sellers",
         "show_all_button_text": "View All Bestsellers",
-        "show_all_button_url": "",
         "padding_top": 72,
         "padding_bottom": 72
       }
@@ -244,21 +243,24 @@
           "type": "collection",
           "settings": {
             "tab_title": "🔥 BESTSELLERS",
-            "collection": "best-sellers"
+            "collection": "best-sellers",
+            "button_text": "View All"
           }
         },
         "collection_xgUpzQ": {
           "type": "collection",
           "settings": {
             "tab_title": "FOR WOMEN",
-            "collection": "woman"
+            "collection": "woman",
+            "button_text": "View All"
           }
         },
         "collection_3WBTm3": {
           "type": "collection",
           "settings": {
             "tab_title": "FOR MEN",
-            "collection": "man"
+            "collection": "man",
+            "button_text": "View All"
           }
         }
       },
@@ -564,6 +566,7 @@
           "type": "review",
           "settings": {
             "content": "<p>\"Great scents, great products, no problems.\"</p>",
+            "content": "<p>\"Great scents, great products, no problems.\"</p>",
             "author": "Alex S.",
             "date": "6 Months ago",
             "rating": 5,
@@ -652,6 +655,7 @@
           "type": "review",
           "settings": {
             "content": "<p>\"Great brand and great products!\"</p>",
+            "content": "<p>\"Great brand and great products!\"</p>",
             "author": "Juliana B",
             "date": "4 Months ago",
             "rating": 5,
@@ -673,6 +677,7 @@
         "review_xUhgbw": {
           "type": "review",
           "settings": {
+            "content": "<p>\"Very good brand, I love the packaging and the aroma\"</p>",
             "content": "<p>\"Very good brand, I love the packaging and the aroma\"</p>",
             "author": "Rosa B",
             "date": "7 Months ago",
