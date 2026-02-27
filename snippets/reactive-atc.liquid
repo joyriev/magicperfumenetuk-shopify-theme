@@ -50,7 +50,7 @@
             </div>
 </div> {% endcomment %}
 
-{% assign selling_points = product.metafields.custom.bullets.value %}
+{% assign selling_points = product.custom.selling_points.value %}
 {% if selling_points %}
   <ul id="atc_scroll_target" class="list-none pl-0">
     {% for point in selling_points %}
