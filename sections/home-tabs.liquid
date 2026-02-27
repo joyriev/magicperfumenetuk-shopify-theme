@@ -75,7 +75,7 @@
                 </div>
                 <div class="mt-auto">
                     <a class="bg-black text-white uppercase text-sm font-semibold tracking-[2px] py-3 px-4 rounded-lg no-underline w-full text-center block" href="{{ product.url }}">
-                    Shop Now
+                    Achetez maintenant
                     </a>
                 </div>
                 </div>
@@ -84,6 +84,11 @@
         {% else %}
           <p class="text-gray-500">No products found in this collection.</p>
         {% endif %}
+        <div class="text-center pt-14">
+          <a href="{{ block.settings.collection.url }}" class="px-4 py-2 border-2 border-solid border-black bg-white font-bold text-sm uppercase tracking-wide hover:bg-black text-black hover:text-white transition-colors cursor-pointer inline-block no-underline">
+            {{ block.settings.button_text }}
+          </a>
+        </div>
       </div>
     {% endfor %}
   </div>
@@ -179,6 +184,12 @@
             "type": "collection",
             "id": "collection",
             "label": "Collection"
+           },
+          {
+            "type": "text",
+            "id": "button_text",
+            "label": "Button Text",
+            "default": "View All"
           }
         ]
       }
