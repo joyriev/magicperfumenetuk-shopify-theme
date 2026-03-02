@@ -17,8 +17,8 @@
       "settings": {
         "background_color": "#000000",
         "background_color_2": "#e32402",
-        "prepend_text": "Bundle & Save",
-        "link_text": "Buy 3 Get 1 Free",
+        "prepend_text": "Women’s Day Special:",
+        "link_text": "4 for the price of 3",
         "append_text": "",
         "link": "shopify://collections/best-sellers"
       }
