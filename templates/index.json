@@ -24,8 +24,8 @@
       "name": "Homepage Hero",
       "settings": {
         "background_color": "#0b0b0b",
-        "background_image": "shopify://shop_images/Gemini_Generated_Image_kxe5abkxe5abkxe5.png",
-        "mobile_background_image": "shopify://shop_images/Gemini_Generated_Image_5jbsc75jbsc75jbs.png",
+        "background_image": "shopify://shop_images/magic_header_1.png",
+        "mobile_background_image": "shopify://shop_images/magic_header_mobile_1.jpg",
         "title": "Homepage Hero",
         "subtitle": "Buy 3 Get  1 FREE",
         "button_text": "FOR MEN",
@@ -566,7 +566,6 @@
           "type": "review",
           "settings": {
             "content": "<p>\"Great scents, great products, no problems.\"</p>",
-            "content": "<p>\"Great scents, great products, no problems.\"</p>",
             "author": "Alex S.",
             "date": "6 Months ago",
             "rating": 5,
@@ -655,7 +654,6 @@
           "type": "review",
           "settings": {
             "content": "<p>\"Great brand and great products!\"</p>",
-            "content": "<p>\"Great brand and great products!\"</p>",
             "author": "Juliana B",
             "date": "4 Months ago",
             "rating": 5,
@@ -677,7 +675,6 @@
         "review_xUhgbw": {
           "type": "review",
           "settings": {
-            "content": "<p>\"Very good brand, I love the packaging and the aroma\"</p>",
             "content": "<p>\"Very good brand, I love the packaging and the aroma\"</p>",
             "author": "Rosa B",
             "date": "7 Months ago",
