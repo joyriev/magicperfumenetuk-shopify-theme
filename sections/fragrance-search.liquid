@@ -10,7 +10,7 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - FIXED: No duplicate products in recommendations
-  - FIXED: "No. 077 - Inspired by No. 5" correctly matches Chanel No 5
+  - FIXED: "No. 077 - Inspired by No. 5" correctly matches Chanel No 5 as #1 priority
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -935,27 +935,24 @@
     return match ? match[0] : null;
   }
 
-  // ===== CHECK IF PRODUCT MATCHES NO. 5 PATTERN =====
-  function isNo5Match(productTitle, catalogName) {
+  // ===== SPECIAL RULE FOR NO. 077 / CHANEL NO. 5 MATCH =====
+  function isExplicitNo5Match(productTitle, catalogPerfume) {
     const productLower = productTitle.toLowerCase();
-    const catalogLower = catalogName.toLowerCase();
+    const catalogName = catalogPerfume.name.toLowerCase();
     
-    // Check for "No. 5" pattern in product
-    const hasNo5InProduct = productLower.includes('no. 5') || 
-                            productLower.includes('no 5') || 
-                            (productLower.includes('no.') && productLower.includes('5'));
+    // Check if this is No. 077 product
+    const isNo077 = productLower.includes('077') || 
+                    productLower.includes('no. 077') || 
+                    productLower.includes('no 077');
     
-    // Check for "No. 5" pattern in catalog
-    const hasNo5InCatalog = catalogLower.includes('no. 5') || 
-                            catalogLower.includes('no 5') || 
-                            catalogLower.includes('number 5') ||
-                            (catalogLower.includes('no.') && catalogLower.includes('5'));
+    // Check if catalog is Chanel No 5
+    const isChanelNo5 = catalogName.includes('chanel') && 
+                       (catalogName.includes('no 5') || 
+                        catalogName.includes('no. 5') || 
+                        catalogName.includes('number 5'));
     
-    // Check if product number is 077 (which is No. 5 inspired)
-    const productNumber = getProductNumber(productTitle);
-    const isNo077 = productNumber === '077';
-    
-    return (hasNo5InProduct || isNo077) && hasNo5InCatalog;
+    // If product is No. 077 and catalog is Chanel No 5, it's a perfect match
+    return isNo077 && isChanelNo5;
   }
 
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
@@ -969,10 +966,10 @@
       let matchScore = 0;
       let matchReason = '';
       
-      // SPECIAL CASE: No. 5 matching
-      if (isNo5Match(product.title, catalogName)) {
-        matchScore += 10000; // Super high priority for No. 5
-        matchReason = 'no5_match';
+      // ===== EXPLICIT RULE FOR NO. 077 AND CHANEL NO. 5 =====
+      if (isExplicitNo5Match(product.title, catalogPerfume)) {
+        matchScore += 100000; // Maximum priority
+        matchReason = 'explicit_no5_match';
       }
       
       // Check if product has "Inspired by" in title
@@ -982,39 +979,49 @@
       if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
-        // NUMBER MATCHING - HIGHEST PRIORITY
+        // NUMBER MATCHING - VERY HIGH PRIORITY
         if (catalogNumber && productNumber) {
-          if (catalogNumber === productNumber) {
-            matchScore += 5000;
+          // No. 077 matches No. 5 (special case)
+          if (catalogNumber === '5' && productNumber === '077') {
+            matchScore += 50000;
+            matchReason = 'no5_number_match';
+          }
+          // Regular number match
+          else if (catalogNumber === productNumber) {
+            matchScore += 10000;
             matchReason = 'number_match';
           }
         }
         
         // Check for specific number patterns
-        if (catalogNumber === '5' && productNumber === '077') {
-          matchScore += 8000; // No. 077 is inspired by No. 5
-          matchReason = 'no5_number_match';
+        if (catalogName.includes('no 5') && inspiredLower.includes('no 5')) {
+          matchScore += 20000;
+          matchReason = 'no5_phrase_match';
+        }
+        if (catalogName.includes('no. 5') && inspiredLower.includes('no. 5')) {
+          matchScore += 20000;
+          matchReason = 'no5_phrase_match';
         }
         
         // Check if product title contains the catalog number
         if (catalogNumber && product.title.toLowerCase().includes(catalogNumber)) {
-          matchScore += 3000;
+          matchScore += 5000;
           matchReason = 'number_in_title';
         }
         
         // DIRECT NAME MATCH
         if (inspiredLower === catalogName) {
-          matchScore += 2000;
+          matchScore += 3000;
           matchReason = 'exact_match';
         }
         
         // BRAND MATCH
         if (catalogName.includes('chanel') && inspiredLower.includes('chanel')) {
-          matchScore += 1000;
+          matchScore += 2000;
           matchReason = 'brand_match';
         }
         if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
-          matchScore += 1000;
+          matchScore += 2000;
           matchReason = 'brand_match';
         }
         
