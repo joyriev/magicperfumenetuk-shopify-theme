@@ -2,7 +2,411 @@
 // Save this as: assets/perfume-catalog.js
 
 window.PerfumeCatalog = {
+  // ===== CHANEL =====
+  chanel: [
+    {
+      id: "chanel_chance",
+      name: "Chance",
+      brand: "Chanel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/chance.png?v=1772096656",
+      top_notes: ["Pink Pepper", "Quince", "Citrus"],
+      heart_notes: ["Hyacinth", "Jasmine", "Iris"],
+      base_notes: ["Musk", "Patchouli", "Vetiver", "Cedar"],
+      description: "A vibrant and unexpected floral fragrance. Chance opens with a burst of pink pepper and quince, leading to a luminous heart of hyacinth and jasmine. The base is warm and sensual with musk and patchouli. It's a scent of spontaneity and optimism, for the woman who creates her own luck.",
+      year: "2003",
+      gender: "Female"
+    },
+    {
+      id: "chanel_coco",
+      name: "Coco",
+      brand: "Chanel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/coco.png?v=1772097398",
+      top_notes: ["Coriander", "Mandarin", "Peach", "Jasmine"],
+      heart_notes: ["Rose", "Clove", "Mimosa", "Carnation"],
+      base_notes: ["Sandalwood", "Amber", "Opium", "Benzoin"],
+      description: "A sumptuous and sensual oriental fragrance that embodies the spirit of Mademoiselle Chanel. Coco opens with spicy coriander and fruity peach, leading to a rich floral heart. The base is deep and opulent with sandalwood and amber. It's a fragrance of mystery and passion.",
+      year: "1984",
+      gender: "Female"
+    },
+    {
+      id: "chanel_bleu",
+      name: "Bleu de Chanel",
+      brand: "Chanel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/bleu.png?v=1772097197",
+      top_notes: ["Grapefruit", "Lemon", "Mint", "Pink Pepper"],
+      heart_notes: ["Ginger", "Nutmeg", "Jasmine"],
+      base_notes: ["Incense", "Vetiver", "Cedar", "Sandalwood"],
+      description: "A timeless and sophisticated fragrance for men that embodies the spirit of freedom. Bleu de Chanel opens with a fresh and vibrant burst of citrus and mint, leading to a spicy heart of ginger and nutmeg. The base is deep and sensual with incense and woody notes, creating a scent that is both classic and contemporary.",
+      year: "2010",
+      gender: "Male"
+    }
+  ],
+  
+  // ===== TOM FORD =====
+  tomFord: [
+    {
+      id: "tomford_vanille_fatale",
+      name: "Vanille Fatale",
+      brand: "Tom Ford",
+      image: "https://magicperfume.co.uk/cdn/shop/files/vanille_fatale.png?v=1772096768",
+      top_notes: ["Saffron", "Neroli", "Bergamot"],
+      heart_notes: ["Vanilla", "Coffee", "Leather"],
+      base_notes: ["Amber", "Myrrh", "Benzoin"],
+      description: "A dark and intoxicating vanilla fragrance. Vanille Fatale opens with precious saffron and neroli, leading to a heart of rich vanilla blended with smoky coffee and leather. The base is deep and resinous with amber and myrrh. It's a scent of decadence and mystery.",
+      year: "2017",
+      gender: "Unisex"
+    },
+    {
+      id: "tomford_tobacco_vanille",
+      name: "Tobacco Vanille",
+      brand: "Tom Ford",
+      image: "https://magicperfume.co.uk/cdn/shop/files/tobacco_vanille.png?v=1772097038",
+      top_notes: ["Tobacco Leaf", "Spicy Notes"],
+      heart_notes: ["Vanilla", "Cocoa", "Tonka", "Tobacco Blossom"],
+      base_notes: ["Dried Fruits", "Woody Notes"],
+      description: "A warm and spicy fragrance with tobacco and vanilla notes. Rich, opulent and sophisticated, this is a signature scent for those who appreciate the finer things in life. It opens with rich tobacco leaf, leading to a decadent heart of vanilla and cocoa. The base of dried fruits adds depth and complexity.",
+      year: "2007",
+      gender: "Unisex"
+    }
+  ],
+  
   // ===== JEAN PAUL GAULTIER =====
+  jpg: [
+    {
+      id: "jpg_la_belle",
+      name: "La Belle",
+      brand: "Jean Paul Gaultier",
+      image: "https://magicperfume.co.uk/cdn/shop/files/la_belle.png?v=1772096850",
+      top_notes: ["Pear", "Bergamot"],
+      heart_notes: ["Jasmine", "Orange Blossom"],
+      base_notes: ["Vanilla", "Tonka Bean", "Cedar"],
+      description: "A seductive and addictive gourmand fragrance. La Belle opens with juicy pear, leading to a floral heart of jasmine. The base is warm and intoxicating with vanilla and tonka bean. It's a scent of temptation and allure, for the woman who is unapologetically seductive.",
+      year: "2019",
+      gender: "Female"
+    },
+    {
+      id: "jpg_ultra_male",
+      name: "Ultra Male",
+      brand: "Jean Paul Gaultier",
+      image: "https://magicperfume.co.uk/cdn/shop/files/ultra_male.png?v=1772098862",
+      top_notes: ["Pear", "Mint", "Lavender"],
+      heart_notes: ["Cinnamon", "Sage", "Clary Sage"],
+      base_notes: ["Vanilla", "Amber", "Woody Notes"],
+      description: "A powerful and seductive fragrance that pushes the boundaries of masculinity. Ultra Male opens with juicy pear and fresh mint, leading to a spicy heart of cinnamon. The base is warm and addictive with vanilla and amber. It's a scent of confidence and audacity.",
+      year: "2015",
+      gender: "Male"
+    },
+    {
+      id: "jpg_classique_essence",
+      name: "Classique Essence de Parfum",
+      brand: "Jean Paul Gaultier",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Classique_Essence_de_Parfum.png?v=1772097516",
+      top_notes: ["Rose", "Ginger", "Bergamot"],
+      heart_notes: ["Tuberose", "Jasmine", "Orange Blossom"],
+      base_notes: ["Vanilla", "Amber", "Musk"],
+      description: "A more intense and sensual interpretation of the iconic Classique. This essence opens with spicy ginger and rose, leading to a rich floral heart of tuberose. The base is warm and addictive with vanilla and amber. It's a fragrance of seduction and glamour.",
+      year: "2013",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== GIORGIO ARMANI =====
+  armani: [
+    {
+      id: "armani_stronger_with_you_intensely",
+      name: "Stronger With You Intensely",
+      brand: "Giorgio Armani",
+      image: "https://magicperfume.co.uk/cdn/shop/files/stronger_with_you_intensely.png?v=1772097116",
+      top_notes: ["Pink Pepper", "Cardamom", "Violet Leaf"],
+      heart_notes: ["Sage", "Lavender", "Cinnamon"],
+      base_notes: ["Vanilla", "Chestnut", "Tonka Bean", "Amber"],
+      description: "A more intense and powerful interpretation of Stronger With You. This version opens with even more spice, leading to a deeper, richer heart. The base is intensely warm and addictive with vanilla and amber. It's a fragrance of deep connection and passion.",
+      year: "2019",
+      gender: "Male"
+    },
+    {
+      id: "armani_acqua_di_gio",
+      name: "Acqua Di Gio",
+      brand: "Giorgio Armani",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Acqua_Di_Gio.png?v=1772097792",
+      top_notes: ["Bergamot", "Neroli", "Green Tangerine"],
+      heart_notes: ["Jasmine", "Rosemary", "Sage"],
+      base_notes: ["Cedar", "Patchouli", "Musk"],
+      description: "A timeless aquatic classic that captures the essence of the Mediterranean Sea. The citrus opening is fresh and invigorating, while the aromatic heart adds depth. The woody base is clean and masculine. It's a fragrance that never goes out of style.",
+      year: "1996",
+      gender: "Male"
+    },
+    {
+      id: "armani_code_for_women",
+      name: "Armani Code for Women",
+      brand: "Giorgio Armani",
+      image: "https://magicperfume.co.uk/cdn/shop/files/code_for_woman.png?v=1772098650",
+      top_notes: ["Orange Blossom", "Jasmine", "Bergamot"],
+      heart_notes: ["Honey", "Almond", "Ginger"],
+      base_notes: ["Vanilla", "Sandalwood", "Musk"],
+      description: "A seductive and elegant oriental floral fragrance. The orange blossom opening is bright and feminine, while the heart of honey and almond adds a gourmand twist. The vanilla base is warm and sensual, like a secret code waiting to be deciphered.",
+      year: "2006",
+      gender: "Female"
+    },
+    {
+      id: "armani_my_way",
+      name: "My Way",
+      brand: "Giorgio Armani",
+      image: "https://magicperfume.co.uk/cdn/shop/files/my_way.png?v=1772095936",
+      top_notes: ["Orange Blossom", "Bergamot"],
+      heart_notes: ["Tuberose", "Jasmine"],
+      base_notes: ["Vanilla", "Cedar", "White Musk"],
+      description: "A radiant and ethical fragrance that celebrates authenticity and connection. My Way opens with bright orange blossom, leading to a heart of tuberose and jasmine. The base is warm and comforting with vanilla and cedar. It's a scent for those who write their own story.",
+      year: "2020",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== DIOR =====
+  dior: [
+    {
+      id: "dior_homme_intense",
+      name: "Dior Homme Intense",
+      brand: "Dior",
+      image: "https://magicperfume.co.uk/cdn/shop/files/homme_intense.png?v=1772099043",
+      top_notes: ["Lavender"],
+      heart_notes: ["Tuscan Iris", "Ambrette Seed", "Pear"],
+      base_notes: ["Virginia Cedar", "Vetiver"],
+      description: "An intense and sensual fragrance that enhances masculinity. The iris is at the heart, creating an incredibly smooth and powdery character that evolves throughout the day. This iconic scent has become a reference in the world of perfumery, loved for its unique blend of floral and woody notes.",
+      year: "2011",
+      gender: "Male"
+    },
+    {
+      id: "dior_homme",
+      name: "Dior Homme",
+      brand: "Dior",
+      image: "https://magicperfume.co.uk/cdn/shop/files/homme_intense.png", // Using same image
+      top_notes: ["Lavender", "Bergamot", "Sage"],
+      heart_notes: ["Iris", "Cocoa", "Pear"],
+      base_notes: ["Cedar", "Vetiver", "Leather"],
+      description: "A refined, elegant fragrance with iris at its heart. Dior Homme is a modern classic that has redefined masculine perfumery. It opens with fresh lavender and bergamot, leading to a heart that is uniquely centered around iris. The cocoa and pear add a subtle sweetness and depth.",
+      year: "2005",
+      gender: "Male"
+    }
+  ],
+  
+  // ===== CHLOE =====
+  chloe: [
+    {
+      id: "chloe_chloe",
+      name: "Chloé",
+      brand: "Chloé",
+      image: "https://magicperfume.co.uk/cdn/shop/files/chloe.png?v=1772097311",
+      top_notes: ["Peony", "Lychee", "Freesia"],
+      heart_notes: ["Magnolia", "Rose", "Lily of the Valley"],
+      base_notes: ["Cedar", "Amber", "Musk"],
+      description: "A fresh and elegant rose fragrance that captures the spirit of the modern woman. Chloé opens with sparkling peony and lychee, leading to a heart of romantic rose. The base is soft and sensual with cedar and musk. It's a scent of effortless femininity and grace.",
+      year: "2008",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== PACO RABANNE =====
+  pacoRabanne: [
+    {
+      id: "paco_invictus",
+      name: "Invictus",
+      brand: "Paco Rabanne",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Invictus_EDT.png?v=1772097596",
+      top_notes: ["Grapefruit", "Mandarin", "Sea Notes"],
+      heart_notes: ["Bay Leaf", "Jasmine", "Cedar"],
+      base_notes: ["Oakmoss", "Amber", "Patchouli"],
+      description: "A fresh and powerful fragrance for the victorious man. Invictus opens with zesty grapefruit and sea notes, leading to an aromatic heart of bay leaf. The base is warm and sensual with oakmoss and amber. It's a scent of strength and triumph.",
+      year: "2013",
+      gender: "Male"
+    }
+  ],
+  
+  // ===== HUGO BOSS =====
+  hugoBoss: [
+    {
+      id: "boss_woman",
+      name: "Boss Woman",
+      brand: "Hugo Boss",
+      image: "https://magicperfume.co.uk/cdn/shop/files/boss_woman.png?v=1772097690",
+      top_notes: ["Mandarin", "Apple", "Peach"],
+      heart_notes: ["Rose", "Jasmine", "Lily"],
+      base_notes: ["Sandalwood", "Musk", "Vanilla"],
+      description: "A classic and elegant fragrance for the successful modern woman. Boss Woman opens with fresh mandarin and apple, leading to a floral heart of rose and jasmine. The base is warm and sophisticated with sandalwood and vanilla. It's a scent of power and grace.",
+      year: "2000",
+      gender: "Female"
+    },
+    {
+      id: "boss_alive",
+      name: "Boss Alive",
+      brand: "Hugo Boss",
+      image: "https://magicperfume.co.uk/cdn/shop/files/alive.png?v=1772098782",
+      top_notes: ["Apple", "Black Currant", "Plum"],
+      heart_notes: ["Rose", "Jasmine", "Cinnamon"],
+      base_notes: ["Vanilla", "Musk", "Cedar"],
+      description: "A vibrant and energetic fragrance that celebrates the joy of being alive. Boss Alive opens with juicy apple and black currant, leading to a spicy floral heart of rose and cinnamon. The base is warm and sensual with vanilla and musk. It's a scent that energizes and inspires.",
+      year: "2019",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== LANCOME =====
+  lancome: [
+    {
+      id: "lancome_tresor",
+      name: "Trésor",
+      brand: "Lancôme",
+      image: "https://magicperfume.co.uk/cdn/shop/files/tresor.png?v=1772097891",
+      top_notes: ["Peach", "Apricot", "Rose"],
+      heart_notes: ["Lily of the Valley", "Jasmine", "Iris"],
+      base_notes: ["Vanilla", "Sandalwood", "Musk"],
+      description: "A romantic and timeless fragrance that captures the essence of love. Trésor opens with juicy peach and apricot, leading to a floral heart of lily of the valley. The base is warm and sensual with vanilla and sandalwood. It's a classic scent of elegance.",
+      year: "1990",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== HERMÈS =====
+  hermes: [
+    {
+      id: "hermes_terre",
+      name: "Terre d'Hermès",
+      brand: "Hermès",
+      image: "https://magicperfume.co.uk/cdn/shop/files/terre.png?v=1772098416",
+      top_notes: ["Orange", "Grapefruit", "Flint"],
+      heart_notes: ["Pepper", "Geranium", "Cedar"],
+      base_notes: ["Vetiver", "Benzoin", "Cedar", "Oakmoss"],
+      description: "A powerful and original fragrance that celebrates the connection between man and earth. Terre d'Hermès opens with zesty citrus and flint, leading to a mineral heart of pepper and cedar. The base is deep and earthy with vetiver and oakmoss. It's a scent of authenticity and strength.",
+      year: "2006",
+      gender: "Male"
+    }
+  ],
+  
+  // ===== GUCCI =====
+  gucci: [
+    {
+      id: "gucci_rush_2",
+      name: "Rush 2",
+      brand: "Gucci",
+      image: "https://magicperfume.co.uk/cdn/shop/files/rush_2.png?v=1772098494",
+      top_notes: ["Freesia", "Water Lily", "Coriander"],
+      heart_notes: ["Rose", "Jasmine", "Lily of the Valley"],
+      base_notes: ["Sandalwood", "Musk", "Amber"],
+      description: "A fresh and vibrant floral fragrance that captures the energy of modern life. Rush 2 opens with bright freesia and water lily, leading to a heart of romantic rose and jasmine. The base is warm and sensual with sandalwood and musk. It's a scent of passion and spontaneity.",
+      year: "2001",
+      gender: "Female"
+    },
+    {
+      id: "gucci_flora",
+      name: "Flora by Gucci",
+      brand: "Gucci",
+      image: "https://magicperfume.co.uk/cdn/shop/files/flower.png?v=1772098946",
+      top_notes: ["Citrus", "Peony", "Mandarin"],
+      heart_notes: ["Rose", "Osmanthus", "Carnation"],
+      base_notes: ["Sandalwood", "Patchouli", "Musk"],
+      description: "A fresh and elegant floral fragrance that captures the spirit of a garden in bloom. Flora opens with bright citrus and peony, leading to a heart of rose and osmanthus. The base is warm and sensual with sandalwood and patchouli. It's a scent of timeless femininity.",
+      year: "2009",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== VALENTINO =====
+  valentino: [
+    {
+      id: "valentino_uomo_born_in_roma",
+      name: "Uomo Born in Roma",
+      brand: "Valentino",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Uomo_Born_in_Roma.png?v=1772098564",
+      top_notes: ["Mandarin", "Salt", "Mint"],
+      heart_notes: ["Lavender", "Sage", "Cedar"],
+      base_notes: ["Vanilla", "Tonka Bean", "Musk"],
+      description: "A fresh and aromatic fragrance for the modern man. Uomo Born in Roma opens with zesty mandarin and salt, leading to an aromatic heart of lavender. The base is warm and sensual with vanilla and tonka bean. It's a scent of confidence and contemporary style.",
+      year: "2019",
+      gender: "Male"
+    }
+  ],
+  
+  // ===== CACHAREL =====
+  cacharel: [
+    {
+      id: "cacharel_amor_amor",
+      name: "Amor Amor",
+      brand: "Cacharel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/SCANDAL.jpg", // Using Scandal image as placeholder
+      top_notes: ["Grapefruit", "Mandarin", "Black Currant"],
+      heart_notes: ["Rose", "Jasmine", "Lily of the Valley"],
+      base_notes: ["Vanilla", "Musk", "Patchouli"],
+      description: "A vibrant and romantic fragrance that captures the feeling of falling in love. Amor Amor opens with juicy grapefruit and black currant, leading to a floral heart of rose and jasmine. The base is warm and comforting with vanilla and musk.",
+      year: "1999",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== KENZO =====
+  kenzo: [
+    {
+      id: "kenzo_flower",
+      name: "Flower by Kenzo",
+      brand: "Kenzo",
+      image: "https://magicperfume.co.uk/cdn/shop/files/flower.png?v=1772098946",
+      top_notes: ["Hawthorn", "Black Currant", "Mandarin"],
+      heart_notes: ["Rose", "Jasmine", "Violet"],
+      base_notes: ["Vanilla", "Musk", "Cedar"],
+      description: "A poetic and delicate fragrance that celebrates the beauty of the poppy flower. Flower opens with fresh hawthorn and black currant, leading to a floral heart of rose and jasmine. The base is soft and sensual with vanilla and musk. It's a scent of grace and femininity.",
+      year: "2000",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== PRADA =====
+  prada: [
+    {
+      id: "prada_candy",
+      name: "Candy",
+      brand: "Prada",
+      image: "https://magicperfume.co.uk/cdn/shop/files/candy.png?v=1772099831",
+      top_notes: ["Caramel", "Musk", "Vanilla"],
+      heart_notes: ["Benzoin", "Musk"],
+      base_notes: ["Vanilla", "Musk", "Caramel"],
+      description: "A playful and indulgent gourmand fragrance that captures the spirit of fun and femininity. Candy opens with sweet caramel, leading to a heart of warm benzoin. The base is creamy and addictive with vanilla and musk. It's a scent of pure joy and sweetness.",
+      year: "2011",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== YVES SAINT LAURENT =====
+  ysl: [
+    {
+      id: "ysl_manifesto",
+      name: "Manifesto",
+      brand: "Yves Saint Laurent",
+      image: "https://magicperfume.co.uk/cdn/shop/files/manifesto.png?v=1772099152",
+      top_notes: ["Green Notes", "Bergamot"],
+      heart_notes: ["Jasmine", "Lily-of-the-Valley"],
+      base_notes: ["Vanilla", "Tonka Bean", "Cedar"],
+      description: "A woody vanilla fragrance that captures the spirit of a free woman. Manifesto opens with fresh green notes, leading to a heart of jasmine. The base is warm and sensual with vanilla and tonka bean. It's a scent for those who dare to be themselves.",
+      year: "2012",
+      gender: "Female"
+    }
+  ],
+  
+  // ===== JOOP! =====
+  joop: [
+    {
+      id: "joop_homme",
+      name: "Joop! Homme",
+      brand: "Joop!",
+      image: "https://magicperfume.co.uk/cdn/shop/files/joop_homme.png?v=1772099295",
+      top_notes: ["Cinnamon", "Bergamot", "Mandarin"],
+      heart_notes: ["Lily of the Valley", "Jasmine", "Geranium"],
+      base_notes: ["Sandalwood", "Vanilla", "Tonka Bean", "Cedar"],
+      description: "A bold and distinctive fragrance that is both sweet and spicy. Joop! Homme opens with cinnamon and citrus, leading to a floral heart. The base is warm and sensual with vanilla and sandalwood. It's a scent of confidence and individuality.",
+      year: "1989",
+      gender: "Male"
+    }
+  ],
+
+    // ===== JEAN PAUL GAULTIER =====
   jpg: [
     {
       id: "jpg_le_male",
