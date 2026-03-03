@@ -6,11 +6,12 @@
   - Premium box design for steps
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
-  - Badges: "Recommended" (first product) and "You might like it" (second product)
+  - Badges: "Recommended" (best match) and "You might like it" (second best)
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
-  - FIXED: Always shows both badges when multiple products exist
-  - FIXED: Properly matches "Inspired by No. 5" with Chanel No 5
+  - FIXED: No duplicate products in recommendations
+  - FIXED: "No. 077 - Inspired by No. 5" correctly matches Chanel No 5
+  - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
 
@@ -928,15 +929,22 @@
     return match ? match[1] : null;
   }
 
+  // ===== EXTRACT NUMBER FROM CATALOG NAME =====
+  function getCatalogNumber(catalogName) {
+    const match = catalogName.match(/\d+/);
+    return match ? match[0] : null;
+  }
+
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
-    const catalogNameWithoutBrand = catalogName.replace(/chanel|dior|creed|tom ford|armani|gucci/i, '').trim();
+    const catalogNumber = getCatalogNumber(catalogName);
     
     const scoredProducts = fcProducts.map(product => {
       let matchScore = 0;
+      let matchReason = '';
       
       // Check if product has "Inspired by" in title
       const inspiredName = getInspiredName(product.title);
@@ -945,71 +953,99 @@
       if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
-        // Extract numbers from both
-        const catalogNumbers = catalogName.match(/\d+/g) || [];
-        const inspiredNumbers = inspiredLower.match(/\d+/g) || [];
-        
-        // Number match is strongest
-        if (catalogNumbers.length > 0 && inspiredNumbers.length > 0) {
-          if (catalogNumbers[0] === inspiredNumbers[0]) {
-            matchScore += 1000; // Very strong match for number
+        // NUMBER MATCHING - HIGHEST PRIORITY
+        // Check if catalog has a number (like "5") and product has same number
+        if (catalogNumber && productNumber) {
+          if (catalogNumber === productNumber) {
+            matchScore += 2000;
+            matchReason = 'number_match';
           }
         }
         
-        // Check for "No. 5" vs "No 5" vs "5" patterns
+        // Check for "No. 5" pattern specifically
         if (catalogName.includes('no 5') && inspiredLower.includes('no 5')) {
-          matchScore += 900;
+          matchScore += 1900;
+          matchReason = 'no5_match';
         }
         if (catalogName.includes('no. 5') && inspiredLower.includes('no. 5')) {
-          matchScore += 900;
+          matchScore += 1900;
+          matchReason = 'no5_match';
         }
         
-        // Direct name match
-        if (inspiredLower === catalogName || inspiredLower === catalogNameWithoutBrand) {
-          matchScore += 800;
+        // Check if the inspired name contains the catalog number
+        if (catalogNumber && inspiredLower.includes(catalogNumber)) {
+          matchScore += 1500;
+          matchReason = 'number_in_name';
         }
         
-        // Partial matches
-        if (catalogName.includes(inspiredLower) || inspiredLower.includes(catalogName)) {
-          matchScore += 400;
+        // DIRECT NAME MATCH
+        if (inspiredLower === catalogName) {
+          matchScore += 1000;
+          matchReason = 'exact_match';
         }
         
-        // Word by word matching
-        const catalogWords = catalogName.split(/\s+/);
-        const inspiredWords = inspiredLower.split(/\s+/);
+        // BRAND MATCH
+        if (catalogName.includes('chanel') && inspiredLower.includes('chanel')) {
+          matchScore += 500;
+          matchReason = 'brand_match';
+        }
+        if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
+          matchScore += 500;
+          matchReason = 'brand_match';
+        }
+        
+        // WORD MATCHING
+        const catalogWords = catalogName.split(/\s+/).filter(w => w.length > 2);
+        const inspiredWords = inspiredLower.split(/\s+/).filter(w => w.length > 2);
         
         catalogWords.forEach(cWord => {
-          if (cWord.length > 2) {
-            inspiredWords.forEach(iWord => {
-              if (iWord.length > 2) {
-                if (iWord === cWord) {
-                  matchScore += 100;
-                } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
-                  matchScore += 50;
-                } else {
-                  const similarity = getSimilarityScore(iWord, cWord);
-                  if (similarity > 0.7) {
-                    matchScore += similarity * 30;
-                  }
-                }
+          inspiredWords.forEach(iWord => {
+            if (iWord === cWord) {
+              matchScore += 200;
+              matchReason = 'word_match';
+            } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
+              if (iWord.length > 3 && cWord.length > 3) {
+                matchScore += 100;
+                matchReason = 'partial_match';
               }
-            });
-          }
+            } else {
+              const similarity = getSimilarityScore(iWord, cWord);
+              if (similarity > 0.7) {
+                matchScore += similarity * 50;
+                matchReason = 'fuzzy_match';
+              }
+            }
+          });
         });
       }
       
       return {
         product,
         matchScore,
-        inspiredName: inspiredName || product.title,
-        productNumber: productNumber
+        matchReason,
+        productNumber,
+        catalogNumber,
+        inspiredName: inspiredName || product.title
       };
     });
     
-    // Filter products with at least some match and sort by score (highest first)
-    return scoredProducts
-      .filter(item => item.matchScore > 100)
+    // Filter products with good matches and sort by score (highest first)
+    const matches = scoredProducts
+      .filter(item => item.matchScore > 200)
       .sort((a, b) => b.matchScore - a.matchScore);
+    
+    // Remove duplicates by product ID
+    const uniqueMatches = [];
+    const seenIds = new Set();
+    
+    matches.forEach(match => {
+      if (!seenIds.has(match.product.id)) {
+        seenIds.add(match.product.id);
+        uniqueMatches.push(match);
+      }
+    });
+    
+    return uniqueMatches;
   }
 
   // ===== RENDER CATALOG PERFUME LIST - SORTED ALPHABETICALLY =====
@@ -1055,23 +1091,26 @@
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    // Show inspired products if found - ALWAYS show both badges if enough products
+    // Show inspired products if found - SHOW DIFFERENT PRODUCTS FOR EACH BADGE
     if (inspiredMatches.length > 0) {
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // First product gets "Recommended" badge
+      // First product gets "Recommended" badge (highest match)
       if (inspiredMatches.length >= 1) {
         html += renderYourProductCard(inspiredMatches[0].product, 'Recommended');
       }
       
-      // Second product gets "You might like it" badge
-      // If only one product, duplicate it for second slot with "You might like it" badge
+      // Second product gets "You might like it" badge (different product)
       if (inspiredMatches.length >= 2) {
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it');
-      } else if (inspiredMatches.length === 1) {
-        // Show the same product again with "You might like it" badge
-        html += renderYourProductCard(inspiredMatches[0].product, 'You might like it');
+      } else {
+        // If only one match, show a random different product for second slot
+        const otherProducts = fcProducts.filter(p => p.id !== inspiredMatches[0].product.id);
+        if (otherProducts.length > 0) {
+          const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
+          html += renderYourProductCard(randomProduct, 'You might like it');
+        }
       }
       
       html += '</div>';
@@ -1082,10 +1121,13 @@
         html += `<div class="fc-subsection-title">You Might Also Like</div>`;
         html += '<div class="fc-grid-2col">';
         
-        randomProducts.slice(0, 2).forEach((product, index) => {
-          const badge = index === 0 ? 'Recommended' : 'You might like it';
-          html += renderYourProductCard(product, badge);
-        });
+        // Show two different random products
+        if (randomProducts.length >= 1) {
+          html += renderYourProductCard(randomProducts[0], 'Recommended');
+        }
+        if (randomProducts.length >= 2) {
+          html += renderYourProductCard(randomProducts[1], 'You might like it');
+        }
         
         html += '</div>';
       }
