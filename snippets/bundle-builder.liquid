@@ -1,6 +1,6 @@
-{% assign bundle_collection = collections['top-sellers'] %}
+{% assign bundle_collection = collections['best-sellers'] %}
 {% assign product_count = product.metafields.custom.bundle_product_count | default: 4 %}
-{% assign dropdown_ml = product.metafields.custom.select_bundle_dropdown_ml | default: "50" %}
+{% assign dropdown_ml = product.metafields.custom.bundle_bottle_size | default: "50" %}
 {% assign bundle_ml = dropdown_ml | append: "ML" %}
 {% assign selected_variant = product.selected_or_first_available_variant %}
 
@@ -50,7 +50,7 @@
       {% endfor %}
     </div>
     <template x-for="(product, index) in $store.bundleBuilder.selectedProducts" :key="product.id">
-      <div class="bg-white border border-solid border-green-700 w-full p-[7px] flex items-center gap-2 justify-between rounded-lg relative">
+      <div class="bg-white border border-solid border-black w-full p-[7px] flex items-center gap-2 justify-between rounded-lg relative">
         {% if product.tags contains 'bogo' %}
           <div x-show="index + 1 === {{ product_count }}" class="bg-[#b72f33] text-white px-2 py-1 font-semibold absolute top-0 right-0 rounded-tr-md leading-none text-sm">Free Bottle</div>
         {% endif %}
@@ -58,11 +58,11 @@
           class="object-cover rounded"
           :src="product.image"
           :alt="product.name"
-          width="60"
-          height="60">
+          width="40"
+          height="40">
         <div class="text-left flex flex-col gap-1">
-          <div class="font-bold text-lg leading-tight text-black line-clamp-1" x-text="product.name"></div>
-          <div class="text-sm line-clamp-1" x-text="product.nuta"></div>
+          <div class="font-semibold text-base leading-tight text-black line-clamp-1" x-text="product.name"></div>
+        {% comment %} <div class="text-sm line-clamp-1" x-text="product.nuta"></div> {% endcomment %}
         </div>
         <button @click="$store.bundleBuilder.removeProduct(index)" class="ml-auto size-8 bg-red-50 flex items-center justify-center rounded text-xs cursor-pointer border-0">
           {% render 'icon-trash' %}
@@ -85,18 +85,18 @@
 
   <button
     x-data
-    @click="{% if product.tags contains 'bogo' %}$store.bundleBuilder.doCheckout(){% else %}$store.bundleBuilder.doATCandCheckout(){% endif %}"
+    @click="$store.bundleBuilder.doATCandCheckout()"
     :disabled="$store.bundleBuilder.selectedProducts.length < {{ product_count }} || $store.bundleBuilder.addingToCart"
     :class="{
         'opacity-50 cursor-not-allowed': $store.bundleBuilder.selectedProducts.length < {{ product_count }},
-        'cursor-pointer hover:bg-[#368856]': $store.bundleBuilder.selectedProducts.length >= {{ product_count }}
+        'cursor-pointer hover:bg-black': $store.bundleBuilder.selectedProducts.length >= {{ product_count }}
       }"
-    class="w-full flex flex-wrap items-center !mb-0 text-2xl !pb-3 !pt-3 rounded-lg button bg-[#22613a] transition-colors shadow-xl tracking-normal button--full-width">
-    <span x-show="$store.bundleBuilder.selectedProducts.length < {{ product_count }}" x-text="'SELECT ' + ({{ product_count }} - $store.bundleBuilder.selectedProducts.length) + ' MORE'"></span>
-    <div class="flex" x-show="$store.bundleBuilder.selectedProducts.length === {{ product_count }}">SHOP NOW
+    class="atc-button cta_product_from_submit_btn flex flex-wrap items-center !mb-0 text-2xl !pb-3 !pt-3 rounded-lg button bg-black transition-colors shadow-xl tracking-normal button--full-width button--primary">
+    <span x-show="$store.bundleBuilder.selectedProducts.length < {{ product_count }}" x-text="'Select ' + ({{ product_count }} - $store.bundleBuilder.selectedProducts.length) + ' More'"></span>
+    <div class="flex" x-show="$store.bundleBuilder.selectedProducts.length === {{ product_count }}">Shop Now
       <div class="ml-2 pl-2 border-0 border-l flex items-center border-solid border-gray-200/20">
         <div
-          class="inline-block text-lg bg-[#1E5834] px-3 rounded"
+          class="inline-block text-lg bg-black px-3 rounded"
           id="product-price"
           role="status">
           {% if selected_variant.compare_at_price > selected_variant.price %}
@@ -112,6 +112,7 @@
         class="spinner"
         viewBox="0 0 66 66">
         <circle
+          style="stroke: #fff"
           stroke-width="6"
           cx="33"
           cy="33"
@@ -121,14 +122,6 @@
       </svg>
     </div>
   </button>
-</div>
-
-<div class="!my-6">
-  <p class="my-0 text-center font-semibold tracking-normal">
-    Delivered to
-    <span class="shipping_location">Worldwide</span>
-    in 5 business days. No customs fees.
-  </p>
 </div>
 
 <script>
@@ -165,11 +158,7 @@
           if (this.selectedProducts.length === {{ product_count }}) {
             this.showModal = false;
             // Do auto ATC and redirect to checkout
-            {% if product.tags contains 'bogo' %}
-              this.doCheckout();
-            {% else %}
-              this.doATCandCheckout();
-            {% endif %}
+            this.doATCandCheckout();
           }
         } else {
           this.removeProduct(this.selectedProducts.findIndex(item => item.id === product.id));
@@ -180,17 +169,6 @@
       },
       isProductSelected(productId) {
         return this.selectedProducts.some(product => product.id === productId);
-      },
-      doCheckout() {
-
-        this.addingToCart = true;
-
-        const items = this.selectedProducts.map(product => {
-          const variantId = product.variants[this.selectedVariant].id;
-          return `${variantId}:1`;
-        }).join(',');
-
-        window.location = `https://tryscent.co/cart/${items}`;
       },
       doATCandCheckout() {
         // Set loading state
@@ -245,3 +223,18 @@
     });
   });
 </script>
+
+<div class="my-6">
+  <div class="flex items-center gap-3 text-base">
+    <img
+      src="https://cdn.shopify.com/s/files/1/0623/0691/0402/files/thimbs_up.png?v=1751372431"
+      alt="Thumbs up badge"
+      class="w-10 h-10 flex-shrink-0"
+      width="40"
+      height="40" />
+    <div class="text-slate-900">
+      <strong class="font-semibold">Try it for 60 days - completely risk-free.</strong>
+      <div class="[display:none] md:block">If you're not absolutely delighted, we'll give you a full refund!</div>
+    </div>
+  </div>
+</div>
