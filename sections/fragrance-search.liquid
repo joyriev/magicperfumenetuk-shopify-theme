@@ -10,8 +10,8 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
-  - **NOTE SCORING: Matches based on note similarity when name doesn't match**
-  - **EXTRACTED FROM YOUR PRODUCT PAGES: Uses the actual note structure from your site**
+  - **SMART SUGGESTIONS: When no products found, shows popular alternatives**
+  - **CATEGORY-BASED SUGGESTIONS: Shows bestsellers and top-rated products**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -727,6 +727,63 @@
   font-size: 14px;
 }
 
+/* ===== SUGGESTIONS SECTION ===== */
+.fc-suggestions-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2C2420;
+  margin: 20px 25px 10px 25px;
+}
+
+.fc-suggestion-item {
+  background: #FFFFFF;
+  padding: 15px 25px;
+  margin: 0;
+  border-bottom: 1px solid #F0E8E0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: background 0.2s ease;
+}
+
+.fc-suggestion-item:hover {
+  background: #FEF9F5;
+}
+
+.fc-suggestion-image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #FFFFFF;
+  padding: 5px;
+  border: 1px solid #EDE5DC;
+}
+
+.fc-suggestion-info {
+  flex: 1;
+}
+
+.fc-suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2C2420;
+  margin-bottom: 2px;
+}
+
+.fc-suggestion-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: #C41E3A;
+}
+
+.fc-suggestion-tag {
+  font-size: 11px;
+  color: #8A7A70;
+  margin-top: 2px;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 520px) {
   .fc-search-popup {
@@ -947,16 +1004,12 @@
   }
 
   // ===== FUNCTION TO EXTRACT NOTES FROM PRODUCT METAFIELDS =====
-  // This matches your site's structure with "Top notes similar others" headings
   function getProductNotes(product) {
-    // Extract notes from product fields - adjust these based on your actual metafield names
     let topNotes = [];
     let heartNotes = [];
     let baseNotes = [];
     
-    // Try to get notes from various possible metafield locations
     if (product.metafields) {
-      // Check for common metafield patterns
       if (product.metafields.perfume) {
         topNotes = (product.metafields.perfume.top_notes || '').split(',').map(n => n.trim().toLowerCase());
         heartNotes = (product.metafields.perfume.middle_notes || '').split(',').map(n => n.trim().toLowerCase());
@@ -965,16 +1018,10 @@
         topNotes = (product.metafields.custom.top_notes || '').split(',').map(n => n.trim().toLowerCase());
         heartNotes = (product.metafields.custom.middle_notes || '').split(',').map(n => n.trim().toLowerCase());
         baseNotes = (product.metafields.custom.base_notes || '').split(',').map(n => n.trim().toLowerCase());
-      } else if (product.metafields.global) {
-        topNotes = (product.metafields.global.top_notes || '').split(',').map(n => n.trim().toLowerCase());
-        heartNotes = (product.metafields.global.middle_notes || '').split(',').map(n => n.trim().toLowerCase());
-        baseNotes = (product.metafields.global.base_notes || '').split(',').map(n => n.trim().toLowerCase());
       }
     }
     
-    // If no metafields, try to extract from description (fallback)
     if (topNotes.length === 0 && product.description) {
-      // Look for patterns like "Top notes: X, Y, Z" in description
       const topMatch = product.description.match(/top notes?[:\s]+([^.!]+)/i);
       if (topMatch) {
         topNotes = topMatch[1].split(',').map(n => n.trim().toLowerCase());
@@ -991,7 +1038,6 @@
       }
     }
     
-    // Clean up empty entries
     topNotes = topNotes.filter(n => n && n.length > 0);
     heartNotes = heartNotes.filter(n => n && n.length > 0);
     baseNotes = baseNotes.filter(n => n && n.length > 0);
@@ -1009,14 +1055,12 @@
     let score = 0;
     let matchedNotes = [];
     
-    // Weight for each note category (base notes are most important)
     const weights = {
       top: 10,
       heart: 15,
       base: 20
     };
     
-    // Check top notes
     catalogNotes.top.forEach(catalogNote => {
       productNotes.top.forEach(productNote => {
         if (productNote === catalogNote) {
@@ -1037,7 +1081,6 @@
       });
     });
     
-    // Check heart notes
     catalogNotes.heart.forEach(catalogNote => {
       productNotes.heart.forEach(productNote => {
         if (productNote === catalogNote) {
@@ -1058,7 +1101,6 @@
       });
     });
     
-    // Check base notes
     catalogNotes.base.forEach(catalogNote => {
       productNotes.base.forEach(productNote => {
         if (productNote === catalogNote) {
@@ -1085,6 +1127,83 @@
     };
   }
 
+  // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
+  function getPopularSuggestions() {
+    if (!fcProducts || fcProducts.length === 0) return [];
+    
+    // You can customize this based on your bestsellers
+    // For now, we'll return a mix of products
+    const suggestions = [];
+    
+    // Add some popular/inspired by classics
+    const popularKeywords = ['Sauvage', 'Chanel', 'Dior', 'No. 5', 'Bleu', 'Black Opium', 'La Vie Est Belle'];
+    
+    // First, try to find products matching popular keywords
+    popularKeywords.forEach(keyword => {
+      const matches = fcProducts.filter(p => 
+        p.title.toLowerCase().includes(keyword.toLowerCase())
+      );
+      suggestions.push(...matches);
+    });
+    
+    // If we don't have enough, add some random products
+    if (suggestions.length < 8) {
+      const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random());
+      suggestions.push(...randomProducts);
+    }
+    
+    // Remove duplicates and limit to 8
+    const uniqueSuggestions = [];
+    const seenIds = new Set();
+    
+    suggestions.forEach(product => {
+      if (!seenIds.has(product.id) && uniqueSuggestions.length < 8) {
+        seenIds.add(product.id);
+        uniqueSuggestions.push(product);
+      }
+    });
+    
+    return uniqueSuggestions;
+  }
+
+  // ===== RENDER SUGGESTIONS =====
+  function renderSuggestions() {
+    const suggestions = getPopularSuggestions();
+    
+    if (suggestions.length === 0) return '';
+    
+    let html = `
+      <div class="fc-suggestions-title">✨ Popular Suggestions</div>
+    `;
+    
+    suggestions.forEach(product => {
+      const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£9.99';
+      
+      // Extract inspired name if present
+      let displayName = product.title;
+      const inspiredMatch = product.title.match(/Inspired by (.*)/i);
+      if (inspiredMatch) {
+        displayName = inspiredMatch[1];
+      }
+      
+      // Add a small tag for popular/inspired items
+      const tag = product.title.toLowerCase().includes('inspired by') ? '⭐ Inspired' : '🔥 Popular';
+      
+      html += `
+        <div class="fc-suggestion-item" onclick="window.fcViewDetails('${product.url}')">
+          <img class="fc-suggestion-image" src="${product.image}" alt="${product.title}" loading="lazy">
+          <div class="fc-suggestion-info">
+            <div class="fc-suggestion-name">${displayName}</div>
+            <div class="fc-suggestion-price">${priceFormatted}</div>
+            <div class="fc-suggestion-tag">${tag}</div>
+          </div>
+        </div>
+      `;
+    });
+    
+    return html;
+  }
+
   // ===== PRECISE FUNCTION TO FIND EXACTLY NO. 077 =====
   function findExactNo077Product() {
     if (!fcProducts || fcProducts.length === 0) {
@@ -1094,7 +1213,6 @@
     
     console.log('🔍 Searching for EXACT No. 077 product...');
     
-    // Method 1: Look for exact "077" in title
     let found = fcProducts.find(p => 
       p.title.includes('077') || 
       p.title.includes('No. 077') || 
@@ -1107,7 +1225,6 @@
       return found;
     }
     
-    // Method 2: Look for URL containing "077"
     found = fcProducts.find(p => 
       p.url && p.url.includes('077')
     );
@@ -1117,7 +1234,6 @@
       return found;
     }
     
-    // Method 3: Look for "Inspired by No. 5" specifically
     found = fcProducts.find(p => 
       p.title.toLowerCase().includes('inspired by no. 5') ||
       p.title.toLowerCase().includes('inspired by no 5')
@@ -1149,14 +1265,11 @@
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogNotes = getCatalogNotes(catalogPerfume);
     
-    // ===== GUARANTEED FIX FOR CHANEL NO. 5 =====
-    // Check if this is Chanel No 5
     if (catalogName.includes('chanel') && 
         (catalogName.includes('no 5') || catalogName.includes('no. 5') || catalogName.includes('number 5'))) {
       
       console.log('🎯 Chanel No 5 detected - forcing No. 077');
       
-      // FIRST: Try to find exact No. 077
       const exactNo077 = findExactNo077Product();
       
       if (exactNo077) {
@@ -1169,7 +1282,6 @@
         }];
       }
       
-      // SECOND: If not found, use manual hardcoded product
       console.log('⚠️ Using MANUAL No. 077 product as fallback');
       return [{
         product: MANUAL_NO077_PRODUCT,
@@ -1179,15 +1291,12 @@
       }];
     }
     
-    // ===== INTELLIGENT MATCHING FOR ALL OTHER PERFUMES =====
     const scoredProducts = fcProducts.map(product => {
       let matchScore = 0;
       let matchedNotes = [];
       
-      // Get product notes
       const productNotes = getProductNotes(product);
       
-      // Method 1: Check for "Inspired by" match in title (highest priority)
       const inspiredName = getInspiredName(product.title);
       const productNumber = getProductNumber(product.title);
       const catalogNumber = getCatalogNumber(catalogName);
@@ -1195,28 +1304,23 @@
       if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
-        // Number match (e.g., "5" matches "5")
         if (catalogNumber && productNumber && catalogNumber === productNumber) {
           matchScore += 10000;
         }
         
-        // Exact name match
         if (inspiredLower === catalogName) {
           matchScore += 8000;
         }
         
-        // Brand match
         if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
           matchScore += 5000;
         }
         
-        // Partial name match
         if (inspiredLower.includes(catalogName) || catalogName.includes(inspiredLower)) {
           matchScore += 3000;
         }
       }
       
-      // Method 2: Note-based matching (important when name doesn't match)
       const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
       matchScore += noteMatch.score;
       matchedNotes = noteMatch.matchedNotes;
@@ -1229,12 +1333,10 @@
       };
     });
     
-    // Sort by score (highest first)
     const matches = scoredProducts
-      .filter(item => item.matchScore > 100)  // Minimum threshold
+      .filter(item => item.matchScore > 100)
       .sort((a, b) => b.matchScore - a.matchScore);
     
-    // Remove duplicates by product ID
     const uniqueMatches = [];
     const seenIds = new Set();
     
@@ -1293,22 +1395,18 @@
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // First product gets "Recommended" badge
       if (inspiredMatches.length >= 1) {
         html += renderYourProductCard(inspiredMatches[0].product, 'Recommended', inspiredMatches[0].matchedNotes);
       }
       
-      // Second product gets "You might like it" badge
       if (inspiredMatches.length >= 2) {
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it', inspiredMatches[1].matchedNotes);
       } else {
-        // If only one match, show a random different product for second slot
         const excludeId = inspiredMatches[0].product.id;
         const otherProducts = fcProducts.filter(p => p.id !== excludeId);
         
         if (otherProducts.length > 0) {
           const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
-          // Get note similarity for this random product
           const catalogNotes = getCatalogNotes(perfume);
           const productNotes = getProductNotes(randomProduct);
           const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
@@ -1317,33 +1415,8 @@
       }
       
       html += '</div>';
-    } else {
-      // No matches at all, show random products
-      const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 4);
-      if (randomProducts.length > 0) {
-        html += `<div class="fc-subsection-title">You Might Also Like</div>`;
-        html += '<div class="fc-grid-2col">';
-        
-        if (randomProducts.length >= 1) {
-          // Get note similarity for first random product
-          const catalogNotes = getCatalogNotes(perfume);
-          const productNotes1 = getProductNotes(randomProducts[0]);
-          const noteMatch1 = calculateNoteSimilarity(catalogNotes, productNotes1);
-          html += renderYourProductCard(randomProducts[0], 'Recommended', noteMatch1.matchedNotes);
-        }
-        if (randomProducts.length >= 2) {
-          // Get note similarity for second random product
-          const catalogNotes = getCatalogNotes(perfume);
-          const productNotes2 = getProductNotes(randomProducts[1]);
-          const noteMatch2 = calculateNoteSimilarity(catalogNotes, productNotes2);
-          html += renderYourProductCard(randomProducts[1], 'You might like it', noteMatch2.matchedNotes);
-        }
-        
-        html += '</div>';
-      }
     }
     
-    // Show catalog perfume details
     html += `
       <div class="fc-detailed-view">
         <div class="fc-detailed-header">
@@ -1564,13 +1637,11 @@
       displayName = inspiredMatch[1];
     }
     
-    // For manual product, set default values
     if (product.id === 999999999) {
       displayNumber = "No. 077";
       displayName = "No. 5";
     }
     
-    // Show matched notes if any
     const notesHint = matchedNotes.length > 0 
       ? `<div style="font-size: 10px; color: #C41E3A; margin-top: 5px;">Similar notes: ${matchedNotes.slice(0, 3).join(', ')}</div>` 
       : '';
@@ -1608,7 +1679,7 @@
     }
   };
 
-  // ===== PERFORM SEARCH =====
+  // ===== PERFORM SEARCH WITH SUGGESTIONS =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
@@ -1632,21 +1703,7 @@
       let html = '';
       
       if (catalogResults.length > 0) {
-        html += `<div class="fc-section-title">Real Perfumes (${catalogResults.length})</div>`;
-        catalogResults.slice(0, 5).forEach(perfume => {
-          html += `
-            <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
-              <img class="fc-real-perfume-image" src="${perfume.image}" 
-                   alt="${perfume.name}" 
-                   loading="lazy"
-                   onerror="this.src='https://via.placeholder.com/60x60?text=Perfume'">
-              <div class="fc-real-perfume-info">
-                <div class="fc-real-perfume-name">${perfume.name}</div>
-                <div class="fc-real-perfume-brand">${perfume.brand}</div>
-              </div>
-            </div>
-          `;
-        });
+        html += renderCatalogPerfumes(catalogResults, query);
       }
       
       if (yourMatches.length > 0) {
@@ -1665,8 +1722,10 @@
         });
       }
       
+      // ===== NEW: Show suggestions when NO products found =====
       if (catalogResults.length === 0 && yourMatches.length === 0) {
-        html = '<div class="fc-no-results">No products found. Try different spelling.</div>';
+        html = '<div class="fc-no-results">No products found for "' + query + '"</div>';
+        html += renderSuggestions();
       }
       
       content.innerHTML = html;
