@@ -252,6 +252,31 @@ window.PerfumeCatalog = {
   
   // ===== CHANEL =====
   chanel: [
+      {
+    id: "chanel_bleu",
+    name: "Bleu de Chanel",
+    brand: "Chanel",
+    image: "https://d3mcqtyhv5hy6w.cloudfront.net/perfumes/67b90220a68ec07c46f57e69_clipped.webp",
+    top_notes: ["Grapefruit", "Lemon", "Mint", "Pink Pepper"],
+    heart_notes: ["Ginger", "Nutmeg", "Jasmine"],
+    base_notes: ["Incense", "Vetiver", "Cedar", "Sandalwood"],
+    description: "A timeless and sophisticated fragrance for men that embodies the spirit of freedom. Bleu de Chanel opens with a fresh and vibrant burst of citrus and mint, leading to a spicy heart of ginger and nutmeg. The base is deep and sensual with incense and woody notes, creating a scent that is both classic and contemporary. It's a fragrance for the man who is confident, elegant, and unafraid to chart his own course.",
+    year: "2010",
+    gender: "Male"
+  },
+  
+  {
+    id: "chanel_no5_edp",
+    name: "Chanel No 5 Eau de Parfum",
+    brand: "Chanel",
+    image: "https://d3mcqtyhv5hy6w.cloudfront.net/perfumes/67b902c7a68ec07c46f5824e_clipped.webp",
+    top_notes: ["Aldehydes", "Ylang-Ylang", "Neroli", "Bergamot"],
+    heart_notes: ["Iris", "Jasmine", "Rose", "Lily of the Valley"],
+    base_notes: ["Vanilla", "Amber", "Sandalwood", "Vetiver", "Musk"],
+    description: "The most legendary fragrance in the world, Chanel No 5 is an abstract floral aldehyde that revolutionized perfumery. Created in 1921 by Ernest Beaux, it opens with a burst of sparkling aldehydes that give way to a rich bouquet of jasmine and rose. The base is warm and sensual with vanilla and amber, creating a scent that is both timeless and modern. It's a fragrance for the woman who is confident, elegant, and unforgettable.",
+    year: "1921",
+    gender: "Female"
+  },
     {
       id: "chanel_no19_edp",
       name: "Chanel No 19 Eau de Parfum",
