@@ -9,6 +9,7 @@
   - Badges: "Recommended" (best match) and "You might like it" (second best)
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
+  - **ADVANCED ID/BRAND MATCHING: Matches even single letters against IDs, names, brands**
   - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
   - **SMART FILTERING: Only shows catalog perfumes that have matching products in your store**
   - **NO RESULTS: When no matches exist, shows only popular suggestions**
@@ -17,7 +18,6 @@
 {% endcomment %}
 
 <!-- Load our curated catalog -->
-<script src="{{ 'perfume-catalog.js' | asset_url }}"></script>
 <script src="{{ 'perfume-catalog-minimal.js' | asset_url }}"></script>
 
 <style>
@@ -867,7 +867,7 @@
         <input type="text" 
                id="fcSearchInput" 
                class="fc-search-field" 
-               placeholder="Search by name, brand, or fragrance notes..."
+               placeholder="Search by name, brand, ID, or fragrance notes..."
                autocomplete="off">
         <button class="fc-clear-search" id="fcClearSearch">✕</button>
       </div>
@@ -1724,25 +1724,91 @@
     }
   };
 
+  // ===== ENHANCED SEARCH WITH ID AND BRAND MATCHING =====
+  function advancedSearch(query) {
+    const queryLower = query.toLowerCase().trim();
+    const results = [];
+    
+    allPerfumes.forEach(perfume => {
+      let score = 0;
+      
+      // Check ID match (highest priority)
+      if (perfume.id && perfume.id.toLowerCase().includes(queryLower)) {
+        score += 1000;
+      }
+      
+      // Check exact brand match
+      if (perfume.brand && perfume.brand.toLowerCase() === queryLower) {
+        score += 900;
+      }
+      
+      // Check brand contains query
+      if (perfume.brand && perfume.brand.toLowerCase().includes(queryLower)) {
+        score += 800;
+      }
+      
+      // Check name contains query
+      if (perfume.name && perfume.name.toLowerCase().includes(queryLower)) {
+        score += 700;
+      }
+      
+      // Check year match
+      if (perfume.year && perfume.year.toLowerCase().includes(queryLower)) {
+        score += 600;
+      }
+      
+      // Check notes for matches
+      const allNotes = [
+        ...(perfume.top_notes || []),
+        ...(perfume.heart_notes || []),
+        ...(perfume.base_notes || [])
+      ].map(n => n.toLowerCase());
+      
+      if (allNotes.some(note => note.includes(queryLower))) {
+        score += 500;
+      }
+      
+      // Single letter search - show all that start with that letter
+      if (query.length === 1) {
+        const firstLetter = queryLower[0];
+        if (perfume.name && perfume.name.toLowerCase()[0] === firstLetter) {
+          score += 400;
+        } else if (perfume.brand && perfume.brand.toLowerCase()[0] === firstLetter) {
+          score += 300;
+        } else if (perfume.id && perfume.id.toLowerCase()[0] === firstLetter) {
+          score += 200;
+        }
+      }
+      
+      if (score > 0) {
+        results.push({
+          ...perfume,
+          matchScore: score
+        });
+      }
+    });
+    
+    // Sort by score (highest first) then alphabetically
+    return results.sort((a, b) => {
+      if (b.matchScore !== a.matchScore) {
+        return b.matchScore - a.matchScore;
+      }
+      return a.name.localeCompare(b.name);
+    });
+  }
+
   // ===== PERFORM SEARCH WITH SMART FILTERING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      const queryLower = query.toLowerCase();
-      
-      // Search in catalog
-      let catalogResults = allPerfumes.filter(p => 
-        p.name.toLowerCase().includes(queryLower) ||
-        p.brand.toLowerCase().includes(queryLower)
-      );
-      
-      catalogResults = catalogResults.sort((a, b) => a.name.localeCompare(b.name));
+      // Use advanced search for catalog
+      let catalogResults = advancedSearch(query);
       
       // Search in your products
       let yourMatches = fcProducts.filter(p => 
-        p.title.toLowerCase().includes(queryLower)
+        p.title.toLowerCase().includes(query.toLowerCase())
       );
       
       yourMatches = yourMatches.sort((a, b) => a.title.localeCompare(b.title));
