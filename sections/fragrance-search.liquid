@@ -6,15 +6,12 @@
   - Premium box design for steps
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
-  - Badges: "Recommended" and "You might like it"
+  - Badges: "Recommended" (highest match) and "You might like it" (second best)
   - Shows ALL matching products (no limit)
   - ADVANCED FUZZY SEARCH: Matches even with typos and partial inputs
-  - Fixed cart counting for offer tracking
-  - ENLARGED product images as requested (like reference)
-  - FIXED: Cart updates immediately without refresh
-  - ADDED: Intelligent inspired product matching
-  - ADDED: Fallback note-based matching when no inspired match
-  - ADDED: Shows products with similar scent profiles
+  - AUTOCOMPLETE: Shows suggestions as you type
+  - NOTE MATCHING: Matches all fragrance composition fields
+  - FIXED: Shows both badges properly without duplication
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -357,6 +354,60 @@
 
 .fc-clear-search:hover {
   background: #EDE5DC;
+  color: #C41E3A;
+}
+
+/* ===== AUTOCOMPLETE DROPDOWN ===== */
+.fc-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 10001;
+  display: none;
+}
+
+.fc-autocomplete.show {
+  display: block;
+}
+
+.fc-autocomplete-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #F0E8E0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fc-autocomplete-item:hover {
+  background: #FEF9F5;
+}
+
+.fc-autocomplete-item img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.fc-autocomplete-info {
+  flex: 1;
+}
+
+.fc-autocomplete-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2C2420;
+}
+
+.fc-autocomplete-brand {
+  font-size: 11px;
   color: #C41E3A;
 }
 
@@ -735,6 +786,9 @@
 }
 </style>
 
+<!-- AUTOCOMPLETE DROPDOWN -->
+<div class="fc-autocomplete" id="fcAutocomplete"></div>
+
 <div class="fc-float-wrapper">
   <!-- Floating Button -->
   <div class="fc-search-toggle" id="fcStickyButton" onclick="window.fcToggleSearch()">
@@ -833,6 +887,7 @@
   
   // Debounce timer
   let searchTimer = null;
+  let autocompleteTimer = null;
 
   // Get elements
   const stickyButton = document.getElementById('fcStickyButton');
@@ -841,6 +896,7 @@
   const clearSearch = document.getElementById('fcClearSearch');
   const steps = document.getElementById('fcSteps');
   const content = document.getElementById('fcContent');
+  const autocomplete = document.getElementById('fcAutocomplete');
   
   // Offer elements
   const offerBanner = document.getElementById('fcOfferBanner');
@@ -901,14 +957,229 @@
     return 1 - (distance / maxLength);
   }
 
-  // ===== GET BEST FUZZY MATCH FOR A WORD =====
+  // ===== GET ALL SEARCHABLE TEXT FROM A PRODUCT =====
+  function getProductSearchableText(product) {
+    const title = (product.title || '').toLowerCase();
+    const topNotes = (product.topNotes || '').toLowerCase();
+    const middleNotes = (product.middleNotes || '').toLowerCase();
+    const baseNotes = (product.baseNotes || '').toLowerCase();
+    const composition = (product.fragranceComposition || '').toLowerCase();
+    const description = (product.description || '').toLowerCase();
+    
+    return `${title} ${topNotes} ${middleNotes} ${baseNotes} ${composition} ${description}`;
+  }
+
+  // ===== GET ALL SEARCHABLE TEXT FROM CATALOG PERFUME =====
+  function getCatalogSearchableText(perfume) {
+    const name = (perfume.name || '').toLowerCase();
+    const brand = (perfume.brand || '').toLowerCase();
+    const topNotes = (perfume.top_notes || []).join(' ').toLowerCase();
+    const heartNotes = (perfume.heart_notes || []).join(' ').toLowerCase();
+    const baseNotes = (perfume.base_notes || []).join(' ').toLowerCase();
+    const description = (perfume.description || '').toLowerCase();
+    
+    return `${name} ${brand} ${topNotes} ${heartNotes} ${baseNotes} ${description}`;
+  }
+
+  // ===== ENHANCED NOTE MATCHING FOR PRODUCTS =====
+  function matchProductNotes(catalogPerfume, product) {
+    // Get all catalog notes
+    const catalogTopNotes = (catalogPerfume.top_notes || []).map(n => n.toLowerCase().trim());
+    const catalogHeartNotes = (catalogPerfume.heart_notes || []).map(n => n.toLowerCase().trim());
+    const catalogBaseNotes = (catalogPerfume.base_notes || []).map(n => n.toLowerCase().trim());
+    const allCatalogNotes = [...catalogTopNotes, ...catalogHeartNotes, ...catalogBaseNotes];
+    
+    // Get all product notes
+    const productTopNotes = (product.topNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
+    const productMiddleNotes = (product.middleNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
+    const productBaseNotes = (product.baseNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
+    const allProductNotes = [...productTopNotes, ...productMiddleNotes, ...productBaseNotes];
+    
+    let matchScore = 0;
+    let matchedNotes = [];
+    
+    // Match each catalog note against product notes
+    allCatalogNotes.forEach(catalogNote => {
+      allProductNotes.forEach(productNote => {
+        // Exact match
+        if (productNote === catalogNote) {
+          matchScore += 50;
+          matchedNotes.push(catalogNote);
+        }
+        // Partial match (e.g., "vanilla" matches "madagascar vanilla")
+        else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
+          if (productNote.length > 2 && catalogNote.length > 2) {
+            matchScore += 25;
+            matchedNotes.push(catalogNote);
+          }
+        }
+        // Fuzzy match for typos
+        else {
+          const similarity = getSimilarityScore(productNote, catalogNote);
+          if (similarity > 0.7) {
+            matchScore += similarity * 20;
+            matchedNotes.push(catalogNote);
+          }
+        }
+      });
+    });
+    
+    // Match fragrance composition text
+    const productComposition = (product.fragranceComposition || '').toLowerCase();
+    const catalogDesc = (catalogPerfume.description || '').toLowerCase();
+    
+    // Common fragrance keywords
+    const keywords = [
+      'floral', 'citrus', 'woody', 'oriental', 'fresh', 'sweet', 'spicy', 
+      'fruity', 'green', 'aquatic', 'powdery', 'creamy', 'warm', 'clean',
+      'rose', 'jasmine', 'vanilla', 'musk', 'amber', 'patchouli', 'sandalwood'
+    ];
+    
+    keywords.forEach(keyword => {
+      if (catalogDesc.includes(keyword) && productComposition.includes(keyword)) {
+        matchScore += 15;
+      }
+    });
+    
+    return {
+      score: matchScore,
+      matchedNotes: [...new Set(matchedNotes)]
+    };
+  }
+
+  // ===== AUTOCOMPLETE SUGGESTIONS =====
+  function showAutocomplete(query) {
+    if (query.length < 2) {
+      autocomplete.classList.remove('show');
+      return;
+    }
+    
+    const queryLower = query.toLowerCase();
+    const suggestions = [];
+    
+    // Get suggestions from catalog
+    allPerfumes.forEach(perfume => {
+      if (perfume.name.toLowerCase().includes(queryLower) && suggestions.length < 5) {
+        suggestions.push({
+          type: 'catalog',
+          id: perfume.id,
+          name: perfume.name,
+          brand: perfume.brand,
+          image: perfume.image
+        });
+      }
+    });
+    
+    // Get suggestions from products
+    fcProducts.forEach(product => {
+      if (product.title.toLowerCase().includes(queryLower) && suggestions.length < 10) {
+        suggestions.push({
+          type: 'product',
+          id: product.id,
+          name: product.title,
+          brand: 'Our Version',
+          image: product.image
+        });
+      }
+    });
+    
+    if (suggestions.length > 0) {
+      let html = '';
+      suggestions.slice(0, 8).forEach(suggestion => {
+        html += `
+          <div class="fc-autocomplete-item" onclick="window.fcSelectSuggestion('${suggestion.type}', '${suggestion.id}')">
+            <img src="${suggestion.image}" alt="${suggestion.name}" onerror="this.src='https://via.placeholder.com/30x30?text=Perfume'">
+            <div class="fc-autocomplete-info">
+              <div class="fc-autocomplete-name">${suggestion.name}</div>
+              <div class="fc-autocomplete-brand">${suggestion.brand}</div>
+            </div>
+          </div>
+        `;
+      });
+      autocomplete.innerHTML = html;
+      autocomplete.classList.add('show');
+    } else {
+      autocomplete.classList.remove('show');
+    }
+  }
+
+  // ===== SELECT AUTOCOMPLETE SUGGESTION =====
+  window.fcSelectSuggestion = function(type, id) {
+    autocomplete.classList.remove('show');
+    if (type === 'catalog') {
+      fcShowPerfumeDetail(id);
+    } else {
+      fcShowYourProductDetail(parseInt(id));
+    }
+  };
+
+  // ===== ADVANCED SEARCH WITH FUZZY MATCHING =====
+  function advancedFuzzySearch(query) {
+    if (allPerfumes.length === 0 || query.length < 1) return [];
+    
+    const results = [];
+    const queryLower = query.toLowerCase().trim();
+    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
+    
+    allPerfumes.forEach(perfume => {
+      const searchableText = getCatalogSearchableText(perfume);
+      const searchableWords = searchableText.split(/\s+/).filter(w => w.length > 1);
+      
+      let totalScore = 0;
+      let matchedWords = [];
+      
+      // Check each query word
+      queryWords.forEach(queryWord => {
+        if (queryWord.length < 1) return;
+        
+        // Exact match
+        if (searchableText.includes(queryWord)) {
+          totalScore += 100;
+          matchedWords.push(queryWord);
+          return;
+        }
+        
+        // Word starts with query
+        searchableWords.forEach(word => {
+          if (word.startsWith(queryWord)) {
+            totalScore += 50;
+            matchedWords.push(word);
+          }
+        });
+        
+        // Fuzzy match
+        const bestMatch = getBestFuzzyMatch(queryWord, searchableWords);
+        if (bestMatch.match) {
+          totalScore += bestMatch.score * 70;
+          matchedWords.push(bestMatch.match);
+        }
+      });
+      
+      // Bonus for brand match
+      if (perfume.brand.toLowerCase().includes(queryLower)) {
+        totalScore += 150;
+      }
+      
+      // Bonus for multiple matches
+      const uniqueMatched = [...new Set(matchedWords)];
+      totalScore += uniqueMatched.length * 20;
+      
+      if (totalScore > 20) {
+        results.push({ ...perfume, matchScore: totalScore });
+      }
+    });
+    
+    return results.sort((a, b) => b.matchScore - a.matchScore);
+  }
+
+  // ===== GET BEST FUZZY MATCH =====
   function getBestFuzzyMatch(word, wordList) {
     let bestMatch = null;
     let bestScore = 0;
     
     wordList.forEach(targetWord => {
       const score = getSimilarityScore(word, targetWord);
-      if (score > bestScore && score > 0.5) { // Threshold for fuzzy match
+      if (score > bestScore && score > 0.5) {
         bestScore = score;
         bestMatch = targetWord;
       }
@@ -917,163 +1188,12 @@
     return { match: bestMatch, score: bestScore };
   }
 
-  // ===== ADVANCED SEARCH WITH FUZZY MATCHING FOR EVERY INPUT =====
-  function advancedFuzzySearch(query) {
-    if (allPerfumes.length === 0 || query.length < 1) return [];
-    
-    const results = [];
-    const queryLower = query.toLowerCase().trim();
-    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
-    
-    // Common misspellings and variations
-    const commonMisspellings = {
-      'savauge': 'sauvage',
-      'savge': 'sauvage',
-      'savag': 'sauvage',
-      'savg': 'sauvage',
-      'sav': 'sauvage',
-      'chanle': 'chanel',
-      'channel': 'chanel',
-      'chan': 'chanel',
-      'avanus': 'aventus',
-      'adventus': 'aventus',
-      'avent': 'aventus',
-      'cread': 'creed',
-      'cre': 'creed',
-      'tom four': 'tom ford',
-      'tom': 'tom ford',
-      'dior home': 'dior homme',
-      'dior': 'dior',
-      'jadore': "j'adore",
-      'j ador': "j'adore",
-      'jador': "j'adore",
-      'baccarat': 'baccarat rouge',
-      'rouge': 'baccarat rouge',
-      'ysl': 'yves saint laurent',
-      'yves': 'yves saint laurent'
-    };
-    
-    // Check if query matches common misspellings
-    let correctedQuery = queryLower;
-    for (let [misspelling, correct] of Object.entries(commonMisspellings)) {
-      if (queryLower.includes(misspelling)) {
-        correctedQuery = queryLower.replace(misspelling, correct);
-        break;
-      }
-    }
-    
-    // Build list of all searchable words from all perfumes
-    const allSearchableWords = new Set();
-    allPerfumes.forEach(perfume => {
-      const perfumeNameLower = perfume.name.toLowerCase();
-      const perfumeBrandLower = perfume.brand.toLowerCase();
-      const allNotes = [
-        ...(perfume.top_notes || []),
-        ...(perfume.heart_notes || []),
-        ...(perfume.base_notes || [])
-      ].map(n => n.toLowerCase());
-      
-      // Add all words to set
-      perfumeNameLower.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
-      perfumeBrandLower.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
-      allNotes.forEach(note => {
-        note.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
-      });
-    });
-    
-    // For single letter queries, show all that start with that letter
-    if (query.length === 1) {
-      const firstLetter = queryLower[0];
-      allPerfumes.forEach(perfume => {
-        const perfumeNameLower = perfume.name.toLowerCase();
-        const perfumeBrandLower = perfume.brand.toLowerCase();
-        
-        if (perfumeNameLower[0] === firstLetter || 
-            perfumeBrandLower[0] === firstLetter ||
-            perfumeNameLower.split(' ').some(word => word[0] === firstLetter)) {
-          results.push({ ...perfume, matchScore: 100 });
-        }
-      });
-      return results;
-    }
-    
-    // For multi-word queries, do fuzzy matching on each word
-    allPerfumes.forEach(perfume => {
-      const perfumeNameLower = perfume.name.toLowerCase();
-      const perfumeBrandLower = perfume.brand.toLowerCase();
-      
-      // Get all notes as strings
-      const allNotes = [
-        ...(perfume.top_notes || []),
-        ...(perfume.heart_notes || []),
-        ...(perfume.base_notes || [])
-      ].map(n => n.toLowerCase());
-      
-      const allNotesStr = allNotes.join(' ');
-      const searchableText = `${perfumeNameLower} ${perfumeBrandLower} ${perfume.year} ${allNotesStr}`.toLowerCase();
-      const searchableWords = searchableText.split(/\s+/).filter(w => w.length > 1);
-      
-      let totalScore = 0;
-      let matchedWords = [];
-      
-      // Check each query word against all searchable words
-      queryWords.forEach(queryWord => {
-        if (queryWord.length < 2) return;
-        
-        // First check for exact match
-        if (searchableText.includes(queryWord)) {
-          totalScore += 100;
-          matchedWords.push(queryWord);
-          return;
-        }
-        
-        // Then check for corrected query match
-        if (correctedQuery !== queryLower && searchableText.includes(correctedQuery)) {
-          totalScore += 80;
-          matchedWords.push(correctedQuery);
-          return;
-        }
-        
-        // Then try fuzzy matching
-        const bestMatch = getBestFuzzyMatch(queryWord, searchableWords);
-        if (bestMatch.match) {
-          totalScore += bestMatch.score * 70;
-          matchedWords.push(bestMatch.match);
-        }
-        
-        // Check if word starts with query (for partial typing)
-        searchableWords.forEach(word => {
-          if (word.startsWith(queryWord)) {
-            totalScore += 50;
-            matchedWords.push(word);
-          }
-        });
-      });
-      
-      // Bonus for brand match
-      if (perfumeBrandLower.includes(queryLower) || queryLower.includes(perfumeBrandLower)) {
-        totalScore += 150;
-      }
-      
-      // Bonus for multiple word matches
-      const uniqueMatched = [...new Set(matchedWords)];
-      totalScore += uniqueMatched.length * 20;
-      
-      if (totalScore > 30) { // Low threshold to catch many results
-        results.push({ ...perfume, matchScore: totalScore });
-      }
-    });
-    
-    // Sort by relevance score and return ALL matches
-    return results.sort((a, b) => b.matchScore - a.matchScore);
-  }
-
   // ===== FIND PERFUME BY ID =====
   function findPerfumeById(id) {
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
+  // ===== FIND INSPIRED PRODUCTS =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
@@ -1084,168 +1204,58 @@
       const productTitle = product.title.toLowerCase();
       let matchScore = 0;
       let matchType = '';
-      let matchedNotes = [];
       
-      // Check if product is inspired by this perfume
+      // Check for "Inspired by" match
       if (productTitle.includes('inspired by')) {
         const inspiredMatch = product.title.match(/Inspired by (.*)/i);
         if (inspiredMatch) {
           const inspiredName = inspiredMatch[1].toLowerCase().trim();
           
-          // EXACT MATCH: Inspired name matches catalog name
+          // Exact match
           if (inspiredName === catalogName) {
             matchScore += 1000;
             matchType = 'exact';
           }
-          // PARTIAL MATCH: Inspired name contains catalog name
+          // Partial match
           else if (inspiredName.includes(catalogName) || catalogName.includes(inspiredName)) {
             matchScore += 500;
             matchType = 'partial';
           }
-          // FUZZY MATCH: Similar names
+          // Fuzzy match
           else {
             const similarity = getSimilarityScore(inspiredName, catalogName);
-            if (similarity > 0.7) {
+            if (similarity > 0.6) {
               matchScore += similarity * 300;
               matchType = 'fuzzy';
             }
           }
-          // BRAND MATCH: Inspired name contains brand
-          if (inspiredName.includes(catalogBrand) || catalogBrand.includes(inspiredName)) {
-            matchScore += 200;
-            matchType = matchType || 'brand';
-          }
         }
       }
+      
+      // Note matching (always do this)
+      const noteMatch = matchProductNotes(catalogPerfume, product);
+      matchScore += noteMatch.score;
       
       return {
         product,
         matchScore,
         matchType,
-        matchedNotes
+        matchedNotes: noteMatch.matchedNotes
       };
     });
     
-    // Filter and sort by score
     return scoredProducts
-      .filter(item => item.matchScore > 50)
+      .filter(item => item.matchScore > 30)
       .sort((a, b) => b.matchScore - a.matchScore);
   }
 
-  // ===== FIND PRODUCTS BY NOTE MATCHING (FALLBACK) =====
-  function findProductsByNotes(catalogPerfume) {
-    if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
-    
-    // Get all notes from catalog perfume
-    const catalogNotes = [
-      ...(catalogPerfume.top_notes || []),
-      ...(catalogPerfume.heart_notes || []),
-      ...(catalogPerfume.base_notes || [])
-    ].map(n => n.toLowerCase().trim());
-    
-    // Get fragrance family from description
-    const catalogDesc = (catalogPerfume.description || '').toLowerCase();
-    
-    // Score each product based on note similarity
-    const scoredProducts = fcProducts.map(product => {
-      // Get product notes from metafields
-      const productTopNotes = (product.topNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
-      const productMiddleNotes = (product.middleNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
-      const productBaseNotes = (product.baseNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
-      const productAllNotes = [...productTopNotes, ...productMiddleNotes, ...productBaseNotes];
-      
-      let matchScore = 0;
-      let matchedNotes = [];
-      
-      // Check each catalog note against product notes
-      catalogNotes.forEach(catalogNote => {
-        productAllNotes.forEach(productNote => {
-          // Exact note match
-          if (productNote === catalogNote) {
-            matchScore += 50;
-            matchedNotes.push(catalogNote);
-          }
-          // Partial match (e.g., "vanilla" matches "madagascar vanilla")
-          else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-            if (productNote.length > 3 && catalogNote.length > 3) {
-              matchScore += 25;
-              matchedNotes.push(catalogNote);
-            }
-          }
-          // Fuzzy match for similar notes
-          else {
-            const similarity = getSimilarityScore(productNote, catalogNote);
-            if (similarity > 0.8) {
-              matchScore += similarity * 20;
-              matchedNotes.push(catalogNote);
-            }
-          }
-        });
-      });
-      
-      // Bonus for matching fragrance families
-      const productDesc = (product.description || '').toLowerCase();
-      const productTitle = (product.title || '').toLowerCase();
-      
-      // Define fragrance families with keywords
-      const families = [
-        { name: 'floral', keywords: ['floral', 'flower', 'rose', 'jasmine', 'lavender', 'iris', 'peony'] },
-        { name: 'citrus', keywords: ['citrus', 'orange', 'lemon', 'bergamot', 'grapefruit', 'mandarin'] },
-        { name: 'woody', keywords: ['woody', 'wood', 'cedar', 'sandalwood', 'vetiver', 'oakmoss', 'patchouli'] },
-        { name: 'oriental', keywords: ['oriental', 'amber', 'vanilla', 'tonka', 'spice', 'incense', 'resin'] },
-        { name: 'fresh', keywords: ['fresh', 'aquatic', 'ocean', 'sea', 'water', 'green', 'clean'] },
-        { name: 'sweet', keywords: ['sweet', 'gourmand', 'vanilla', 'caramel', 'honey', 'praline', 'candy'] },
-        { name: 'spicy', keywords: ['spicy', 'pepper', 'cinnamon', 'clove', 'cardamom', 'saffron', 'ginger'] }
-      ];
-      
-      families.forEach(family => {
-        // Check if catalog perfume belongs to this family
-        const catalogInFamily = family.keywords.some(keyword => 
-          catalogDesc.includes(keyword) || catalogNotes.some(note => note.includes(keyword))
-        );
-        
-        // Check if product belongs to this family
-        const productInFamily = family.keywords.some(keyword => 
-          productDesc.includes(keyword) || productTitle.includes(keyword) || 
-          productAllNotes.some(note => note.includes(keyword))
-        );
-        
-        if (catalogInFamily && productInFamily) {
-          matchScore += 30;
-        }
-      });
-      
-      // Bonus for gender match
-      if (catalogPerfume.gender && product.gender) {
-        const catalogGender = catalogPerfume.gender.toLowerCase();
-        const productGender = product.gender.toLowerCase();
-        if (catalogGender === productGender) {
-          matchScore += 20;
-        } else if (catalogGender === 'unisex' || productGender === 'unisex') {
-          matchScore += 10;
-        }
-      }
-      
-      return {
-        product,
-        matchScore,
-        matchedNotes: [...new Set(matchedNotes)] // Unique matched notes
-      };
-    });
-    
-    // Filter products with at least some match and sort by score
-    return scoredProducts
-      .filter(item => item.matchScore > 20)
-      .sort((a, b) => b.matchScore - a.matchScore);
-  }
-
-  // ===== RENDER CATALOG PERFUME LIST - SHOW ALL RESULTS =====
+  // ===== RENDER CATALOG PERFUME LIST =====
   function renderCatalogPerfumes(perfumes, query) {
     if (!perfumes || perfumes.length === 0) return '';
     
     let html = `<div class="fc-section-title">Real Perfumes (${perfumes.length})</div>`;
     
-    perfumes.forEach(perfume => {
+    perfumes.slice(0, 8).forEach(perfume => {
       html += `
         <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
           <img class="fc-real-perfume-image" src="${perfume.image}" 
@@ -1264,7 +1274,7 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL FROM CATALOG WITH MATCHING PRODUCTS =====
+  // ===== SHOW PERFUME DETAIL =====
   window.fcShowPerfumeDetail = function(perfumeId) {
     const perfume = findPerfumeById(perfumeId);
     if (!perfume) return;
@@ -1272,54 +1282,66 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    // FIRST: Find inspired products that match this perfume
-    const inspiredMatches = findInspiredProducts(perfume);
-    
-    // SECOND: If no inspired matches, find products by notes
-    let noteMatches = [];
-    if (inspiredMatches.length === 0) {
-      noteMatches = findProductsByNotes(perfume);
-    }
+    // Find matching products
+    const matches = findInspiredProducts(perfume);
     
     let html = `
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    // Show inspired products if found
-    if (inspiredMatches.length > 0) {
-      const exactMatches = inspiredMatches.filter(m => m.matchType === 'exact');
-      const otherMatches = inspiredMatches.filter(m => m.matchType !== 'exact');
+    // Show matching products
+    if (matches.length > 0) {
+      // Separate exact inspired matches
+      const exactMatches = matches.filter(m => m.matchType === 'exact' || m.matchType === 'partial');
+      const noteMatches = matches.filter(m => m.matchType !== 'exact' && m.matchType !== 'partial');
       
       // Show exact matches first
       if (exactMatches.length > 0) {
-        html += `<div class="fc-subsection-title">Our Version - Inspired by ${perfume.name} (${exactMatches.length})</div>`;
+        html += `<div class="fc-subsection-title">Inspired by ${perfume.name}</div>`;
         html += '<div class="fc-grid-2col">';
-        exactMatches.slice(0, 2).forEach((match, index) => {
-          const badge = index === 0 ? 'Recommended' : 'You might like it';
-          html += renderYourProductCard(match.product, badge, match.matchedNotes);
-        });
+        
+        // First exact match gets "Recommended"
+        if (exactMatches.length >= 1) {
+          html += renderYourProductCard(exactMatches[0].product, 'Recommended', exactMatches[0].matchedNotes);
+        }
+        
+        // Second exact match gets "You might like it"
+        if (exactMatches.length >= 2) {
+          html += renderYourProductCard(exactMatches[1].product, 'You might like it', exactMatches[1].matchedNotes);
+        }
+        
         html += '</div>';
       }
       
-      // Show other matches
-      if (otherMatches.length > 0) {
-        html += `<div class="fc-subsection-title">Related Inspired Versions</div>`;
+      // Show note-based matches
+      if (noteMatches.length > 0) {
+        html += `<div class="fc-subsection-title">Similar Scent Profiles</div>`;
         html += '<div class="fc-grid-2col">';
-        otherMatches.slice(0, 2).forEach((match, index) => {
-          html += renderYourProductCard(match.product, 'Related', match.matchedNotes);
-        });
+        
+        // First note match gets "Recommended"
+        if (noteMatches.length >= 1) {
+          html += renderYourProductCard(noteMatches[0].product, 'Recommended', noteMatches[0].matchedNotes);
+        }
+        
+        // Second note match gets "You might like it"
+        if (noteMatches.length >= 2) {
+          html += renderYourProductCard(noteMatches[1].product, 'You might like it', noteMatches[1].matchedNotes);
+        } else if (noteMatches.length === 1 && exactMatches.length === 0) {
+          // If only one note match and no exact matches, show second card with same product
+          html += renderYourProductCard(noteMatches[0].product, 'You might like it', noteMatches[0].matchedNotes);
+        }
+        
         html += '</div>';
       }
-    } 
-    // Show note-based matches if no inspired matches
-    else if (noteMatches.length > 0) {
-      html += `<div class="fc-subsection-title">Similar Scent Profiles (${noteMatches.length} found)</div>`;
+    } else {
+      // No matches at all, show random products
+      const randomProducts = fcProducts.sort(() => 0.5 - Math.random()).slice(0, 4);
+      html += `<div class="fc-subsection-title">You Might Also Like</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // Show top 4 note matches
-      noteMatches.slice(0, 4).forEach((match, index) => {
-        const badge = index < 2 ? 'Recommended' : 'You might like it';
-        html += renderYourProductCard(match.product, badge, match.matchedNotes);
+      randomProducts.slice(0, 2).forEach((product, index) => {
+        const badge = index === 0 ? 'Recommended' : 'You might like it';
+        html += renderYourProductCard(product, badge, []);
       });
       
       html += '</div>';
@@ -1445,10 +1467,10 @@
   window.fcToggleSearch = function() {
     if (searchPopup.classList.contains('active')) {
       searchPopup.classList.remove('active');
+      autocomplete.classList.remove('show');
     } else {
       searchPopup.classList.add('active');
       searchInput.focus();
-      // Update cart count when popup opens
       fetchCartAndUpdate();
     }
   };
@@ -1458,14 +1480,10 @@
     return fetch('/cart.js')
       .then(response => response.json())
       .then(cart => {
-        // Update all cart count elements
         document.querySelectorAll('.cart-count, [data-cart-count]').forEach(el => {
           if (el) el.textContent = cart.item_count;
         });
-        
-        // Update offer display
         updateOfferDisplay(cart.item_count);
-        
         return cart;
       })
       .catch(error => {
@@ -1474,12 +1492,7 @@
       });
   }
 
-  // ===== UPDATE CART COUNT AND OFFER =====
-  function updateCartCount() {
-    return fetchCartAndUpdate();
-  }
-
-  // ===== ADD TO CART - FIXED TO UPDATE IMMEDIATELY WITHOUT REFRESH =====
+  // ===== ADD TO CART =====
   window.fcAddToCart = function(variantId) {
     const btn = event.target;
     const originalText = btn.innerText;
@@ -1499,25 +1512,15 @@
         quantity: 1 
       })
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       btn.innerText = '✓ Added!';
       btn.style.background = '#2E7D32';
       
-      // Immediately fetch updated cart to get the new count
       fetchCartAndUpdate().then(cart => {
-        console.log('Cart updated immediately:', cart.item_count);
-        
-        // Show success notification with current count
         showNotification(`✓ Added! ${cart.item_count}/3 items for free gift`);
       });
       
-      // Reset button after 2 seconds
       setTimeout(() => {
         btn.innerText = originalText;
         btn.style.background = originalBackground || '#C41E3A';
@@ -1537,18 +1540,16 @@
     });
   };
 
-  // ===== RENDER YOUR PRODUCT CARD WITH MATCHED NOTES =====
+  // ===== RENDER YOUR PRODUCT CARD =====
   function renderYourProductCard(product, badge, matchedNotes = []) {
     const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '';
     
-    // Extract the inspired name for cleaner display
     let displayName = product.title;
     const inspiredMatch = product.title.match(/Inspired by (.*)/i);
     if (inspiredMatch) {
       displayName = inspiredMatch[1];
     }
     
-    // Show matched notes if any
     const notesHint = matchedNotes.length > 0 
       ? `<div style="font-size: 10px; color: #C41E3A; margin-top: 5px;">Matches: ${matchedNotes.slice(0, 3).join(', ')}</div>` 
       : '';
@@ -1661,46 +1662,27 @@
     }
   };
 
-  // ===== PERFORM SEARCH WITH ADVANCED FUZZY MATCHING =====
+  // ===== PERFORM SEARCH =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
+    autocomplete.classList.remove('show');
     
     setTimeout(() => {
-      // Use advanced fuzzy search for catalog
       const catalogResults = advancedFuzzySearch(query);
       
-      // Also search in your products with fuzzy matching
       const yourMatches = fcProducts && fcProducts.length > 0 ? 
         fcProducts.filter(p => {
-          const titleLower = p.title.toLowerCase();
-          const similarity = getSimilarityScore(titleLower, query.toLowerCase());
-          return titleLower.includes(query.toLowerCase()) || similarity > 0.6;
+          const searchableText = getProductSearchableText(p);
+          return searchableText.includes(query.toLowerCase());
         }) : [];
       
       let html = '';
       
-      // Show catalog results
       if (catalogResults.length > 0) {
-        html += `<div class="fc-section-title">Real Perfumes (${catalogResults.length})</div>`;
-        catalogResults.slice(0, 10).forEach(perfume => {
-          html += `
-            <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
-              <img class="fc-real-perfume-image" src="${perfume.image}" 
-                   alt="${perfume.name}" 
-                   loading="lazy"
-                   onerror="this.src='https://via.placeholder.com/60x60?text=Perfume'">
-              <div class="fc-real-perfume-info">
-                <div class="fc-real-perfume-name">${perfume.name}</div>
-                <div class="fc-real-perfume-brand">${perfume.brand}</div>
-                ${perfume.year ? `<div class="fc-real-perfume-year">${perfume.year}</div>` : ''}
-              </div>
-            </div>
-          `;
-        });
+        html += renderCatalogPerfumes(catalogResults, query);
       }
       
-      // Show inspired versions
       if (yourMatches.length > 0) {
         html += `<div class="fc-section-title">Our Inspired Versions (${yourMatches.length})</div>`;
         yourMatches.slice(0, 6).forEach(p => {
@@ -1718,7 +1700,6 @@
         });
       }
       
-      // If no results at all, show "did you mean" suggestions
       if (catalogResults.length === 0 && yourMatches.length === 0) {
         html = '<div class="fc-no-results">No products found. Try different spelling or browse our collections below.</div>';
       }
@@ -1727,9 +1708,13 @@
     }, 300);
   }
 
-  // ===== SEARCH HANDLER WITH DEBOUNCE =====
+  // ===== SEARCH HANDLER =====
   function fcHandleSearch() {
     const query = searchInput.value.trim();
+    
+    // Show autocomplete
+    clearTimeout(autocompleteTimer);
+    autocompleteTimer = setTimeout(() => showAutocomplete(query), 100);
     
     if (query.length < 1) {
       if (currentView !== 'detail') {
@@ -1746,33 +1731,41 @@
     searchTimer = setTimeout(() => performSearch(query), 300);
   }
 
+  // ===== HIDE AUTOCOMPLETE WHEN CLICKING OUTSIDE =====
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !autocomplete.contains(e.target)) {
+      autocomplete.classList.remove('show');
+    }
+  });
+
   // ===== INITIALIZE =====
   document.addEventListener('DOMContentLoaded', function() {
     fcInitProducts();
     combineCatalogs();
     searchInput.addEventListener('keyup', fcHandleSearch);
     
-    // Clear search button
     clearSearch.addEventListener('click', function() {
       searchInput.value = '';
       searchInput.focus();
       steps.style.display = 'block';
       content.innerHTML = '';
       currentView = 'search';
+      autocomplete.classList.remove('show');
     });
     
-    // Initial cart count
     setTimeout(updateCartCount, 500);
     
     document.addEventListener('click', function(event) {
       if (!searchPopup.contains(event.target) && !stickyButton.contains(event.target) && searchPopup.classList.contains('active')) {
         searchPopup.classList.remove('active');
+        autocomplete.classList.remove('show');
       }
     });
     
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && searchPopup.classList.contains('active')) {
         searchPopup.classList.remove('active');
+        autocomplete.classList.remove('show');
       }
     });
     
