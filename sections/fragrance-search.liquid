@@ -10,7 +10,7 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - FIXED: No duplicate products in recommendations
-  - FIXED: "No. 077 - Inspired by No. 5" correctly matches Chanel No 5 as #1 priority
+  - FIXED: "No. 077 - Inspired by No. 5" FORCED to match Chanel No 5
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -935,24 +935,21 @@
     return match ? match[0] : null;
   }
 
-  // ===== SPECIAL RULE FOR NO. 077 / CHANEL NO. 5 MATCH =====
-  function isExplicitNo5Match(productTitle, catalogPerfume) {
-    const productLower = productTitle.toLowerCase();
-    const catalogName = catalogPerfume.name.toLowerCase();
+  // ===== HARDCODED MATCHING FOR NO. 077 AND CHANEL NO. 5 =====
+  function getForcedMatchForChanelNo5() {
+    // Find No. 077 product
+    const no077Product = fcProducts.find(p => 
+      p.title.toLowerCase().includes('077') && 
+      p.title.toLowerCase().includes('inspired by no. 5')
+    );
     
-    // Check if this is No. 077 product
-    const isNo077 = productLower.includes('077') || 
-                    productLower.includes('no. 077') || 
-                    productLower.includes('no 077');
-    
-    // Check if catalog is Chanel No 5
-    const isChanelNo5 = catalogName.includes('chanel') && 
-                       (catalogName.includes('no 5') || 
-                        catalogName.includes('no. 5') || 
-                        catalogName.includes('number 5'));
-    
-    // If product is No. 077 and catalog is Chanel No 5, it's a perfect match
-    return isNo077 && isChanelNo5;
+    return no077Product ? [{
+      product: no077Product,
+      matchScore: 999999,
+      matchReason: 'forced_match',
+      productNumber: '077',
+      catalogNumber: '5'
+    }] : [];
   }
 
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
@@ -962,15 +959,18 @@
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogNumber = getCatalogNumber(catalogName);
     
+    // SPECIAL FORCED MATCH FOR CHANEL NO. 5
+    if (catalogName.includes('chanel') && 
+        (catalogName.includes('no 5') || catalogName.includes('no. 5') || catalogName.includes('number 5'))) {
+      const forcedMatch = getForcedMatchForChanelNo5();
+      if (forcedMatch.length > 0) {
+        return forcedMatch;
+      }
+    }
+    
     const scoredProducts = fcProducts.map(product => {
       let matchScore = 0;
       let matchReason = '';
-      
-      // ===== EXPLICIT RULE FOR NO. 077 AND CHANEL NO. 5 =====
-      if (isExplicitNo5Match(product.title, catalogPerfume)) {
-        matchScore += 100000; // Maximum priority
-        matchReason = 'explicit_no5_match';
-      }
       
       // Check if product has "Inspired by" in title
       const inspiredName = getInspiredName(product.title);
@@ -983,45 +983,31 @@
         if (catalogNumber && productNumber) {
           // No. 077 matches No. 5 (special case)
           if (catalogNumber === '5' && productNumber === '077') {
-            matchScore += 50000;
+            matchScore += 100000;
             matchReason = 'no5_number_match';
           }
           // Regular number match
           else if (catalogNumber === productNumber) {
-            matchScore += 10000;
+            matchScore += 50000;
             matchReason = 'number_match';
           }
         }
         
         // Check for specific number patterns
-        if (catalogName.includes('no 5') && inspiredLower.includes('no 5')) {
-          matchScore += 20000;
+        if (catalogName.includes('no 5') && (product.title.toLowerCase().includes('no 5') || product.title.toLowerCase().includes('no. 5'))) {
+          matchScore += 75000;
           matchReason = 'no5_phrase_match';
-        }
-        if (catalogName.includes('no. 5') && inspiredLower.includes('no. 5')) {
-          matchScore += 20000;
-          matchReason = 'no5_phrase_match';
-        }
-        
-        // Check if product title contains the catalog number
-        if (catalogNumber && product.title.toLowerCase().includes(catalogNumber)) {
-          matchScore += 5000;
-          matchReason = 'number_in_title';
         }
         
         // DIRECT NAME MATCH
         if (inspiredLower === catalogName) {
-          matchScore += 3000;
+          matchScore += 10000;
           matchReason = 'exact_match';
         }
         
         // BRAND MATCH
         if (catalogName.includes('chanel') && inspiredLower.includes('chanel')) {
-          matchScore += 2000;
-          matchReason = 'brand_match';
-        }
-        if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
-          matchScore += 2000;
+          matchScore += 5000;
           matchReason = 'brand_match';
         }
         
@@ -1032,11 +1018,11 @@
         catalogWords.forEach(cWord => {
           inspiredWords.forEach(iWord => {
             if (iWord === cWord) {
-              matchScore += 500;
+              matchScore += 1000;
               matchReason = 'word_match';
             } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
               if (iWord.length > 3 && cWord.length > 3) {
-                matchScore += 200;
+                matchScore += 500;
                 matchReason = 'partial_match';
               }
             }
@@ -1116,12 +1102,12 @@
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    // Show inspired products if found - SHOW DIFFERENT PRODUCTS FOR EACH BADGE
+    // Show inspired products if found
     if (inspiredMatches.length > 0) {
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // First product gets "Recommended" badge (highest match)
+      // First product gets "Recommended" badge
       if (inspiredMatches.length >= 1) {
         html += renderYourProductCard(inspiredMatches[0].product, 'Recommended');
       }
@@ -1146,7 +1132,6 @@
         html += `<div class="fc-subsection-title">You Might Also Like</div>`;
         html += '<div class="fc-grid-2col">';
         
-        // Show two different random products
         if (randomProducts.length >= 1) {
           html += renderYourProductCard(randomProducts[0], 'Recommended');
         }
