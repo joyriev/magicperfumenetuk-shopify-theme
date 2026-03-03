@@ -10,7 +10,7 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - FIXED: No duplicate products in recommendations
-  - **MANUAL HARDCODED FIX: No. 077 always shows for Chanel No 5**
+  - **PRECISE FIX: Looking for EXACT "077" not just any number**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -935,49 +935,62 @@
     return match ? match[0] : null;
   }
 
-  // ===== HARDCODED NO. 077 PRODUCT (SINCE IT'S NOT BEING FOUND AUTOMATICALLY) =====
-  // This is manually created based on your product URL
-  const MANUAL_NO077_PRODUCT = {
-    id: 999999999, // Unique ID to avoid conflicts
-    title: "No. 077 - Inspired by No. 5",
-    image: "https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765699&width=1200",
-    url: "https://magicperfume.co.uk/products/magic-perfume-no-077w",
-    price: 999, // £9.99
-    variant: null // Will be set if found in fcProducts
-  };
-
-  // ===== FIND THE ACTUAL NO. 077 PRODUCT FROM YOUR STORE =====
-  function findNo077Product() {
-    if (!fcProducts || fcProducts.length === 0) return null;
+  // ===== PRECISE FUNCTION TO FIND EXACTLY NO. 077 =====
+  function findExactNo077Product() {
+    if (!fcProducts || fcProducts.length === 0) {
+      console.log('❌ No products loaded');
+      return null;
+    }
     
-    // Try multiple search patterns
-    const found = fcProducts.find(p => 
+    console.log('🔍 Searching for EXACT No. 077 product...');
+    
+    // Method 1: Look for exact "077" in title
+    let found = fcProducts.find(p => 
       p.title.includes('077') || 
       p.title.includes('No. 077') || 
       p.title.includes('No 077') ||
-      p.title.includes('77') ||
-      (p.title.includes('Inspired by') && p.title.includes('No. 5'))
+      p.title.includes('#077')
     );
     
     if (found) {
-      console.log('✅ Found No. 077 product:', found.title);
+      console.log('✅ Found No. 077 by number:', found.title);
       return found;
     }
     
-    console.log('❌ No. 077 product not found in store - using manual hardcoded version');
+    // Method 2: Look for URL containing "077"
+    found = fcProducts.find(p => 
+      p.url && p.url.includes('077')
+    );
     
-    // Try to find ANY product with "077" in URL or title by scanning all products
-    console.log('Scanning all products for "077"...');
-    fcProducts.forEach((p, index) => {
-      if (p.title.includes('077') || p.url.includes('077')) {
-        console.log(`Found potential match at index ${index}:`, p.title);
-        return p;
-      }
-    });
+    if (found) {
+      console.log('✅ Found No. 077 by URL:', found.title);
+      return found;
+    }
     
-    // Return the manual product as fallback
-    return MANUAL_NO077_PRODUCT;
+    // Method 3: Look for "Inspired by No. 5" specifically
+    found = fcProducts.find(p => 
+      p.title.toLowerCase().includes('inspired by no. 5') ||
+      p.title.toLowerCase().includes('inspired by no 5')
+    );
+    
+    if (found) {
+      console.log('✅ Found No. 077 by inspiration:', found.title);
+      return found;
+    }
+    
+    console.log('❌ No. 077 product not found in store');
+    return null;
   }
+
+  // ===== HARDCODED NO. 077 PRODUCT (ULTIMATE FALLBACK) =====
+  const MANUAL_NO077_PRODUCT = {
+    id: 999999999,
+    title: "No. 077 - Inspired by No. 5",
+    image: "https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765699&width=1200",
+    url: "https://magicperfume.co.uk/products/magic-perfume-no-077w",
+    price: 999,
+    variant: null
+  };
 
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
   function findInspiredProducts(catalogPerfume) {
@@ -992,18 +1005,25 @@
       
       console.log('🎯 Chanel No 5 detected - forcing No. 077');
       
-      // Get No. 077 product (either real or manual)
-      const no077Product = findNo077Product();
+      // FIRST: Try to find exact No. 077
+      const exactNo077 = findExactNo077Product();
       
-      if (no077Product) {
-        console.log('✅ Using No. 077 product:', no077Product.title);
-        // Return ONLY No. 077 as the match
+      if (exactNo077) {
+        console.log('✅ Using EXACT No. 077 product:', exactNo077.title);
         return [{
-          product: no077Product,
+          product: exactNo077,
           matchScore: 999999,
-          matchReason: 'forced_match_no5'
+          matchReason: 'exact_no077_match'
         }];
       }
+      
+      // SECOND: If not found, use manual hardcoded product
+      console.log('⚠️ Using MANUAL No. 077 product as fallback');
+      return [{
+        product: MANUAL_NO077_PRODUCT,
+        matchScore: 999999,
+        matchReason: 'manual_no077_match'
+      }];
     }
     
     // Regular matching for all other perfumes
@@ -1129,7 +1149,6 @@
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it');
       } else {
         // If only one match, show a random different product for second slot
-        // But exclude the manual product ID if we're using it
         const excludeId = inspiredMatches[0].product.id;
         const otherProducts = fcProducts.filter(p => p.id !== excludeId);
         
@@ -1137,7 +1156,7 @@
           const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
           html += renderYourProductCard(randomProduct, 'You might like it');
         } else {
-          // If no other products, show a placeholder or nothing
+          // If no other products, show a placeholder
           html += `<div class="fc-product-card"><div class="fc-product-inner" style="opacity:0.5;">No other products</div></div>`;
         }
       }
@@ -1236,19 +1255,13 @@
     ];
     console.log('✓ Loaded', fcProducts.length, 'products');
     
-    // Log all products to see what's available
-    console.log('📋 All products in store:');
+    // Log all products with their numbers
+    console.log('📋 All products with numbers:');
     fcProducts.forEach((p, index) => {
-      console.log(`  ${index + 1}. ${p.title} (ID: ${p.id})`);
+      const numberMatch = p.title.match(/No\.?\s*(\d+)/i);
+      const number = numberMatch ? numberMatch[1] : 'no number';
+      console.log(`  ${index + 1}. ${p.title} (Number: ${number})`);
     });
-    
-    // Specifically look for No. 077
-    const no077 = fcProducts.find(p => p.title.includes('077') || p.url.includes('077'));
-    if (no077) {
-      console.log('🎉 Found No. 077 in products:', no077.title);
-    } else {
-      console.log('⚠️ No. 077 not found in products list');
-    }
   }
 
   // ===== SHOW NOTIFICATION =====
