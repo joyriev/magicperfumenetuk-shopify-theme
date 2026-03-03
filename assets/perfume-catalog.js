@@ -1445,6 +1445,44 @@ window.PerfumeCatalog = {
   
   // ===== ADDITIONAL PERFUMES (Club de Nuit, Cloud, etc) =====
   additional: [
+      {
+    id: "inspired_chance",
+    name: "Inspired by Chance",
+    brand: "Our Version",
+    image: "https://magicperfume.co.uk/cdn/shop/files/chance.png?v=1772096656",
+    top_notes: ["Pineapple", "Quince", "Citrus"],
+    heart_notes: ["Hyacinth", "Jasmine", "Iris"],
+    base_notes: ["Musk", "Patchouli", "Vetiver", "Cedar"],
+    description: "A fresh and vibrant interpretation of the iconic Chance fragrance. This inspired version captures the sparkling, youthful energy of the original with a blend of juicy pineapple and quince, leading to a floral heart of hyacinth and jasmine. The base is warm and sensual with musk and patchouli, creating a scent that is both playful and sophisticated. Perfect for everyday wear.",
+    year: "2024",
+    gender: "Female"
+  },
+  
+  {
+    id: "inspired_mademoiselle",
+    name: "Inspired by Mademoiselle",
+    brand: "Our Version",
+    image: "https://magicperfume.co.uk/cdn/shop/files/Mademoiselle.jpg?v=1772038151",
+    top_notes: ["Orange", "Bergamot", "Grapefruit"],
+    heart_notes: ["Rose", "Jasmine", "Lychee"],
+    base_notes: ["Patchouli", "Vanilla", "Musk", "Vetiver"],
+    description: "A chic and modern interpretation of the classic Mademoiselle fragrance. This inspired version opens with bright citrus notes, leading to a romantic floral heart of rose and jasmine. The base is warm and sophisticated with patchouli and vanilla, creating a scent that is both elegant and contemporary. It's a fragrance for the modern woman who is confident, stylish, and always in fashion.",
+    year: "2024",
+    gender: "Female"
+  },
+  
+  {
+    id: "inspired_allure_sport",
+    name: "Inspired by Allure Homme Sport",
+    brand: "Our Version",
+    image: "https://magicperfume.co.uk/cdn/shop/files/Allure_Homme_Sport.png?v=1772099956",
+    top_notes: ["Mandarin", "Orange", "Sea Notes"],
+    heart_notes: ["Cedar", "Tonka Bean", "Musk"],
+    base_notes: ["Vanilla", "Amber", "Vetiver"],
+    description: "A fresh and energetic interpretation of the iconic Allure Homme Sport. This inspired version captures the invigorating spirit of the original with sparkling citrus and aquatic notes, leading to a warm and sensual heart of cedar and tonka. The base is smooth and addictive with vanilla and amber, creating a scent that is both fresh and sophisticated. Perfect for the active, modern man.",
+    year: "2024",
+    gender: "Male"
+  },
     {
       id: "club_de_nuit_intense_man",
       name: "Club de Nuit Intense Man",
