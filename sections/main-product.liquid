@@ -921,7 +921,11 @@
                   </div>
                 </div>
                 {% when 'reactive_atc' %}
-                  {% render 'reactive-atc' %}
+                  {% if product.tags contains 'bundle' %}
+                    {% render 'bundle-builder' %}
+                  {% else %}
+                    {% render 'reactive-atc' %}
+                  {% endif %}
             {%- endcase -%}
           {%- endfor -%}
           <a href="{{ product.url }}" class="link product__view-details animate-arrow">
