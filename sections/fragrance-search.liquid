@@ -8,12 +8,10 @@
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
   - Shows ALL matching products (no limit)
-  - **UNIVERSAL MATCHING: Matches ANY word, letter, ID, brand, note**
-  - **FUZZY SEARCH: Even with typos or partial words**
-  - **SMART FILTERING: Only shows catalog perfumes that have matching products in your store**
-  - **NO RESULTS: When no matches exist, shows only popular suggestions**
-  - FIXED: Different products shown for each badge
-  - FIXED: Product cards only have clickable buttons, not whole card
+  - **INSPIRED BY MATCHING: Properly matches "Inspired by" text in product titles**
+  - **UNIVERSAL SEARCH: Matches ANY word, letter, ID, brand, note**
+  - **SMART FILTERING: Shows catalog perfumes that have matching inspired products**
+  - **NO RESULTS: When no matches exist, shows popular suggestions**
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -941,7 +939,7 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
-  // ===== FUZZY SEARCH FUNCTION (Levenshtein distance) =====
+  // ===== FUZZY SEARCH FUNCTION =====
   function getLevenshteinDistance(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
@@ -1127,44 +1125,76 @@
     };
   }
 
-  // ===== CHECK IF CATALOG PERFUME HAS ANY MATCHING PRODUCT IN STORE =====
+  // ===== GET INSPIRED PRODUCTS FROM YOUR STORE =====
+  function getInspiredProducts() {
+    if (!fcProducts || fcProducts.length === 0) return [];
+    
+    return fcProducts.filter(p => 
+      p.title.toLowerCase().includes('inspired by')
+    ).map(p => ({
+      product: p,
+      inspiredName: getInspiredName(p.title) || ''
+    }));
+  }
+
+  // ===== CHECK IF CATALOG PERFUME HAS ANY MATCHING INSPIRED PRODUCT - FIXED =====
   function hasMatchingProduct(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0) return false;
     
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogNumber = getCatalogNumber(catalogName);
-    const catalogNotes = getCatalogNotes(catalogPerfume);
     
-    // Check for inspired matches
-    const hasInspiredMatch = fcProducts.some(product => {
-      const inspiredName = getInspiredName(product.title);
-      if (!inspiredName) return false;
+    // Get all inspired products
+    const inspiredProducts = getInspiredProducts();
+    
+    // Check for direct match with "Inspired by" text
+    const hasDirectMatch = inspiredProducts.some(item => {
+      const inspiredName = item.inspiredName.toLowerCase();
       
-      const inspiredLower = inspiredName.toLowerCase();
-      const productNumber = getProductNumber(product.title);
-      
-      // Number match
-      if (catalogNumber && productNumber && catalogNumber === productNumber) {
+      // Check if inspired name contains catalog name or vice versa
+      if (inspiredName.includes(catalogName) || catalogName.includes(inspiredName)) {
         return true;
       }
       
-      // Name match
-      if (inspiredLower === catalogName || 
-          inspiredLower.includes(catalogName) || 
-          catalogName.includes(inspiredLower)) {
+      // Check for word-by-word matches
+      const catalogWords = catalogName.split(/\s+/);
+      const inspiredWords = inspiredName.split(/\s+/);
+      
+      // Count matching words
+      let matchCount = 0;
+      catalogWords.forEach(cWord => {
+        if (cWord.length < 3) return;
+        inspiredWords.forEach(iWord => {
+          if (iWord === cWord || iWord.includes(cWord) || cWord.includes(iWord)) {
+            matchCount++;
+          }
+        });
+      });
+      
+      // If at least 2 words match, consider it a match
+      if (matchCount >= 2) {
         return true;
       }
       
       return false;
     });
     
-    if (hasInspiredMatch) return true;
+    if (hasDirectMatch) return true;
     
-    // Check for note-based matches
+    // Check for number matches
+    const hasNumberMatch = inspiredProducts.some(item => {
+      const productNumber = getProductNumber(item.product.title);
+      return catalogNumber && productNumber && catalogNumber === productNumber;
+    });
+    
+    if (hasNumberMatch) return true;
+    
+    // If still no match, check note similarity (but with lower threshold)
+    const catalogNotes = getCatalogNotes(catalogPerfume);
     const hasNoteMatch = fcProducts.some(product => {
       const productNotes = getProductNotes(product);
       const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
-      return noteMatch.score > 100; // Minimum threshold for note match
+      return noteMatch.score > 30; // Very low threshold
     });
     
     return hasNoteMatch;
@@ -1302,8 +1332,10 @@
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
+    const catalogNumber = getCatalogNumber(catalogName);
     const catalogNotes = getCatalogNotes(catalogPerfume);
     
+    // Special case for Chanel No 5
     if (catalogName.includes('chanel') && 
         (catalogName.includes('no 5') || catalogName.includes('no. 5') || catalogName.includes('number 5'))) {
       
@@ -1330,36 +1362,58 @@
       }];
     }
     
-    const scoredProducts = fcProducts.map(product => {
+    // Get all inspired products
+    const inspiredProducts = getInspiredProducts();
+    
+    const scoredProducts = inspiredProducts.map(item => {
       let matchScore = 0;
       let matchedNotes = [];
       
-      const productNotes = getProductNotes(product);
-      
-      const inspiredName = getInspiredName(product.title);
+      const product = item.product;
+      const inspiredName = item.inspiredName.toLowerCase();
       const productNumber = getProductNumber(product.title);
-      const catalogNumber = getCatalogNumber(catalogName);
       
-      if (inspiredName) {
-        const inspiredLower = inspiredName.toLowerCase();
-        
-        if (catalogNumber && productNumber && catalogNumber === productNumber) {
-          matchScore += 10000;
-        }
-        
-        if (inspiredLower === catalogName) {
-          matchScore += 8000;
-        }
-        
-        if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
-          matchScore += 5000;
-        }
-        
-        if (inspiredLower.includes(catalogName) || catalogName.includes(inspiredLower)) {
-          matchScore += 3000;
-        }
+      // Number match (highest priority)
+      if (catalogNumber && productNumber && catalogNumber === productNumber) {
+        matchScore += 10000;
       }
       
+      // Exact inspired name match
+      if (inspiredName === catalogName) {
+        matchScore += 8000;
+      }
+      
+      // Inspired name contains catalog name
+      if (inspiredName.includes(catalogName)) {
+        matchScore += 5000;
+      }
+      
+      // Catalog name contains inspired name
+      if (catalogName.includes(inspiredName)) {
+        matchScore += 4000;
+      }
+      
+      // Word-by-word matching
+      const catalogWords = catalogName.split(/\s+/).filter(w => w.length > 2);
+      const inspiredWords = inspiredName.split(/\s+/).filter(w => w.length > 2);
+      
+      catalogWords.forEach(cWord => {
+        inspiredWords.forEach(iWord => {
+          if (iWord === cWord) {
+            matchScore += 1000;
+          } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
+            matchScore += 500;
+          } else {
+            const similarity = getSimilarityScore(iWord, cWord);
+            if (similarity > 0.7) {
+              matchScore += similarity * 300;
+            }
+          }
+        });
+      });
+      
+      // Note-based matching
+      const productNotes = getProductNotes(product);
       const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
       matchScore += noteMatch.score;
       matchedNotes = noteMatch.matchedNotes;
@@ -1368,14 +1422,38 @@
         product,
         matchScore,
         matchedNotes,
-        hasInspiredMatch: matchScore > 5000
+        inspiredName: item.inspiredName
       };
     });
     
-    const matches = scoredProducts
-      .filter(item => item.matchScore > 100)
+    // Also check non-inspired products with note matches
+    const nonInspiredProducts = fcProducts.filter(p => 
+      !p.title.toLowerCase().includes('inspired by')
+    ).map(product => {
+      let matchScore = 0;
+      let matchedNotes = [];
+      
+      const productNotes = getProductNotes(product);
+      const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
+      matchScore += noteMatch.score;
+      matchedNotes = noteMatch.matchedNotes;
+      
+      return {
+        product,
+        matchScore,
+        matchedNotes,
+        inspiredName: null
+      };
+    });
+    
+    // Combine and sort
+    const allScored = [...scoredProducts, ...nonInspiredProducts];
+    
+    const matches = allScored
+      .filter(item => item.matchScore > 50)
       .sort((a, b) => b.matchScore - a.matchScore);
     
+    // Remove duplicates by product ID
     const uniqueMatches = [];
     const seenIds = new Set();
     
@@ -1733,7 +1811,6 @@
     
     allPerfumes.forEach(perfume => {
       let score = 0;
-      let matchedTerms = [];
       
       // Create searchable text from ALL possible fields
       const searchableName = (perfume.name || '').toLowerCase();
@@ -1749,9 +1826,6 @@
         ...(perfume.base_notes || [])
       ].map(n => n.toLowerCase()).join(' ');
       
-      // Combine EVERYTHING for comprehensive search
-      const fullSearchableText = `${searchableName} ${searchableBrand} ${searchableId} ${searchableYear} ${searchableGender} ${allNotes}`;
-      
       // ===== SINGLE LETTER SEARCH =====
       if (query.length === 1) {
         const firstLetter = queryLower[0];
@@ -1761,7 +1835,6 @@
         for (let word of nameWords) {
           if (word.length > 0 && word[0] === firstLetter) {
             score += 100;
-            matchedTerms.push('name_starts_with');
             break;
           }
         }
@@ -1769,7 +1842,6 @@
         // Check if brand starts with this letter
         if (searchableBrand.length > 0 && searchableBrand[0] === firstLetter) {
           score += 80;
-          matchedTerms.push('brand_starts_with');
         }
         
         // Check if any note starts with this letter
@@ -1777,116 +1849,51 @@
         for (let word of noteWords) {
           if (word.length > 0 && word[0] === firstLetter) {
             score += 60;
-            matchedTerms.push('note_starts_with');
             break;
           }
-        }
-        
-        // Check if ID starts with this letter
-        if (searchableId.length > 0 && searchableId[0] === firstLetter) {
-          score += 50;
-          matchedTerms.push('id_starts_with');
         }
       } 
       
       // ===== MULTI-WORD SEARCH =====
       else {
-        // Check exact match in name (highest priority)
-        if (searchableName === queryLower) {
-          score += 1000;
-          matchedTerms.push('exact_name_match');
-        }
+        // Exact matches (highest priority)
+        if (searchableName === queryLower) score += 1000;
+        if (searchableBrand === queryLower) score += 900;
+        if (searchableId === queryLower) score += 800;
         
-        // Check exact match in brand
-        if (searchableBrand === queryLower) {
-          score += 900;
-          matchedTerms.push('exact_brand_match');
-        }
+        // Contains matches
+        if (searchableName.includes(queryLower)) score += 500;
+        if (searchableBrand.includes(queryLower)) score += 400;
+        if (allNotes.includes(queryLower)) score += 300;
+        if (searchableId.includes(queryLower)) score += 250;
+        if (searchableYear.includes(queryLower)) score += 200;
         
-        // Check exact match in ID
-        if (searchableId === queryLower) {
-          score += 800;
-          matchedTerms.push('exact_id_match');
-        }
-        
-        // Check if name contains the full query
-        if (searchableName.includes(queryLower)) {
-          score += 500;
-          matchedTerms.push('name_contains');
-        }
-        
-        // Check if brand contains the full query
-        if (searchableBrand.includes(queryLower)) {
-          score += 400;
-          matchedTerms.push('brand_contains');
-        }
-        
-        // Check if notes contain the full query
-        if (allNotes.includes(queryLower)) {
-          score += 300;
-          matchedTerms.push('notes_contain');
-        }
-        
-        // Check if ID contains the full query
-        if (searchableId.includes(queryLower)) {
-          score += 250;
-          matchedTerms.push('id_contains');
-        }
-        
-        // Check if year contains the full query
-        if (searchableYear.includes(queryLower)) {
-          score += 200;
-          matchedTerms.push('year_contains');
-        }
-        
-        // Check each word individually
+        // Word-by-word matches
         queryWords.forEach(word => {
           if (word.length < 2) return;
           
-          // Name contains word
-          if (searchableName.includes(word)) {
-            score += 150;
-            matchedTerms.push(`name_word:${word}`);
-          }
+          if (searchableName.includes(word)) score += 150;
+          if (searchableBrand.includes(word)) score += 120;
+          if (allNotes.includes(word)) score += 100;
+          if (searchableId.includes(word)) score += 80;
           
-          // Brand contains word
-          if (searchableBrand.includes(word)) {
-            score += 120;
-            matchedTerms.push(`brand_word:${word}`);
-          }
-          
-          // Notes contain word
-          if (allNotes.includes(word)) {
-            score += 100;
-            matchedTerms.push(`note_word:${word}`);
-          }
-          
-          // ID contains word
-          if (searchableId.includes(word)) {
-            score += 80;
-            matchedTerms.push(`id_word:${word}`);
-          }
-          
-          // Check if any name word starts with this query word
+          // Check if words start with query
           const nameWords = searchableName.split(/\s+/);
           nameWords.forEach(nameWord => {
             if (nameWord.startsWith(word) && word.length > 2) {
               score += 70;
-              matchedTerms.push(`name_starts_with:${word}`);
             }
           });
           
-          // Check if any note word starts with this query word
           const noteWords = allNotes.split(/\s+/);
           noteWords.forEach(noteWord => {
             if (noteWord.startsWith(word) && word.length > 2) {
               score += 60;
-              matchedTerms.push(`note_starts_with:${word}`);
             }
           });
         });
         
-        // Boost score for multiple word matches
+        // Boost for multiple word matches
         let wordMatchCount = 0;
         queryWords.forEach(word => {
           if (searchableName.includes(word) || 
@@ -1899,21 +1906,17 @@
         
         if (wordMatchCount > 1) {
           score += wordMatchCount * 50;
-          matchedTerms.push(`multiple_words:${wordMatchCount}`);
         }
       }
       
-      // Add to results if score is above threshold
       if (score > 10) {
         results.push({
           ...perfume,
-          matchScore: score,
-          matchedTerms: matchedTerms
+          matchScore: score
         });
       }
     });
     
-    // Sort by score (highest first) then alphabetically
     return results.sort((a, b) => {
       if (b.matchScore !== a.matchScore) {
         return b.matchScore - a.matchScore;
