@@ -976,76 +976,99 @@
     return match ? match[1].trim() : null;
   }
 
-  // ===== FIND PRODUCTS INSPIRED BY THIS CATALOG PERFUME =====
-  function findInspiredProducts(catalogPerfume) {
-    if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
+  // ===== FIND PRODUCTS INSPIRED BY THIS CATALOG PERFUME - FIXED =====
+function findInspiredProducts(catalogPerfume) {
+  if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
+  
+  const catalogName = catalogPerfume.name.toLowerCase(); // "musc noir"
+  const catalogBrand = catalogPerfume.brand.toLowerCase(); // "narciso rodriguez"
+  const catalogNumber = (catalogPerfume.name.match(/\d+/) || [])[0];
+  
+  // Get all words from catalog name for flexible matching
+  const catalogWords = catalogName.split(/\s+/).filter(w => w.length > 2);
+  
+  const matches = [];
+  
+  fcProducts.forEach(product => {
+    const productTitle = product.title.toLowerCase(); // "no. 457 - inspired by musc noir for her"
+    let score = 0;
+    let matchReason = '';
     
-    const catalogName = catalogPerfume.name.toLowerCase();
-    const catalogBrand = catalogPerfume.brand.toLowerCase();
-    const catalogNumber = (catalogPerfume.name.match(/\d+/) || [])[0];
-    
-    const matches = [];
-    
-    fcProducts.forEach(product => {
-      const inspiredName = getInspiredName(product.title);
-      if (!inspiredName) return;
+    // ===== METHOD 1: EXTRACT "INSPIRED BY" TEXT =====
+    const inspiredMatch = product.title.match(/Inspired by (.*)/i);
+    if (inspiredMatch) {
+      const inspiredName = inspiredMatch[1].toLowerCase(); // "musc noir for her"
       
-      const inspiredLower = inspiredName.toLowerCase();
-      let score = 0;
-      let matchReason = '';
-      
-      // Check if inspired name contains catalog name
-      if (inspiredLower.includes(catalogName) || catalogName.includes(inspiredLower)) {
-        score += 100;
-        matchReason = 'name_match';
+      // Check if catalog name is contained in inspired name
+      if (inspiredName.includes(catalogName)) {
+        score += 100; // "musc noir" is in "musc noir for her"
+        matchReason = 'catalog_in_inspired';
       }
       
-      // Check for number match (e.g., "5" in "No. 5")
-      if (catalogNumber) {
-        if (product.title.toLowerCase().includes(catalogNumber)) {
-          score += 80;
-          matchReason = 'number_match';
-        }
+      // Check if inspired name starts with catalog name
+      if (inspiredName.startsWith(catalogName)) {
+        score += 80;
+        matchReason = 'starts_with';
       }
       
-      // Check if inspired name contains brand
-      if (inspiredLower.includes(catalogBrand) || catalogBrand.includes(inspiredLower)) {
-        score += 60;
-        matchReason = 'brand_match';
-      }
-      
-      // Check individual words
-      const catalogWords = catalogName.split(/\s+/);
-      const inspiredWords = inspiredLower.split(/\s+/);
-      
+      // Check word-by-word matching
+      const inspiredWords = inspiredName.split(/\s+/);
       catalogWords.forEach(cWord => {
-        if (cWord.length < 2) return;
         inspiredWords.forEach(iWord => {
           if (iWord === cWord) {
-            score += 50;
+            score += 50; // exact word match
             matchReason = 'word_match';
           } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
             if (iWord.length > 2 && cWord.length > 2) {
-              score += 30;
+              score += 30; // partial word match
               matchReason = 'partial_match';
             }
           }
         });
       });
-      
-      if (score > 20) {
-        matches.push({
-          product,
-          matchScore: score,
-          matchReason,
-          matchedNotes: []
-        });
+    }
+    
+    // ===== METHOD 2: CHECK PRODUCT TITLE DIRECTLY =====
+    // Check if product title contains catalog name
+    if (productTitle.includes(catalogName)) {
+      score += 60;
+      matchReason = 'title_contains';
+    }
+    
+    // Check if product title contains catalog words
+    catalogWords.forEach(cWord => {
+      if (productTitle.includes(cWord)) {
+        score += 40;
+        matchReason = 'title_word';
       }
     });
     
-    return matches.sort((a, b) => b.matchScore - a.matchScore);
-  }
-
+    // ===== METHOD 3: NUMBER MATCHING =====
+    if (catalogNumber) {
+      if (productTitle.includes(catalogNumber)) {
+        score += 30;
+        matchReason = 'number_match';
+      }
+    }
+    
+    // ===== METHOD 4: BRAND MATCHING =====
+    if (catalogBrand && productTitle.includes(catalogBrand)) {
+      score += 20;
+      matchReason = 'brand_match';
+    }
+    
+    if (score > 20) {
+      matches.push({
+        product,
+        matchScore: score,
+        matchReason
+      });
+    }
+  });
+  
+  // Sort by score (highest first)
+  return matches.sort((a, b) => b.matchScore - a.matchScore);
+}
   // ===== RENDER CATALOG PERFUME LIST =====
   function renderCatalogPerfumes(perfumes, query) {
     if (!perfumes || perfumes.length === 0) return '';
