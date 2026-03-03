@@ -1611,72 +1611,7 @@ window.PerfumeCatalog = {
       description: "A bold and passionate fruity-floral from the legendary house of Creed. Carmina opens with a stunning, luscious cherry note, immediately setting a tone of vibrant intensity. This is wrapped in a bouquet of Bulgarian rose and peony, sitting on a luxurious base of soft leather and warm vanilla. It's a modern, daring, and utterly feminine fragrance with a rock-and-roll edge.",
       year: "2021",
       gender: "Female"
-    } // ===== ADD TO CHANEL SECTION =====
-  {
-    id: "chanel_bleu",
-    name: "Bleu de Chanel",
-    brand: "Chanel",
-    image: "https://d3mcqtyhv5hy6w.cloudfront.net/perfumes/67b90220a68ec07c46f57e69_clipped.webp",
-    top_notes: ["Grapefruit", "Lemon", "Mint", "Pink Pepper"],
-    heart_notes: ["Ginger", "Nutmeg", "Jasmine"],
-    base_notes: ["Incense", "Vetiver", "Cedar", "Sandalwood"],
-    description: "A timeless and sophisticated fragrance for men that embodies the spirit of freedom. Bleu de Chanel opens with a fresh and vibrant burst of citrus and mint, leading to a spicy heart of ginger and nutmeg. The base is deep and sensual with incense and woody notes, creating a scent that is both classic and contemporary. It's a fragrance for the man who is confident, elegant, and unafraid to chart his own course.",
-    year: "2010",
-    gender: "Male"
-  },
-  
-  {
-    id: "chanel_no5_edp",
-    name: "Chanel No 5 Eau de Parfum",
-    brand: "Chanel",
-    image: "https://d3mcqtyhv5hy6w.cloudfront.net/perfumes/67b902c7a68ec07c46f5824e_clipped.webp",
-    top_notes: ["Aldehydes", "Ylang-Ylang", "Neroli", "Bergamot"],
-    heart_notes: ["Iris", "Jasmine", "Rose", "Lily of the Valley"],
-    base_notes: ["Vanilla", "Amber", "Sandalwood", "Vetiver", "Musk"],
-    description: "The most legendary fragrance in the world, Chanel No 5 is an abstract floral aldehyde that revolutionized perfumery. Created in 1921 by Ernest Beaux, it opens with a burst of sparkling aldehydes that give way to a rich bouquet of jasmine and rose. The base is warm and sensual with vanilla and amber, creating a scent that is both timeless and modern. It's a fragrance for the woman who is confident, elegant, and unforgettable.",
-    year: "1921",
-    gender: "Female"
-  },
-
-// ===== ADD TO ADDITIONAL SECTION (Inspired fragrances) =====
-  {
-    id: "inspired_chance",
-    name: "Inspired by Chance",
-    brand: "Our Version",
-    image: "https://magicperfume.co.uk/cdn/shop/files/chance.png?v=1772096656",
-    top_notes: ["Pineapple", "Quince", "Citrus"],
-    heart_notes: ["Hyacinth", "Jasmine", "Iris"],
-    base_notes: ["Musk", "Patchouli", "Vetiver", "Cedar"],
-    description: "A fresh and vibrant interpretation of the iconic Chance fragrance. This inspired version captures the sparkling, youthful energy of the original with a blend of juicy pineapple and quince, leading to a floral heart of hyacinth and jasmine. The base is warm and sensual with musk and patchouli, creating a scent that is both playful and sophisticated. Perfect for everyday wear.",
-    year: "2024",
-    gender: "Female"
-  },
-  
-  {
-    id: "inspired_mademoiselle",
-    name: "Inspired by Mademoiselle",
-    brand: "Our Version",
-    image: "https://magicperfume.co.uk/cdn/shop/files/Mademoiselle.jpg?v=1772038151",
-    top_notes: ["Orange", "Bergamot", "Grapefruit"],
-    heart_notes: ["Rose", "Jasmine", "Lychee"],
-    base_notes: ["Patchouli", "Vanilla", "Musk", "Vetiver"],
-    description: "A chic and modern interpretation of the classic Mademoiselle fragrance. This inspired version opens with bright citrus notes, leading to a romantic floral heart of rose and jasmine. The base is warm and sophisticated with patchouli and vanilla, creating a scent that is both elegant and contemporary. It's a fragrance for the modern woman who is confident, stylish, and always in fashion.",
-    year: "2024",
-    gender: "Female"
-  },
-  
-  {
-    id: "inspired_allure_sport",
-    name: "Inspired by Allure Homme Sport",
-    brand: "Our Version",
-    image: "https://magicperfume.co.uk/cdn/shop/files/Allure_Homme_Sport.png?v=1772099956",
-    top_notes: ["Mandarin", "Orange", "Sea Notes"],
-    heart_notes: ["Cedar", "Tonka Bean", "Musk"],
-    base_notes: ["Vanilla", "Amber", "Vetiver"],
-    description: "A fresh and energetic interpretation of the iconic Allure Homme Sport. This inspired version captures the invigorating spirit of the original with sparkling citrus and aquatic notes, leading to a warm and sensual heart of cedar and tonka. The base is smooth and addictive with vanilla and amber, creating a scent that is both fresh and sophisticated. Perfect for the active, modern man.",
-    year: "2024",
-    gender: "Male"
-  }
+    }
   ] ,
 
   // ===== ENHANCED SEARCH FUNCTION =====
