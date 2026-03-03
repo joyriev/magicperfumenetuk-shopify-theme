@@ -4,6 +4,26 @@
 {% assign bundle_ml = dropdown_ml | append: "ml" %}
 {% assign selected_variant = product.selected_or_first_available_variant %}
 
+{% if product.metafields.custom.short_description != blank %}
+  <div class="flex items-center gap-1 font-normal text-black leading-[normal]">
+    <span class="cheaper_than_text" style="font-size: 14px; line-height: normal;">
+      {{ product.metafields.custom.short_description | metafield_text }}
+    </span>
+  </div>
+{% endif %}
+
+<div role="status">
+  <div class="flex items-center gap-3 text-2xl mb-1">
+    <span class="text-black font-bold text-[28px] product-price">
+      {{ product.price | money }}
+      <span class="line-through text-xl">{{ product.compare_at_price | money }}</span>
+    </span>
+  </div>
+  <div class="text-lg font-semibold text-black leading-normal">
+    Works out at just {{ product.price | divided_by: product_count | money }} / bottle
+  </div>
+</div>
+
 <style>
   [x-cloak] {
     display: none !important;
@@ -15,7 +35,7 @@
   assign next_bundle = product.metafields.custom.next_bundle
   if next_bundle != blank
     assign next_bundle_product = next_bundle.value
-    assign next_size = next_bundle_product.metafields.custom.select_bundle_dropdown_ml
+    assign next_size = next_bundle_product.metafields.custom.bundle_bottle_size
     assign price_difference = next_bundle_product.price | minus: product.price | money
   endif
 -%}

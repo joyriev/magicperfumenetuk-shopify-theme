@@ -1408,6 +1408,10 @@
     line-height: 16px
 }
 
+.text-\[28px\] {
+    font-size: 28px
+}
+
 .font-\[700\] {
     font-weight: 700
 }
@@ -1470,6 +1474,14 @@
 
 .leading-tight {
     line-height: 1.25
+}
+
+.leading-\[normal\] {
+    line-height: normal
+}
+
+.leading-normal {
+    line-height: 1.5
 }
 
 .\!tracking-normal {
