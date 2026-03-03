@@ -8,13 +8,13 @@
   - Cart stays open to let users add more items
   - Badges: "Recommended" and "You might like it"
   - Shows ALL matching products (no limit)
-  - Fuzzy search for misspellings
+  - ADVANCED FUZZY SEARCH: Matches even with typos and partial inputs
   - Fixed cart counting for offer tracking
   - ENLARGED product images as requested (like reference)
   - FIXED: Cart updates immediately without refresh
   - ADDED: Intelligent inspired product matching
-  - ADDED: Shows inspired versions when searching real perfumes
-  - ADDED: Exact matching between catalog and "Inspired by" products
+  - ADDED: Fallback note-based matching when no inspired match
+  - ADDED: Shows products with similar scent profiles
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -867,7 +867,7 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
-  // ===== FUZZY SEARCH FUNCTION (Levenshtein distance) =====
+  // ===== ADVANCED FUZZY SEARCH FUNCTION (Levenshtein distance) =====
   function getLevenshteinDistance(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
@@ -901,34 +901,59 @@
     return 1 - (distance / maxLength);
   }
 
-  // ===== ENHANCED SEARCH WITH FUZZY MATCHING =====
-  function searchCatalog(query) {
+  // ===== GET BEST FUZZY MATCH FOR A WORD =====
+  function getBestFuzzyMatch(word, wordList) {
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    wordList.forEach(targetWord => {
+      const score = getSimilarityScore(word, targetWord);
+      if (score > bestScore && score > 0.5) { // Threshold for fuzzy match
+        bestScore = score;
+        bestMatch = targetWord;
+      }
+    });
+    
+    return { match: bestMatch, score: bestScore };
+  }
+
+  // ===== ADVANCED SEARCH WITH FUZZY MATCHING FOR EVERY INPUT =====
+  function advancedFuzzySearch(query) {
     if (allPerfumes.length === 0 || query.length < 1) return [];
     
     const results = [];
     const queryLower = query.toLowerCase().trim();
+    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
     
-    // Common misspellings mapping for better fuzzy matching
+    // Common misspellings and variations
     const commonMisspellings = {
       'savauge': 'sauvage',
       'savge': 'sauvage',
       'savag': 'sauvage',
+      'savg': 'sauvage',
+      'sav': 'sauvage',
       'chanle': 'chanel',
       'channel': 'chanel',
+      'chan': 'chanel',
       'avanus': 'aventus',
       'adventus': 'aventus',
+      'avent': 'aventus',
       'cread': 'creed',
+      'cre': 'creed',
       'tom four': 'tom ford',
+      'tom': 'tom ford',
       'dior home': 'dior homme',
+      'dior': 'dior',
       'jadore': "j'adore",
       'j ador': "j'adore",
+      'jador': "j'adore",
       'baccarat': 'baccarat rouge',
       'rouge': 'baccarat rouge',
       'ysl': 'yves saint laurent',
-      'yves saint laurence': 'yves saint laurent'
+      'yves': 'yves saint laurent'
     };
     
-    // Check if query matches a common misspelling
+    // Check if query matches common misspellings
     let correctedQuery = queryLower;
     for (let [misspelling, correct] of Object.entries(commonMisspellings)) {
       if (queryLower.includes(misspelling)) {
@@ -937,53 +962,109 @@
       }
     }
     
+    // Build list of all searchable words from all perfumes
+    const allSearchableWords = new Set();
     allPerfumes.forEach(perfume => {
       const perfumeNameLower = perfume.name.toLowerCase();
       const perfumeBrandLower = perfume.brand.toLowerCase();
-      
-      // Get all notes for searching
       const allNotes = [
         ...(perfume.top_notes || []),
         ...(perfume.heart_notes || []),
         ...(perfume.base_notes || [])
       ].map(n => n.toLowerCase());
       
-      let score = 0;
-      
-      // EXACT NAME MATCH (highest priority)
-      if (perfumeNameLower === queryLower || perfumeNameLower === correctedQuery) {
-        score += 1000;
-      }
-      // NAME STARTS WITH QUERY
-      else if (perfumeNameLower.startsWith(queryLower) || perfumeNameLower.startsWith(correctedQuery)) {
-        score += 500;
-      }
-      // NAME CONTAINS QUERY
-      else if (perfumeNameLower.includes(queryLower) || perfumeNameLower.includes(correctedQuery)) {
-        score += 300;
-      }
-      // BRAND MATCH
-      else if (perfumeBrandLower.includes(queryLower) || perfumeBrandLower.includes(correctedQuery)) {
-        score += 200;
-      }
-      // NOTE MATCH (any note contains the query)
-      else if (allNotes.some(note => note.includes(queryLower) || note.includes(correctedQuery))) {
-        score += 150;
-      }
-      // FUZZY NAME MATCH (for typos)
-      else {
-        const nameSimilarity = getSimilarityScore(perfumeNameLower, queryLower);
-        if (nameSimilarity > 0.7) {
-          score += nameSimilarity * 100;
+      // Add all words to set
+      perfumeNameLower.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
+      perfumeBrandLower.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
+      allNotes.forEach(note => {
+        note.split(/\s+/).forEach(w => w.length > 2 && allSearchableWords.add(w));
+      });
+    });
+    
+    // For single letter queries, show all that start with that letter
+    if (query.length === 1) {
+      const firstLetter = queryLower[0];
+      allPerfumes.forEach(perfume => {
+        const perfumeNameLower = perfume.name.toLowerCase();
+        const perfumeBrandLower = perfume.brand.toLowerCase();
+        
+        if (perfumeNameLower[0] === firstLetter || 
+            perfumeBrandLower[0] === firstLetter ||
+            perfumeNameLower.split(' ').some(word => word[0] === firstLetter)) {
+          results.push({ ...perfume, matchScore: 100 });
         }
+      });
+      return results;
+    }
+    
+    // For multi-word queries, do fuzzy matching on each word
+    allPerfumes.forEach(perfume => {
+      const perfumeNameLower = perfume.name.toLowerCase();
+      const perfumeBrandLower = perfume.brand.toLowerCase();
+      
+      // Get all notes as strings
+      const allNotes = [
+        ...(perfume.top_notes || []),
+        ...(perfume.heart_notes || []),
+        ...(perfume.base_notes || [])
+      ].map(n => n.toLowerCase());
+      
+      const allNotesStr = allNotes.join(' ');
+      const searchableText = `${perfumeNameLower} ${perfumeBrandLower} ${perfume.year} ${allNotesStr}`.toLowerCase();
+      const searchableWords = searchableText.split(/\s+/).filter(w => w.length > 1);
+      
+      let totalScore = 0;
+      let matchedWords = [];
+      
+      // Check each query word against all searchable words
+      queryWords.forEach(queryWord => {
+        if (queryWord.length < 2) return;
+        
+        // First check for exact match
+        if (searchableText.includes(queryWord)) {
+          totalScore += 100;
+          matchedWords.push(queryWord);
+          return;
+        }
+        
+        // Then check for corrected query match
+        if (correctedQuery !== queryLower && searchableText.includes(correctedQuery)) {
+          totalScore += 80;
+          matchedWords.push(correctedQuery);
+          return;
+        }
+        
+        // Then try fuzzy matching
+        const bestMatch = getBestFuzzyMatch(queryWord, searchableWords);
+        if (bestMatch.match) {
+          totalScore += bestMatch.score * 70;
+          matchedWords.push(bestMatch.match);
+        }
+        
+        // Check if word starts with query (for partial typing)
+        searchableWords.forEach(word => {
+          if (word.startsWith(queryWord)) {
+            totalScore += 50;
+            matchedWords.push(word);
+          }
+        });
+      });
+      
+      // Bonus for brand match
+      if (perfumeBrandLower.includes(queryLower) || queryLower.includes(perfumeBrandLower)) {
+        totalScore += 150;
       }
       
-      if (score > 0) {
-        results.push({ ...perfume, matchScore: score });
+      // Bonus for multiple word matches
+      const uniqueMatched = [...new Set(matchedWords)];
+      totalScore += uniqueMatched.length * 20;
+      
+      if (totalScore > 30) { // Low threshold to catch many results
+        results.push({ ...perfume, matchScore: totalScore });
       }
     });
     
-    // Sort by relevance score (higher first) - NO LIMIT, return ALL matches
+    // Sort by relevance score and return ALL matches
     return results.sort((a, b) => b.matchScore - a.matchScore);
   }
 
@@ -998,13 +1079,6 @@
     
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogBrand = catalogPerfume.brand.toLowerCase();
-    
-    // Get all catalog notes
-    const catalogNotes = [
-      ...(catalogPerfume.top_notes || []),
-      ...(catalogPerfume.heart_notes || []),
-      ...(catalogPerfume.base_notes || [])
-    ].map(n => n.toLowerCase().trim());
     
     const scoredProducts = fcProducts.map(product => {
       const productTitle = product.title.toLowerCase();
@@ -1028,45 +1102,27 @@
             matchScore += 500;
             matchType = 'partial';
           }
+          // FUZZY MATCH: Similar names
+          else {
+            const similarity = getSimilarityScore(inspiredName, catalogName);
+            if (similarity > 0.7) {
+              matchScore += similarity * 300;
+              matchType = 'fuzzy';
+            }
+          }
           // BRAND MATCH: Inspired name contains brand
-          else if (inspiredName.includes(catalogBrand) || catalogBrand.includes(inspiredName)) {
-            matchScore += 300;
-            matchType = 'brand';
+          if (inspiredName.includes(catalogBrand) || catalogBrand.includes(inspiredName)) {
+            matchScore += 200;
+            matchType = matchType || 'brand';
           }
         }
-      }
-      
-      // If no title match, try note matching
-      if (matchScore === 0) {
-        // Get product notes
-        const productTopNotes = (product.topNotes || '').toLowerCase().split(',').map(n => n.trim());
-        const productMiddleNotes = (product.middleNotes || '').toLowerCase().split(',').map(n => n.trim());
-        const productBaseNotes = (product.baseNotes || '').toLowerCase().split(',').map(n => n.trim());
-        const productAllNotes = [...productTopNotes, ...productMiddleNotes, ...productBaseNotes];
-        
-        // Check each catalog note against product notes
-        catalogNotes.forEach(catalogNote => {
-          productAllNotes.forEach(productNote => {
-            if (productNote === catalogNote) {
-              matchScore += 50;
-              matchedNotes.push(catalogNote);
-              matchType = 'notes';
-            } else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-              if (productNote.length > 3 && catalogNote.length > 3) {
-                matchScore += 25;
-                matchedNotes.push(catalogNote);
-                matchType = 'notes';
-              }
-            }
-          });
-        });
       }
       
       return {
         product,
         matchScore,
         matchType,
-        matchedNotes: [...new Set(matchedNotes)]
+        matchedNotes
       };
     });
     
@@ -1076,41 +1132,111 @@
       .sort((a, b) => b.matchScore - a.matchScore);
   }
 
-  // ===== FIND RELATED PRODUCTS BY NOTES =====
-  function findRelatedByNotes(catalogPerfume) {
+  // ===== FIND PRODUCTS BY NOTE MATCHING (FALLBACK) =====
+  function findProductsByNotes(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
+    // Get all notes from catalog perfume
     const catalogNotes = [
       ...(catalogPerfume.top_notes || []),
       ...(catalogPerfume.heart_notes || []),
       ...(catalogPerfume.base_notes || [])
     ].map(n => n.toLowerCase().trim());
     
+    // Get fragrance family from description
+    const catalogDesc = (catalogPerfume.description || '').toLowerCase();
+    
+    // Score each product based on note similarity
     const scoredProducts = fcProducts.map(product => {
-      const productTopNotes = (product.topNotes || '').toLowerCase().split(',').map(n => n.trim());
-      const productMiddleNotes = (product.middleNotes || '').toLowerCase().split(',').map(n => n.trim());
-      const productBaseNotes = (product.baseNotes || '').toLowerCase().split(',').map(n => n.trim());
+      // Get product notes from metafields
+      const productTopNotes = (product.topNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
+      const productMiddleNotes = (product.middleNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
+      const productBaseNotes = (product.baseNotes || '').toLowerCase().split(',').map(n => n.trim()).filter(n => n);
       const productAllNotes = [...productTopNotes, ...productMiddleNotes, ...productBaseNotes];
       
-      let score = 0;
+      let matchScore = 0;
+      let matchedNotes = [];
       
+      // Check each catalog note against product notes
       catalogNotes.forEach(catalogNote => {
         productAllNotes.forEach(productNote => {
-          if (productNote === catalogNote) score += 30;
+          // Exact note match
+          if (productNote === catalogNote) {
+            matchScore += 50;
+            matchedNotes.push(catalogNote);
+          }
+          // Partial match (e.g., "vanilla" matches "madagascar vanilla")
           else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-            if (productNote.length > 3 && catalogNote.length > 3) score += 15;
+            if (productNote.length > 3 && catalogNote.length > 3) {
+              matchScore += 25;
+              matchedNotes.push(catalogNote);
+            }
+          }
+          // Fuzzy match for similar notes
+          else {
+            const similarity = getSimilarityScore(productNote, catalogNote);
+            if (similarity > 0.8) {
+              matchScore += similarity * 20;
+              matchedNotes.push(catalogNote);
+            }
           }
         });
       });
       
-      return { product, score };
+      // Bonus for matching fragrance families
+      const productDesc = (product.description || '').toLowerCase();
+      const productTitle = (product.title || '').toLowerCase();
+      
+      // Define fragrance families with keywords
+      const families = [
+        { name: 'floral', keywords: ['floral', 'flower', 'rose', 'jasmine', 'lavender', 'iris', 'peony'] },
+        { name: 'citrus', keywords: ['citrus', 'orange', 'lemon', 'bergamot', 'grapefruit', 'mandarin'] },
+        { name: 'woody', keywords: ['woody', 'wood', 'cedar', 'sandalwood', 'vetiver', 'oakmoss', 'patchouli'] },
+        { name: 'oriental', keywords: ['oriental', 'amber', 'vanilla', 'tonka', 'spice', 'incense', 'resin'] },
+        { name: 'fresh', keywords: ['fresh', 'aquatic', 'ocean', 'sea', 'water', 'green', 'clean'] },
+        { name: 'sweet', keywords: ['sweet', 'gourmand', 'vanilla', 'caramel', 'honey', 'praline', 'candy'] },
+        { name: 'spicy', keywords: ['spicy', 'pepper', 'cinnamon', 'clove', 'cardamom', 'saffron', 'ginger'] }
+      ];
+      
+      families.forEach(family => {
+        // Check if catalog perfume belongs to this family
+        const catalogInFamily = family.keywords.some(keyword => 
+          catalogDesc.includes(keyword) || catalogNotes.some(note => note.includes(keyword))
+        );
+        
+        // Check if product belongs to this family
+        const productInFamily = family.keywords.some(keyword => 
+          productDesc.includes(keyword) || productTitle.includes(keyword) || 
+          productAllNotes.some(note => note.includes(keyword))
+        );
+        
+        if (catalogInFamily && productInFamily) {
+          matchScore += 30;
+        }
+      });
+      
+      // Bonus for gender match
+      if (catalogPerfume.gender && product.gender) {
+        const catalogGender = catalogPerfume.gender.toLowerCase();
+        const productGender = product.gender.toLowerCase();
+        if (catalogGender === productGender) {
+          matchScore += 20;
+        } else if (catalogGender === 'unisex' || productGender === 'unisex') {
+          matchScore += 10;
+        }
+      }
+      
+      return {
+        product,
+        matchScore,
+        matchedNotes: [...new Set(matchedNotes)] // Unique matched notes
+      };
     });
     
+    // Filter products with at least some match and sort by score
     return scoredProducts
-      .filter(item => item.score > 20)
-      .sort((a, b) => b.score - a.score)
-      .map(item => item.product)
-      .slice(0, 4);
+      .filter(item => item.matchScore > 20)
+      .sort((a, b) => b.matchScore - a.matchScore);
   }
 
   // ===== RENDER CATALOG PERFUME LIST - SHOW ALL RESULTS =====
@@ -1138,7 +1264,7 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL FROM CATALOG WITH MATCHING INSPIRED PRODUCTS =====
+  // ===== SHOW PERFUME DETAIL FROM CATALOG WITH MATCHING PRODUCTS =====
   window.fcShowPerfumeDetail = function(perfumeId) {
     const perfume = findPerfumeById(perfumeId);
     if (!perfume) return;
@@ -1146,8 +1272,14 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    // Find inspired products that match this perfume
+    // FIRST: Find inspired products that match this perfume
     const inspiredMatches = findInspiredProducts(perfume);
+    
+    // SECOND: If no inspired matches, find products by notes
+    let noteMatches = [];
+    if (inspiredMatches.length === 0) {
+      noteMatches = findProductsByNotes(perfume);
+    }
     
     let html = `
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
@@ -1169,27 +1301,28 @@
         html += '</div>';
       }
       
-      // Show other matches by notes
+      // Show other matches
       if (otherMatches.length > 0) {
-        html += `<div class="fc-subsection-title">Similar Scent Profiles</div>`;
+        html += `<div class="fc-subsection-title">Related Inspired Versions</div>`;
         html += '<div class="fc-grid-2col">';
         otherMatches.slice(0, 2).forEach((match, index) => {
-          html += renderYourProductCard(match.product, 'Similar Notes', match.matchedNotes);
+          html += renderYourProductCard(match.product, 'Related', match.matchedNotes);
         });
         html += '</div>';
       }
-    } else {
-      // No inspired matches found, show related by notes
-      const relatedByNotes = findRelatedByNotes(perfume);
-      if (relatedByNotes.length > 0) {
-        html += `<div class="fc-subsection-title">You Might Also Like</div>`;
-        html += '<div class="fc-grid-2col">';
-        relatedByNotes.slice(0, 2).forEach((product, index) => {
-          const badge = index === 0 ? 'Recommended' : 'You might like it';
-          html += renderYourProductCard(product, badge, []);
-        });
-        html += '</div>';
-      }
+    } 
+    // Show note-based matches if no inspired matches
+    else if (noteMatches.length > 0) {
+      html += `<div class="fc-subsection-title">Similar Scent Profiles (${noteMatches.length} found)</div>`;
+      html += '<div class="fc-grid-2col">';
+      
+      // Show top 4 note matches
+      noteMatches.slice(0, 4).forEach((match, index) => {
+        const badge = index < 2 ? 'Recommended' : 'You might like it';
+        html += renderYourProductCard(match.product, badge, match.matchedNotes);
+      });
+      
+      html += '</div>';
     }
     
     // Show catalog perfume details
@@ -1528,27 +1661,43 @@
     }
   };
 
-  // ===== PERFORM SEARCH =====
+  // ===== PERFORM SEARCH WITH ADVANCED FUZZY MATCHING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      // Search in our combined catalog - returns ALL matches, no limit
-      const catalogResults = searchCatalog(query);
+      // Use advanced fuzzy search for catalog
+      const catalogResults = advancedFuzzySearch(query);
       
-      // Search in your products (inspired versions)
+      // Also search in your products with fuzzy matching
       const yourMatches = fcProducts && fcProducts.length > 0 ? 
         fcProducts.filter(p => {
           const titleLower = p.title.toLowerCase();
-          return titleLower.includes(query.toLowerCase());
+          const similarity = getSimilarityScore(titleLower, query.toLowerCase());
+          return titleLower.includes(query.toLowerCase()) || similarity > 0.6;
         }) : [];
       
       let html = '';
       
       // Show catalog results
       if (catalogResults.length > 0) {
-        html += renderCatalogPerfumes(catalogResults, query);
+        html += `<div class="fc-section-title">Real Perfumes (${catalogResults.length})</div>`;
+        catalogResults.slice(0, 10).forEach(perfume => {
+          html += `
+            <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
+              <img class="fc-real-perfume-image" src="${perfume.image}" 
+                   alt="${perfume.name}" 
+                   loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/60x60?text=Perfume'">
+              <div class="fc-real-perfume-info">
+                <div class="fc-real-perfume-name">${perfume.name}</div>
+                <div class="fc-real-perfume-brand">${perfume.brand}</div>
+                ${perfume.year ? `<div class="fc-real-perfume-year">${perfume.year}</div>` : ''}
+              </div>
+            </div>
+          `;
+        });
       }
       
       // Show inspired versions
@@ -1556,7 +1705,6 @@
         html += `<div class="fc-section-title">Our Inspired Versions (${yourMatches.length})</div>`;
         yourMatches.slice(0, 6).forEach(p => {
           const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '';
-          const inspiredName = p.title.replace(/Inspired by /i, '').trim();
           html += `
             <div class="fc-real-perfume-item" onclick="window.fcShowYourProductDetail(${p.id})">
               <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
@@ -1570,9 +1718,9 @@
         });
       }
       
-      // If no results at all
+      // If no results at all, show "did you mean" suggestions
       if (catalogResults.length === 0 && yourMatches.length === 0) {
-        html = '<div class="fc-no-results">No products found</div>';
+        html = '<div class="fc-no-results">No products found. Try different spelling or browse our collections below.</div>';
       }
       
       content.innerHTML = html;
