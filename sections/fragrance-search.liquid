@@ -10,8 +10,8 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
-  - **SMART SUGGESTIONS: When no products found in catalog OR store, shows popular alternatives**
-  - **CATEGORY-BASED SUGGESTIONS: Shows bestsellers and top-rated products**
+  - **SMART FILTERING: Only shows catalog perfumes that have matching products in your store**
+  - **NO RESULTS: When no matches exist, shows only popular suggestions**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -1127,6 +1127,49 @@
     };
   }
 
+  // ===== CHECK IF CATALOG PERFUME HAS ANY MATCHING PRODUCT IN STORE =====
+  function hasMatchingProduct(catalogPerfume) {
+    if (!fcProducts || fcProducts.length === 0) return false;
+    
+    const catalogName = catalogPerfume.name.toLowerCase();
+    const catalogNumber = getCatalogNumber(catalogName);
+    const catalogNotes = getCatalogNotes(catalogPerfume);
+    
+    // Check for inspired matches
+    const hasInspiredMatch = fcProducts.some(product => {
+      const inspiredName = getInspiredName(product.title);
+      if (!inspiredName) return false;
+      
+      const inspiredLower = inspiredName.toLowerCase();
+      const productNumber = getProductNumber(product.title);
+      
+      // Number match
+      if (catalogNumber && productNumber && catalogNumber === productNumber) {
+        return true;
+      }
+      
+      // Name match
+      if (inspiredLower === catalogName || 
+          inspiredLower.includes(catalogName) || 
+          catalogName.includes(inspiredLower)) {
+        return true;
+      }
+      
+      return false;
+    });
+    
+    if (hasInspiredMatch) return true;
+    
+    // Check for note-based matches
+    const hasNoteMatch = fcProducts.some(product => {
+      const productNotes = getProductNotes(product);
+      const noteMatch = calculateNoteSimilarity(catalogNotes, productNotes);
+      return noteMatch.score > 100; // Minimum threshold for note match
+    });
+    
+    return hasNoteMatch;
+  }
+
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
   function getPopularSuggestions() {
     if (!fcProducts || fcProducts.length === 0) return [];
@@ -1346,13 +1389,18 @@
     return uniqueMatches;
   }
 
-  // ===== RENDER CATALOG PERFUME LIST =====
-  function renderCatalogPerfumes(perfumes, query) {
+  // ===== RENDER CATALOG PERFUME LIST - ONLY SHOW IF HAS MATCHES =====
+  function renderCatalogPerfumes(perfumes) {
     if (!perfumes || perfumes.length === 0) return '';
     
-    const sortedPerfumes = [...perfumes].sort((a, b) => a.name.localeCompare(b.name));
+    // Filter to only show perfumes that have matching products in store
+    const perfumesWithMatches = perfumes.filter(perfume => hasMatchingProduct(perfume));
     
-    let html = `<div class="fc-section-title">Real Perfumes (${perfumes.length})</div>`;
+    if (perfumesWithMatches.length === 0) return '';
+    
+    const sortedPerfumes = [...perfumesWithMatches].sort((a, b) => a.name.localeCompare(b.name));
+    
+    let html = `<div class="fc-section-title">Real Perfumes (${perfumesWithMatches.length})</div>`;
     
     sortedPerfumes.slice(0, 8).forEach(perfume => {
       html += `
@@ -1675,7 +1723,7 @@
     }
   };
 
-  // ===== PERFORM SEARCH WITH SUGGESTIONS =====
+  // ===== PERFORM SEARCH WITH SMART FILTERING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
@@ -1699,32 +1747,37 @@
       yourMatches = yourMatches.sort((a, b) => a.title.localeCompare(b.title));
       
       let html = '';
+      let hasAnyResults = false;
       
-      // ===== SHOW RESULTS ONLY IF THERE ARE MATCHES IN EITHER SOURCE =====
-      if (catalogResults.length > 0 || yourMatches.length > 0) {
-        
-        if (catalogResults.length > 0) {
-          html += renderCatalogPerfumes(catalogResults, query);
+      // Only show catalog results if they have matching products in store
+      if (catalogResults.length > 0) {
+        const catalogHtml = renderCatalogPerfumes(catalogResults);
+        if (catalogHtml) {
+          html += catalogHtml;
+          hasAnyResults = true;
         }
-        
-        if (yourMatches.length > 0) {
-          html += `<div class="fc-section-title">Our Versions (${yourMatches.length})</div>`;
-          yourMatches.slice(0, 4).forEach(p => {
-            const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
-            html += `
-              <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
-                <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
-                <div class="fc-real-perfume-info">
-                  <div class="fc-real-perfume-name">${p.title}</div>
-                  <div class="fc-real-perfume-year">${priceFormatted}</div>
-                </div>
+      }
+      
+      // Show your products if any match
+      if (yourMatches.length > 0) {
+        html += `<div class="fc-section-title">Our Versions (${yourMatches.length})</div>`;
+        yourMatches.slice(0, 4).forEach(p => {
+          const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
+          html += `
+            <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
+              <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
+              <div class="fc-real-perfume-info">
+                <div class="fc-real-perfume-name">${p.title}</div>
+                <div class="fc-real-perfume-year">${priceFormatted}</div>
               </div>
-            `;
-          });
-        }
-        
-      } else {
-        // ===== NO RESULTS ANYWHERE - SHOW ONLY SUGGESTIONS =====
+            </div>
+          `;
+        });
+        hasAnyResults = true;
+      }
+      
+      // If NO results at all, show suggestions
+      if (!hasAnyResults) {
         html = '<div class="fc-no-results">No products found for "' + query + '"</div>';
         html += renderSuggestions();
       }
