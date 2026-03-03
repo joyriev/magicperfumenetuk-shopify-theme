@@ -935,6 +935,29 @@
     return match ? match[0] : null;
   }
 
+  // ===== CHECK IF PRODUCT MATCHES NO. 5 PATTERN =====
+  function isNo5Match(productTitle, catalogName) {
+    const productLower = productTitle.toLowerCase();
+    const catalogLower = catalogName.toLowerCase();
+    
+    // Check for "No. 5" pattern in product
+    const hasNo5InProduct = productLower.includes('no. 5') || 
+                            productLower.includes('no 5') || 
+                            (productLower.includes('no.') && productLower.includes('5'));
+    
+    // Check for "No. 5" pattern in catalog
+    const hasNo5InCatalog = catalogLower.includes('no. 5') || 
+                            catalogLower.includes('no 5') || 
+                            catalogLower.includes('number 5') ||
+                            (catalogLower.includes('no.') && catalogLower.includes('5'));
+    
+    // Check if product number is 077 (which is No. 5 inspired)
+    const productNumber = getProductNumber(productTitle);
+    const isNo077 = productNumber === '077';
+    
+    return (hasNo5InProduct || isNo077) && hasNo5InCatalog;
+  }
+
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
@@ -946,6 +969,12 @@
       let matchScore = 0;
       let matchReason = '';
       
+      // SPECIAL CASE: No. 5 matching
+      if (isNo5Match(product.title, catalogName)) {
+        matchScore += 10000; // Super high priority for No. 5
+        matchReason = 'no5_match';
+      }
+      
       // Check if product has "Inspired by" in title
       const inspiredName = getInspiredName(product.title);
       const productNumber = getProductNumber(product.title);
@@ -954,43 +983,38 @@
         const inspiredLower = inspiredName.toLowerCase();
         
         // NUMBER MATCHING - HIGHEST PRIORITY
-        // Check if catalog has a number (like "5") and product has same number
         if (catalogNumber && productNumber) {
           if (catalogNumber === productNumber) {
-            matchScore += 2000;
+            matchScore += 5000;
             matchReason = 'number_match';
           }
         }
         
-        // Check for "No. 5" pattern specifically
-        if (catalogName.includes('no 5') && inspiredLower.includes('no 5')) {
-          matchScore += 1900;
-          matchReason = 'no5_match';
-        }
-        if (catalogName.includes('no. 5') && inspiredLower.includes('no. 5')) {
-          matchScore += 1900;
-          matchReason = 'no5_match';
+        // Check for specific number patterns
+        if (catalogNumber === '5' && productNumber === '077') {
+          matchScore += 8000; // No. 077 is inspired by No. 5
+          matchReason = 'no5_number_match';
         }
         
-        // Check if the inspired name contains the catalog number
-        if (catalogNumber && inspiredLower.includes(catalogNumber)) {
-          matchScore += 1500;
-          matchReason = 'number_in_name';
+        // Check if product title contains the catalog number
+        if (catalogNumber && product.title.toLowerCase().includes(catalogNumber)) {
+          matchScore += 3000;
+          matchReason = 'number_in_title';
         }
         
         // DIRECT NAME MATCH
         if (inspiredLower === catalogName) {
-          matchScore += 1000;
+          matchScore += 2000;
           matchReason = 'exact_match';
         }
         
         // BRAND MATCH
         if (catalogName.includes('chanel') && inspiredLower.includes('chanel')) {
-          matchScore += 500;
+          matchScore += 1000;
           matchReason = 'brand_match';
         }
         if (catalogName.includes('dior') && inspiredLower.includes('dior')) {
-          matchScore += 500;
+          matchScore += 1000;
           matchReason = 'brand_match';
         }
         
@@ -1001,18 +1025,12 @@
         catalogWords.forEach(cWord => {
           inspiredWords.forEach(iWord => {
             if (iWord === cWord) {
-              matchScore += 200;
+              matchScore += 500;
               matchReason = 'word_match';
             } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
               if (iWord.length > 3 && cWord.length > 3) {
-                matchScore += 100;
+                matchScore += 200;
                 matchReason = 'partial_match';
-              }
-            } else {
-              const similarity = getSimilarityScore(iWord, cWord);
-              if (similarity > 0.7) {
-                matchScore += similarity * 50;
-                matchReason = 'fuzzy_match';
               }
             }
           });
