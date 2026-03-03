@@ -1145,7 +1145,7 @@ window.PerfumeCatalog = {
   // ===== MA VIE =====
   maVie: [
     {
-      id: "ma_vie_ma_vie",
+      id: "ma_vie",
       name: "Ma Vie",
       brand: "Ma Vie",
       image: "https://magicperfume.co.uk/cdn/shop/files/Ma_Vie.png?v=1772102804",
