@@ -13,6 +13,7 @@
   - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
   - **SMART FILTERING: Only shows catalog perfumes that have matching products in your store**
   - **NO RESULTS: When no matches exist, shows only popular suggestions**
+  - **FIXED SEARCH: Now finds "musc noir" correctly**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -1724,63 +1725,119 @@
     }
   };
 
-  // ===== ENHANCED SEARCH WITH ID AND BRAND MATCHING =====
+  // ===== ENHANCED SEARCH WITH PARTIAL WORD MATCHING - FIXED =====
   function advancedSearch(query) {
     const queryLower = query.toLowerCase().trim();
     const results = [];
     
+    // Split query into words for better matching
+    const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
+    
     allPerfumes.forEach(perfume => {
       let score = 0;
       
-      // Check ID match (highest priority)
-      if (perfume.id && perfume.id.toLowerCase().includes(queryLower)) {
-        score += 1000;
-      }
+      // Create comprehensive searchable text from ALL perfume data
+      const searchableName = (perfume.name || '').toLowerCase();
+      const searchableBrand = (perfume.brand || '').toLowerCase();
+      const searchableId = (perfume.id || '').toLowerCase();
+      const searchableYear = (perfume.year || '').toLowerCase();
       
-      // Check exact brand match
-      if (perfume.brand && perfume.brand.toLowerCase() === queryLower) {
-        score += 900;
-      }
-      
-      // Check brand contains query
-      if (perfume.brand && perfume.brand.toLowerCase().includes(queryLower)) {
-        score += 800;
-      }
-      
-      // Check name contains query
-      if (perfume.name && perfume.name.toLowerCase().includes(queryLower)) {
-        score += 700;
-      }
-      
-      // Check year match
-      if (perfume.year && perfume.year.toLowerCase().includes(queryLower)) {
-        score += 600;
-      }
-      
-      // Check notes for matches
+      // Get all notes as one string
       const allNotes = [
         ...(perfume.top_notes || []),
         ...(perfume.heart_notes || []),
         ...(perfume.base_notes || [])
-      ].map(n => n.toLowerCase());
+      ].map(n => n.toLowerCase()).join(' ');
       
-      if (allNotes.some(note => note.includes(queryLower))) {
-        score += 500;
+      // Combine everything for comprehensive search
+      const fullSearchableText = `${searchableName} ${searchableBrand} ${searchableId} ${searchableYear} ${allNotes}`;
+      
+      // ===== CHECK FOR PARTIAL MATCHES (NOT JUST EXACT) =====
+      
+      // Check if ANY query word is in the name (partial match)
+      queryWords.forEach(word => {
+        if (word.length < 2) return; // Skip single letters
+        
+        // Name contains word (partial match)
+        if (searchableName.includes(word)) {
+          score += 100;
+        }
+        
+        // Brand contains word (partial match)
+        if (searchableBrand.includes(word)) {
+          score += 80;
+        }
+        
+        // Notes contain word (partial match)
+        if (allNotes.includes(word)) {
+          score += 60;
+        }
+        
+        // ID contains word (partial match)
+        if (searchableId.includes(word)) {
+          score += 50;
+        }
+      });
+      
+      // Check if full query is in name (partial)
+      if (searchableName.includes(queryLower)) {
+        score += 200;
       }
       
-      // Single letter search - show all that start with that letter
+      // Check if full query is in brand (partial)
+      if (searchableBrand.includes(queryLower)) {
+        score += 150;
+      }
+      
+      // Check if full query is in notes (partial)
+      if (allNotes.includes(queryLower)) {
+        score += 100;
+      }
+      
+      // Check if full query is in ID (partial)
+      if (searchableId.includes(queryLower)) {
+        score += 120;
+      }
+      
+      // Check if query starts with name words (for "musc" matching "Musc Noir")
+      const nameWords = searchableName.split(/\s+/);
+      queryWords.forEach(word => {
+        nameWords.forEach(nameWord => {
+          if (nameWord.startsWith(word) && word.length > 2) {
+            score += 90;
+          }
+        });
+      });
+      
+      // Single letter search
       if (query.length === 1) {
         const firstLetter = queryLower[0];
-        if (perfume.name && perfume.name.toLowerCase()[0] === firstLetter) {
-          score += 400;
-        } else if (perfume.brand && perfume.brand.toLowerCase()[0] === firstLetter) {
-          score += 300;
-        } else if (perfume.id && perfume.id.toLowerCase()[0] === firstLetter) {
-          score += 200;
+        if (searchableName[0] === firstLetter) {
+          score += 50;
+        } else if (searchableBrand[0] === firstLetter) {
+          score += 40;
+        } else if (searchableId[0] === firstLetter) {
+          score += 30;
         }
       }
       
-      if (score > 0) {
+      // Boost score if multiple words match
+      let matchedWordCount = 0;
+      queryWords.forEach(word => {
+        if (searchableName.includes(word) || 
+            searchableBrand.includes(word) || 
+            allNotes.includes(word) ||
+            searchableId.includes(word)) {
+          matchedWordCount++;
+        }
+      });
+      
+      if (matchedWordCount > 1) {
+        score += matchedWordCount * 50;
+      }
+      
+      // Add to results if score is above threshold
+      if (score > 20) {
         results.push({
           ...perfume,
           matchScore: score
