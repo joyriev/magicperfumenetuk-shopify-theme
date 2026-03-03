@@ -10,7 +10,7 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
-  - **SMART SUGGESTIONS: When no products found, shows popular alternatives**
+  - **SMART SUGGESTIONS: When no products found in catalog OR store, shows popular alternatives**
   - **CATEGORY-BASED SUGGESTIONS: Shows bestsellers and top-rated products**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
@@ -1131,12 +1131,10 @@
   function getPopularSuggestions() {
     if (!fcProducts || fcProducts.length === 0) return [];
     
-    // You can customize this based on your bestsellers
-    // For now, we'll return a mix of products
     const suggestions = [];
     
-    // Add some popular/inspired by classics
-    const popularKeywords = ['Sauvage', 'Chanel', 'Dior', 'No. 5', 'Bleu', 'Black Opium', 'La Vie Est Belle'];
+    // Popular fragrance keywords that people often search for
+    const popularKeywords = ['Sauvage', 'Chanel', 'Dior', 'No. 5', 'Bleu', 'Black Opium', 'La Vie Est Belle', 'Angel', 'J\'adore', 'Acqua'];
     
     // First, try to find products matching popular keywords
     popularKeywords.forEach(keyword => {
@@ -1173,20 +1171,18 @@
     if (suggestions.length === 0) return '';
     
     let html = `
-      <div class="fc-suggestions-title">✨ Popular Suggestions</div>
+      <div class="fc-suggestions-title">✨ You Might Like These</div>
     `;
     
     suggestions.forEach(product => {
       const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£9.99';
       
-      // Extract inspired name if present
       let displayName = product.title;
       const inspiredMatch = product.title.match(/Inspired by (.*)/i);
       if (inspiredMatch) {
         displayName = inspiredMatch[1];
       }
       
-      // Add a small tag for popular/inspired items
       const tag = product.title.toLowerCase().includes('inspired by') ? '⭐ Inspired' : '🔥 Popular';
       
       html += `
@@ -1687,6 +1683,7 @@
     setTimeout(() => {
       const queryLower = query.toLowerCase();
       
+      // Search in catalog
       let catalogResults = allPerfumes.filter(p => 
         p.name.toLowerCase().includes(queryLower) ||
         p.brand.toLowerCase().includes(queryLower)
@@ -1694,6 +1691,7 @@
       
       catalogResults = catalogResults.sort((a, b) => a.name.localeCompare(b.name));
       
+      // Search in your products
       let yourMatches = fcProducts.filter(p => 
         p.title.toLowerCase().includes(queryLower)
       );
@@ -1702,28 +1700,31 @@
       
       let html = '';
       
-      if (catalogResults.length > 0) {
-        html += renderCatalogPerfumes(catalogResults, query);
-      }
-      
-      if (yourMatches.length > 0) {
-        html += `<div class="fc-section-title">Our Versions (${yourMatches.length})</div>`;
-        yourMatches.slice(0, 4).forEach(p => {
-          const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
-          html += `
-            <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
-              <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
-              <div class="fc-real-perfume-info">
-                <div class="fc-real-perfume-name">${p.title}</div>
-                <div class="fc-real-perfume-year">${priceFormatted}</div>
+      // ===== SHOW RESULTS ONLY IF THERE ARE MATCHES IN EITHER SOURCE =====
+      if (catalogResults.length > 0 || yourMatches.length > 0) {
+        
+        if (catalogResults.length > 0) {
+          html += renderCatalogPerfumes(catalogResults, query);
+        }
+        
+        if (yourMatches.length > 0) {
+          html += `<div class="fc-section-title">Our Versions (${yourMatches.length})</div>`;
+          yourMatches.slice(0, 4).forEach(p => {
+            const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
+            html += `
+              <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
+                <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
+                <div class="fc-real-perfume-info">
+                  <div class="fc-real-perfume-name">${p.title}</div>
+                  <div class="fc-real-perfume-year">${priceFormatted}</div>
+                </div>
               </div>
-            </div>
-          `;
-        });
-      }
-      
-      // ===== NEW: Show suggestions when NO products found =====
-      if (catalogResults.length === 0 && yourMatches.length === 0) {
+            `;
+          });
+        }
+        
+      } else {
+        // ===== NO RESULTS ANYWHERE - SHOW ONLY SUGGESTIONS =====
         html = '<div class="fc-no-results">No products found for "' + query + '"</div>';
         html += renderSuggestions();
       }
