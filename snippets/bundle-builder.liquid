@@ -1,7 +1,7 @@
 {% assign bundle_collection = collections['best-sellers'] %}
 {% assign product_count = product.metafields.custom.bundle_product_count | default: 4 %}
 {% assign dropdown_ml = product.metafields.custom.bundle_bottle_size | default: "50" %}
-{% assign bundle_ml = dropdown_ml | append: "ML" %}
+{% assign bundle_ml = dropdown_ml | append: "ml" %}
 {% assign selected_variant = product.selected_or_first_available_variant %}
 
 <style>
@@ -180,6 +180,7 @@
             product.variants[this.selectedVariant].id
           ).join(',')
         };
+
         // Add each selected product as a separate property
         this.selectedProducts.forEach((product, index) => {
           properties[`Bottle ${index + 1}`] = 
