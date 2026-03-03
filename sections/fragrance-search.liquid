@@ -12,6 +12,7 @@
   - Fixed cart counting for offer tracking
   - ENLARGED product images as requested (like reference)
   - FIXED: Cart updates immediately without refresh
+  - ADDED: Search by fragrance notes (top, heart, base)
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -523,7 +524,7 @@
 /* ===== ENLARGED CATALOGUE IMAGES – like reference "Born in Roma Donna" ===== */
 .fc-product-image {
   width: 100%;
-  height: 150px;        /* increased from 110px to 150px – big like reference */
+  height: 150px;
   object-fit: contain;
   margin-bottom: 12px;
   filter: drop-shadow(0 6px 8px rgba(0,0,0,0.1));
@@ -789,7 +790,7 @@
         <input type="text" 
                id="fcSearchInput" 
                class="fc-search-field" 
-               placeholder="Write here your favorite perfume"
+               placeholder="Search by name, brand, or fragrance notes..."
                autocomplete="off">
         <button class="fc-clear-search" id="fcClearSearch">✕</button>
       </div>
@@ -898,7 +899,15 @@
     return 1 - (distance / maxLength);
   }
 
-  // ===== ENHANCED SEARCH WITH FUZZY MATCHING =====
+  // ===== HELPER FUNCTION TO SAFELY GET STRING FROM NOTES =====
+  function getNotesString(notes) {
+    if (!notes) return '';
+    if (typeof notes === 'string') return notes.toLowerCase();
+    if (Array.isArray(notes)) return notes.join(' ').toLowerCase();
+    return String(notes).toLowerCase();
+  }
+
+  // ===== ENHANCED SEARCH WITH FUZZY MATCHING AND NOTE SEARCH =====
   function searchCatalog(query) {
     if (allPerfumes.length === 0 || query.length < 1) return [];
     
@@ -938,7 +947,14 @@
     allPerfumes.forEach(perfume => {
       const perfumeNameLower = perfume.name.toLowerCase();
       const perfumeBrandLower = perfume.brand.toLowerCase();
-      const searchableText = `${perfumeNameLower} ${perfumeBrandLower} ${perfume.year}`.toLowerCase();
+      
+      // Get note strings for searching
+      const topNotesStr = getNotesString(perfume.top_notes);
+      const heartNotesStr = getNotesString(perfume.heart_notes);
+      const baseNotesStr = getNotesString(perfume.base_notes);
+      const allNotesStr = `${topNotesStr} ${heartNotesStr} ${baseNotesStr}`;
+      
+      const searchableText = `${perfumeNameLower} ${perfumeBrandLower} ${perfume.year} ${allNotesStr}`.toLowerCase();
       
       let score = 0;
       
@@ -960,7 +976,7 @@
       } 
       // Multi-letter search with fuzzy matching
       else {
-        // Exact match
+        // Exact match in name or brand
         if (perfumeNameLower === queryLower) score += 200;
         if (perfumeNameLower === correctedQuery) score += 190;
         
@@ -979,6 +995,16 @@
         // Name contains query
         if (perfumeNameLower.includes(queryLower)) score += 50;
         if (perfumeNameLower.includes(correctedQuery)) score += 45;
+        
+        // ===== NEW: Search in fragrance notes =====
+        if (topNotesStr.includes(queryLower)) score += 40;
+        if (heartNotesStr.includes(queryLower)) score += 40;
+        if (baseNotesStr.includes(queryLower)) score += 40;
+        
+        // Fuzzy search in notes
+        if (topNotesStr.includes(correctedQuery)) score += 35;
+        if (heartNotesStr.includes(correctedQuery)) score += 35;
+        if (baseNotesStr.includes(correctedQuery)) score += 35;
         
         // Word starts with query
         const words = perfumeNameLower.split(' ');
@@ -1040,72 +1066,78 @@
   }
 
   // ===== SHOW PERFUME DETAIL FROM CATALOG =====
-window.fcShowPerfumeDetail = function(perfumeId) {
-  const perfume = findPerfumeById(perfumeId);
-  if (!perfume) return;
-  
-  currentView = 'detail';
-  steps.style.display = 'none';
-  
-  // Get 2 random products from your store only if they exist
-  const yourProducts = fcProducts && fcProducts.length > 0 ? 
-    [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2) : [];
-  
-  let html = `
-    <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
-  `;
-  
-  // Show YOUR products only if they exist
-  if (yourProducts.length > 0) {
-    html += renderYourProductGrid(yourProducts, 'Complete Your Collection');
-  }
-  
-  html += `
-    <div class="fc-detailed-view">
-      <div class="fc-detailed-header">
-        <img class="fc-detailed-image" src="${perfume.image}" 
-             alt="${perfume.name}"
-             loading="lazy"
-             onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
-        <div>
-          <div class="fc-detailed-name">${perfume.name}</div>
-          <div class="fc-detailed-brand">${perfume.brand}</div>
-          ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
-          ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
+  window.fcShowPerfumeDetail = function(perfumeId) {
+    const perfume = findPerfumeById(perfumeId);
+    if (!perfume) return;
+    
+    currentView = 'detail';
+    steps.style.display = 'none';
+    
+    // Get 2 random products from your store only if they exist
+    const yourProducts = fcProducts && fcProducts.length > 0 ? 
+      [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2) : [];
+    
+    let html = `
+      <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
+    `;
+    
+    // Show YOUR products only if they exist
+    if (yourProducts.length > 0) {
+      html += renderYourProductGrid(yourProducts, 'Complete Your Collection');
+    }
+    
+    html += `
+      <div class="fc-detailed-view">
+        <div class="fc-detailed-header">
+          <img class="fc-detailed-image" src="${perfume.image}" 
+               alt="${perfume.name}"
+               loading="lazy"
+               onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
+          <div>
+            <div class="fc-detailed-name">${perfume.name}</div>
+            <div class="fc-detailed-brand">${perfume.brand}</div>
+            ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
+            ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
+          </div>
         </div>
-      </div>
 
-      <div class="fc-notes-section">
-        <div class="fc-note-category">
-          <h4>TOP NOTES</h4>
-          <div class="fc-note-tags">
-            ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-          </div>
+        <div class="fc-notes-section">
+          ${perfume.top_notes ? `
+            <div class="fc-note-category">
+              <h4>TOP NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${perfume.heart_notes ? `
+            <div class="fc-note-category">
+              <h4>HEART NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${perfume.base_notes ? `
+            <div class="fc-note-category">
+              <h4>BASE NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
         </div>
         
-        <div class="fc-note-category">
-          <h4>HEART NOTES</h4>
-          <div class="fc-note-tags">
-            ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-          </div>
-        </div>
-        
-        <div class="fc-note-category">
-          <h4>BASE NOTES</h4>
-          <div class="fc-note-tags">
-            ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-          </div>
+        <div class="fc-description">
+          ${perfume.description}
         </div>
       </div>
-      
-      <div class="fc-description">
-        ${perfume.description}
-      </div>
-    </div>
-  `;
-  
-  content.innerHTML = html;
-};
+    `;
+    
+    content.innerHTML = html;
+  };
 
   // ===== INITIALIZE YOUR SHOPIFY PRODUCTS =====
   function fcInitProducts() {
@@ -1374,6 +1406,15 @@ window.fcShowPerfumeDetail = function(perfumeId) {
               </div>
             </div>
           ` : ''}
+          
+          ${product.fragranceComposition ? `
+            <div class="fc-note-category">
+              <h4>COMPOSITION</h4>
+              <div class="fc-note-tags">
+                <span class="fc-note-tag">${product.fragranceComposition}</span>
+              </div>
+            </div>
+          ` : ''}
         </div>
       </div>
     `;
@@ -1398,52 +1439,60 @@ window.fcShowPerfumeDetail = function(perfumeId) {
   };
 
   // ===== PERFORM SEARCH =====
-  // ===== PERFORM SEARCH =====
-function performSearch(query) {
-  currentSearchQuery = query;
-  content.innerHTML = '<div class="fc-loading">Searching...</div>';
-  
-  setTimeout(() => {
-    // Search in our combined catalog - returns ALL matches, no limit
-    const catalogResults = searchCatalog(query);
+  function performSearch(query) {
+    currentSearchQuery = query;
+    content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
-    // Get your products that match (only if products exist)
-    const yourMatches = fcProducts && fcProducts.length > 0 ? 
-      fcProducts.filter(p => p.title.toLowerCase().includes(query.toLowerCase())) : [];
-    
-    let html = '';
-    
-    // Show catalog perfumes first (ALL of them)
-    if (catalogResults.length > 0) {
-      html += renderCatalogPerfumes(catalogResults, query);
-    }
-    
-    // Show your products only if they exist
-    if (yourMatches.length > 0) {
-      html += `<div class="fc-section-title">Our Interpretations (${yourMatches.length})</div>`;
-      yourMatches.slice(0, 8).forEach(p => {
-        const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '';
-        html += `
-          <div class="fc-real-perfume-item" onclick="window.fcShowYourProductDetail(${p.id})">
-            <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
-            <div class="fc-real-perfume-info">
-              <div class="fc-real-perfume-name">${p.title}</div>
-              <div class="fc-real-perfume-brand">Our Version</div>
-              <div class="fc-real-perfume-year">${priceFormatted}</div>
+    setTimeout(() => {
+      // Search in our combined catalog - returns ALL matches, no limit
+      const catalogResults = searchCatalog(query);
+      
+      // Get your products that match (search in title AND notes)
+      const yourMatches = fcProducts && fcProducts.length > 0 ? 
+        fcProducts.filter(p => {
+          const titleLower = p.title.toLowerCase();
+          const topNotesStr = (p.topNotes || '').toLowerCase();
+          const middleNotesStr = (p.middleNotes || '').toLowerCase();
+          const baseNotesStr = (p.baseNotes || '').toLowerCase();
+          const compositionStr = (p.fragranceComposition || '').toLowerCase();
+          const allText = `${titleLower} ${topNotesStr} ${middleNotesStr} ${baseNotesStr} ${compositionStr}`;
+          
+          return allText.includes(query.toLowerCase());
+        }) : [];
+      
+      let html = '';
+      
+      // Show catalog perfumes first (ALL of them)
+      if (catalogResults.length > 0) {
+        html += renderCatalogPerfumes(catalogResults, query);
+      }
+      
+      // Show your products only if they exist
+      if (yourMatches.length > 0) {
+        html += `<div class="fc-section-title">Our Interpretations (${yourMatches.length})</div>`;
+        yourMatches.slice(0, 8).forEach(p => {
+          const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '';
+          html += `
+            <div class="fc-real-perfume-item" onclick="window.fcShowYourProductDetail(${p.id})">
+              <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
+              <div class="fc-real-perfume-info">
+                <div class="fc-real-perfume-name">${p.title}</div>
+                <div class="fc-real-perfume-brand">Our Version</div>
+                <div class="fc-real-perfume-year">${priceFormatted}</div>
+              </div>
             </div>
-          </div>
-        `;
-      });
-    }
-    
-    // If no results from either source
-    if (catalogResults.length === 0 && yourMatches.length === 0) {
-      html = '<div class="fc-no-results">No products found</div>';
-    }
-    
-    content.innerHTML = html;
-  }, 300);
-}
+          `;
+        });
+      }
+      
+      // If no results from either source
+      if (catalogResults.length === 0 && yourMatches.length === 0) {
+        html = '<div class="fc-no-results">No products found</div>';
+      }
+      
+      content.innerHTML = html;
+    }, 300);
+  }
 
   // ===== SEARCH HANDLER WITH DEBOUNCE =====
   function fcHandleSearch() {
