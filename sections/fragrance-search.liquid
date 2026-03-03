@@ -6,13 +6,12 @@
   - Premium box design for steps
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
-  - Badges: "Recommended" and "You might like it"
+  - Badges: "Recommended" (first product) and "You might like it" (second product)
   - Shows ALL matching products (no limit)
-  - ADVANCED FUZZY SEARCH: Matches even with typos and partial inputs
-  - AUTOCOMPLETE: Shows suggestions as you type
+  - ALPHABETICAL SORTING: Results show in A-Z order by name
+  - FIXED: Always shows both badges when multiple products exist
   - FIXED: Properly matches "Inspired by No. 5" with Chanel No 5
   - FIXED: Product cards only have clickable buttons, not whole card
-  - FIXED: No duplicate product details in search results
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -355,60 +354,6 @@
 
 .fc-clear-search:hover {
   background: #EDE5DC;
-  color: #C41E3A;
-}
-
-/* ===== AUTOCOMPLETE DROPDOWN ===== */
-.fc-autocomplete {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border-radius: 0 0 16px 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  max-height: 250px;
-  overflow-y: auto;
-  z-index: 10001;
-  display: none;
-}
-
-.fc-autocomplete.show {
-  display: block;
-}
-
-.fc-autocomplete-item {
-  padding: 12px 20px;
-  cursor: pointer;
-  border-bottom: 1px solid #F0E8E0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.fc-autocomplete-item:hover {
-  background: #FEF9F5;
-}
-
-.fc-autocomplete-item img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-  border-radius: 6px;
-}
-
-.fc-autocomplete-info {
-  flex: 1;
-}
-
-.fc-autocomplete-name {
-  font-size: 13px;
-  font-weight: 600;
-  color: #2C2420;
-}
-
-.fc-autocomplete-brand {
-  font-size: 11px;
   color: #C41E3A;
 }
 
@@ -805,9 +750,6 @@
 }
 </style>
 
-<!-- AUTOCOMPLETE DROPDOWN -->
-<div class="fc-autocomplete" id="fcAutocomplete"></div>
-
 <div class="fc-float-wrapper">
   <!-- Floating Button -->
   <div class="fc-search-toggle" id="fcStickyButton" onclick="window.fcToggleSearch()">
@@ -906,7 +848,6 @@
   
   // Debounce timer
   let searchTimer = null;
-  let autocompleteTimer = null;
 
   // Get elements
   const stickyButton = document.getElementById('fcStickyButton');
@@ -915,7 +856,6 @@
   const clearSearch = document.getElementById('fcClearSearch');
   const steps = document.getElementById('fcSteps');
   const content = document.getElementById('fcContent');
-  const autocomplete = document.getElementById('fcAutocomplete');
   
   // Offer elements
   const offerBanner = document.getElementById('fcOfferBanner');
@@ -942,7 +882,7 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
-  // ===== ADVANCED FUZZY SEARCH FUNCTION (Levenshtein distance) =====
+  // ===== FUZZY SEARCH FUNCTION =====
   function getLevenshteinDistance(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
@@ -982,95 +922,106 @@
     return match ? match[1].trim() : null;
   }
 
+  // ===== EXTRACT PRODUCT NUMBER =====
+  function getProductNumber(productTitle) {
+    const match = productTitle.match(/No\.?\s*(\d+)/i);
+    return match ? match[1] : null;
+  }
+
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
-    const catalogBrand = catalogPerfume.brand.toLowerCase();
+    const catalogNameWithoutBrand = catalogName.replace(/chanel|dior|creed|tom ford|armani|gucci/i, '').trim();
     
     const scoredProducts = fcProducts.map(product => {
       let matchScore = 0;
-      let matchType = '';
       
       // Check if product has "Inspired by" in title
       const inspiredName = getInspiredName(product.title);
+      const productNumber = getProductNumber(product.title);
       
       if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
-        // EXACT MATCH: "No. 5" matches "Chanel No 5" (handles different formats)
-        const catalogWords = catalogName.split(/\s+/);
-        const inspiredWords = inspiredLower.split(/\s+/);
-        
-        // Check for number matches (e.g., "5" in both)
+        // Extract numbers from both
         const catalogNumbers = catalogName.match(/\d+/g) || [];
         const inspiredNumbers = inspiredLower.match(/\d+/g) || [];
         
-        // Number match is very strong
+        // Number match is strongest
         if (catalogNumbers.length > 0 && inspiredNumbers.length > 0) {
           if (catalogNumbers[0] === inspiredNumbers[0]) {
-            matchScore += 800;
-            matchType = 'number_match';
+            matchScore += 1000; // Very strong match for number
           }
         }
         
-        // Brand match
-        if (inspiredLower.includes(catalogBrand) || catalogBrand.includes(inspiredLower)) {
-          matchScore += 300;
-          matchType = matchType || 'brand_match';
+        // Check for "No. 5" vs "No 5" vs "5" patterns
+        if (catalogName.includes('no 5') && inspiredLower.includes('no 5')) {
+          matchScore += 900;
+        }
+        if (catalogName.includes('no. 5') && inspiredLower.includes('no. 5')) {
+          matchScore += 900;
         }
         
-        // Word similarity
-        let wordMatches = 0;
+        // Direct name match
+        if (inspiredLower === catalogName || inspiredLower === catalogNameWithoutBrand) {
+          matchScore += 800;
+        }
+        
+        // Partial matches
+        if (catalogName.includes(inspiredLower) || inspiredLower.includes(catalogName)) {
+          matchScore += 400;
+        }
+        
+        // Word by word matching
+        const catalogWords = catalogName.split(/\s+/);
+        const inspiredWords = inspiredLower.split(/\s+/);
+        
         catalogWords.forEach(cWord => {
           if (cWord.length > 2) {
             inspiredWords.forEach(iWord => {
               if (iWord.length > 2) {
                 if (iWord === cWord) {
-                  wordMatches += 3;
+                  matchScore += 100;
                 } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
-                  wordMatches += 2;
+                  matchScore += 50;
                 } else {
                   const similarity = getSimilarityScore(iWord, cWord);
                   if (similarity > 0.7) {
-                    wordMatches += 1;
+                    matchScore += similarity * 30;
                   }
                 }
               }
             });
           }
         });
-        
-        matchScore += wordMatches * 50;
-        
-        // If we have significant word matches, it's a good match
-        if (wordMatches > 1 && matchScore > 200) {
-          matchType = 'word_match';
-        }
       }
       
       return {
         product,
         matchScore,
-        matchType,
-        inspiredName: inspiredName || product.title
+        inspiredName: inspiredName || product.title,
+        productNumber: productNumber
       };
     });
     
-    // Filter products with at least some match and sort by score
+    // Filter products with at least some match and sort by score (highest first)
     return scoredProducts
       .filter(item => item.matchScore > 100)
       .sort((a, b) => b.matchScore - a.matchScore);
   }
 
-  // ===== RENDER CATALOG PERFUME LIST =====
+  // ===== RENDER CATALOG PERFUME LIST - SORTED ALPHABETICALLY =====
   function renderCatalogPerfumes(perfumes, query) {
     if (!perfumes || perfumes.length === 0) return '';
     
+    // Sort alphabetically by name
+    const sortedPerfumes = [...perfumes].sort((a, b) => a.name.localeCompare(b.name));
+    
     let html = `<div class="fc-section-title">Real Perfumes (${perfumes.length})</div>`;
     
-    perfumes.slice(0, 8).forEach(perfume => {
+    sortedPerfumes.slice(0, 8).forEach(perfume => {
       html += `
         <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
           <img class="fc-real-perfume-image" src="${perfume.image}" 
@@ -1104,7 +1055,7 @@
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    // Show inspired products if found
+    // Show inspired products if found - ALWAYS show both badges if enough products
     if (inspiredMatches.length > 0) {
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
@@ -1115,11 +1066,29 @@
       }
       
       // Second product gets "You might like it" badge
+      // If only one product, duplicate it for second slot with "You might like it" badge
       if (inspiredMatches.length >= 2) {
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it');
+      } else if (inspiredMatches.length === 1) {
+        // Show the same product again with "You might like it" badge
+        html += renderYourProductCard(inspiredMatches[0].product, 'You might like it');
       }
       
       html += '</div>';
+    } else {
+      // No matches at all, show random products
+      const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 4);
+      if (randomProducts.length > 0) {
+        html += `<div class="fc-subsection-title">You Might Also Like</div>`;
+        html += '<div class="fc-grid-2col">';
+        
+        randomProducts.slice(0, 2).forEach((product, index) => {
+          const badge = index === 0 ? 'Recommended' : 'You might like it';
+          html += renderYourProductCard(product, badge);
+        });
+        
+        html += '</div>';
+      }
     }
     
     // Show catalog perfume details
@@ -1241,7 +1210,6 @@
   window.fcToggleSearch = function() {
     if (searchPopup.classList.contains('active')) {
       searchPopup.classList.remove('active');
-      autocomplete.classList.remove('show');
     } else {
       searchPopup.classList.add('active');
       searchInput.focus();
@@ -1318,7 +1286,7 @@
   function renderYourProductCard(product, badge) {
     const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '';
     
-    // Extract number and inspired name
+    // Extract number and inspired name for cleaner display
     let displayNumber = '';
     let displayName = product.title;
     
@@ -1364,23 +1332,30 @@
     }
   };
 
-  // ===== PERFORM SEARCH =====
+  // ===== PERFORM SEARCH WITH ALPHABETICAL SORTING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
-    autocomplete.classList.remove('show');
     
     setTimeout(() => {
-      // Simple search in catalog
-      const catalogResults = allPerfumes.filter(p => 
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.brand.toLowerCase().includes(query.toLowerCase())
+      const queryLower = query.toLowerCase();
+      
+      // Search in catalog - filter and then sort alphabetically
+      let catalogResults = allPerfumes.filter(p => 
+        p.name.toLowerCase().includes(queryLower) ||
+        p.brand.toLowerCase().includes(queryLower)
       );
       
+      // Sort catalog results alphabetically by name
+      catalogResults = catalogResults.sort((a, b) => a.name.localeCompare(b.name));
+      
       // Search in your products
-      const yourMatches = fcProducts.filter(p => 
-        p.title.toLowerCase().includes(query.toLowerCase())
+      let yourMatches = fcProducts.filter(p => 
+        p.title.toLowerCase().includes(queryLower)
       );
+      
+      // Sort your products alphabetically by title
+      yourMatches = yourMatches.sort((a, b) => a.title.localeCompare(b.title));
       
       let html = '';
       
