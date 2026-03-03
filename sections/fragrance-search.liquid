@@ -10,7 +10,7 @@
   - Shows ALL matching products (no limit)
   - ALPHABETICAL SORTING: Results show in A-Z order by name
   - FIXED: No duplicate products in recommendations
-  - **MANUAL FIX: No. 077 - Inspired by No. 5 ALWAYS shows for Chanel No 5**
+  - **SIMPLE FIX: When Chanel No 5 is clicked, find and show "No. 077 - Inspired by No. 5"**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -935,12 +935,24 @@
     return match ? match[0] : null;
   }
 
-  // ===== FIND NO. 077 PRODUCT =====
+  // ===== SIMPLE FUNCTION TO FIND NO. 077 PRODUCT =====
   function getNo077Product() {
+    if (!fcProducts || fcProducts.length === 0) return null;
+    
+    // Look for product with "077" in the title
     return fcProducts.find(p => 
-      p.title.toLowerCase().includes('077') && 
-      p.title.toLowerCase().includes('inspired by no. 5')
+      p.title.includes('077') || 
+      p.title.includes('No. 077') || 
+      p.title.includes('No 077')
     );
+  }
+
+  // ===== SIMPLE FUNCTION TO CHECK IF PRODUCT IS INSPIRED BY NO. 5 =====
+  function isInspiredByNo5(product) {
+    const title = product.title.toLowerCase();
+    return title.includes('inspired by no. 5') || 
+           title.includes('inspired by no 5') || 
+           (title.includes('077') && title.includes('no. 5'));
   }
 
   // ===== FIND INSPIRED PRODUCTS THAT MATCH CATALOG PERFUME =====
@@ -948,24 +960,29 @@
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
-    const catalogNumber = getCatalogNumber(catalogName);
     
-    // ===== MANUAL FIX FOR CHANEL NO. 5 =====
+    // ===== SIMPLE DIRECT CHECK FOR CHANEL NO. 5 =====
     // Check if this is Chanel No 5
     if (catalogName.includes('chanel') && 
         (catalogName.includes('no 5') || catalogName.includes('no. 5') || catalogName.includes('number 5'))) {
       
+      console.log('Found Chanel No 5 - looking for No. 077');
+      
+      // Find No. 077 product
       const no077Product = getNo077Product();
       
       if (no077Product) {
+        console.log('Found No. 077 product:', no077Product.title);
         // Return ONLY No. 077 as the match
         return [{
           product: no077Product,
           matchScore: 999999,
-          matchReason: 'manual_fix_no5_match',
+          matchReason: 'direct_match_no5',
           productNumber: '077',
           catalogNumber: '5'
         }];
+      } else {
+        console.log('No. 077 product not found!');
       }
     }
     
@@ -980,6 +997,8 @@
       if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
+        // Number matching
+        const catalogNumber = getCatalogNumber(catalogName);
         if (catalogNumber && productNumber) {
           if (catalogNumber === productNumber) {
             matchScore += 50000;
@@ -987,16 +1006,19 @@
           }
         }
         
+        // Exact match
         if (inspiredLower === catalogName) {
           matchScore += 10000;
           matchReason = 'exact_match';
         }
         
+        // Brand match
         if (catalogName.includes('chanel') && inspiredLower.includes('chanel')) {
           matchScore += 5000;
           matchReason = 'brand_match';
         }
         
+        // Word matching
         const catalogWords = catalogName.split(/\s+/).filter(w => w.length > 2);
         const inspiredWords = inspiredLower.split(/\s+/).filter(w => w.length > 2);
         
@@ -1020,7 +1042,6 @@
         matchScore,
         matchReason,
         productNumber,
-        catalogNumber,
         inspiredName: inspiredName || product.title
       };
     });
@@ -1087,13 +1108,16 @@
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
       
+      // First product gets "Recommended" badge
       if (inspiredMatches.length >= 1) {
         html += renderYourProductCard(inspiredMatches[0].product, 'Recommended');
       }
       
+      // Second product gets "You might like it" badge
       if (inspiredMatches.length >= 2) {
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it');
       } else {
+        // If only one match, show a random different product for second slot
         const otherProducts = fcProducts.filter(p => p.id !== inspiredMatches[0].product.id);
         if (otherProducts.length > 0) {
           const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
@@ -1103,6 +1127,7 @@
       
       html += '</div>';
     } else {
+      // No matches at all, show random products
       const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 4);
       if (randomProducts.length > 0) {
         html += `<div class="fc-subsection-title">You Might Also Like</div>`;
@@ -1193,6 +1218,11 @@
       {% endfor %}
     ];
     console.log('✓ Loaded', fcProducts.length, 'products');
+    
+    // Log all products for debugging
+    fcProducts.forEach(p => {
+      console.log('Product:', p.title);
+    });
   }
 
   // ===== SHOW NOTIFICATION =====
