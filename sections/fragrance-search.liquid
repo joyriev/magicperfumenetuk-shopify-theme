@@ -8,12 +8,10 @@
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
   - Shows ALL matching products (no limit)
-  - ALPHABETICAL SORTING: Results show in A-Z order by name
-  - **ADVANCED ID/BRAND MATCHING: Matches even single letters against IDs, names, brands**
-  - **INTELLIGENT NOTE MATCHING: Finds products with similar top/heart/base notes**
+  - **UNIVERSAL MATCHING: Matches ANY word, letter, ID, brand, note**
+  - **FUZZY SEARCH: Even with typos or partial words**
   - **SMART FILTERING: Only shows catalog perfumes that have matching products in your store**
   - **NO RESULTS: When no matches exist, shows only popular suggestions**
-  - **FIXED SEARCH: Now finds "musc noir" correctly**
   - FIXED: Different products shown for each badge
   - FIXED: Product cards only have clickable buttons, not whole card
 {% endcomment %}
@@ -943,7 +941,7 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
-  // ===== FUZZY SEARCH FUNCTION =====
+  // ===== FUZZY SEARCH FUNCTION (Levenshtein distance) =====
   function getLevenshteinDistance(a, b) {
     if (a.length === 0) return b.length;
     if (b.length === 0) return a.length;
@@ -1725,22 +1723,24 @@
     }
   };
 
-  // ===== ENHANCED SEARCH WITH PARTIAL WORD MATCHING - FIXED =====
-  function advancedSearch(query) {
-    const queryLower = query.toLowerCase().trim();
-    const results = [];
+  // ===== UNIVERSAL SEARCH FUNCTION - MATCHES EVERYTHING =====
+  function universalSearch(query) {
+    if (!query || query.length < 1) return [];
     
-    // Split query into words for better matching
+    const queryLower = query.toLowerCase().trim();
     const queryWords = queryLower.split(/\s+/).filter(word => word.length > 0);
+    const results = [];
     
     allPerfumes.forEach(perfume => {
       let score = 0;
+      let matchedTerms = [];
       
-      // Create comprehensive searchable text from ALL perfume data
+      // Create searchable text from ALL possible fields
       const searchableName = (perfume.name || '').toLowerCase();
       const searchableBrand = (perfume.brand || '').toLowerCase();
       const searchableId = (perfume.id || '').toLowerCase();
       const searchableYear = (perfume.year || '').toLowerCase();
+      const searchableGender = (perfume.gender || '').toLowerCase();
       
       // Get all notes as one string
       const allNotes = [
@@ -1749,98 +1749,166 @@
         ...(perfume.base_notes || [])
       ].map(n => n.toLowerCase()).join(' ');
       
-      // Combine everything for comprehensive search
-      const fullSearchableText = `${searchableName} ${searchableBrand} ${searchableId} ${searchableYear} ${allNotes}`;
+      // Combine EVERYTHING for comprehensive search
+      const fullSearchableText = `${searchableName} ${searchableBrand} ${searchableId} ${searchableYear} ${searchableGender} ${allNotes}`;
       
-      // ===== CHECK FOR PARTIAL MATCHES (NOT JUST EXACT) =====
-      
-      // Check if ANY query word is in the name (partial match)
-      queryWords.forEach(word => {
-        if (word.length < 2) return; // Skip single letters
-        
-        // Name contains word (partial match)
-        if (searchableName.includes(word)) {
-          score += 100;
-        }
-        
-        // Brand contains word (partial match)
-        if (searchableBrand.includes(word)) {
-          score += 80;
-        }
-        
-        // Notes contain word (partial match)
-        if (allNotes.includes(word)) {
-          score += 60;
-        }
-        
-        // ID contains word (partial match)
-        if (searchableId.includes(word)) {
-          score += 50;
-        }
-      });
-      
-      // Check if full query is in name (partial)
-      if (searchableName.includes(queryLower)) {
-        score += 200;
-      }
-      
-      // Check if full query is in brand (partial)
-      if (searchableBrand.includes(queryLower)) {
-        score += 150;
-      }
-      
-      // Check if full query is in notes (partial)
-      if (allNotes.includes(queryLower)) {
-        score += 100;
-      }
-      
-      // Check if full query is in ID (partial)
-      if (searchableId.includes(queryLower)) {
-        score += 120;
-      }
-      
-      // Check if query starts with name words (for "musc" matching "Musc Noir")
-      const nameWords = searchableName.split(/\s+/);
-      queryWords.forEach(word => {
-        nameWords.forEach(nameWord => {
-          if (nameWord.startsWith(word) && word.length > 2) {
-            score += 90;
-          }
-        });
-      });
-      
-      // Single letter search
+      // ===== SINGLE LETTER SEARCH =====
       if (query.length === 1) {
         const firstLetter = queryLower[0];
-        if (searchableName[0] === firstLetter) {
+        
+        // Check if ANY word in name starts with this letter
+        const nameWords = searchableName.split(/\s+/);
+        for (let word of nameWords) {
+          if (word.length > 0 && word[0] === firstLetter) {
+            score += 100;
+            matchedTerms.push('name_starts_with');
+            break;
+          }
+        }
+        
+        // Check if brand starts with this letter
+        if (searchableBrand.length > 0 && searchableBrand[0] === firstLetter) {
+          score += 80;
+          matchedTerms.push('brand_starts_with');
+        }
+        
+        // Check if any note starts with this letter
+        const noteWords = allNotes.split(/\s+/);
+        for (let word of noteWords) {
+          if (word.length > 0 && word[0] === firstLetter) {
+            score += 60;
+            matchedTerms.push('note_starts_with');
+            break;
+          }
+        }
+        
+        // Check if ID starts with this letter
+        if (searchableId.length > 0 && searchableId[0] === firstLetter) {
           score += 50;
-        } else if (searchableBrand[0] === firstLetter) {
-          score += 40;
-        } else if (searchableId[0] === firstLetter) {
-          score += 30;
+          matchedTerms.push('id_starts_with');
         }
-      }
+      } 
       
-      // Boost score if multiple words match
-      let matchedWordCount = 0;
-      queryWords.forEach(word => {
-        if (searchableName.includes(word) || 
-            searchableBrand.includes(word) || 
-            allNotes.includes(word) ||
-            searchableId.includes(word)) {
-          matchedWordCount++;
+      // ===== MULTI-WORD SEARCH =====
+      else {
+        // Check exact match in name (highest priority)
+        if (searchableName === queryLower) {
+          score += 1000;
+          matchedTerms.push('exact_name_match');
         }
-      });
-      
-      if (matchedWordCount > 1) {
-        score += matchedWordCount * 50;
+        
+        // Check exact match in brand
+        if (searchableBrand === queryLower) {
+          score += 900;
+          matchedTerms.push('exact_brand_match');
+        }
+        
+        // Check exact match in ID
+        if (searchableId === queryLower) {
+          score += 800;
+          matchedTerms.push('exact_id_match');
+        }
+        
+        // Check if name contains the full query
+        if (searchableName.includes(queryLower)) {
+          score += 500;
+          matchedTerms.push('name_contains');
+        }
+        
+        // Check if brand contains the full query
+        if (searchableBrand.includes(queryLower)) {
+          score += 400;
+          matchedTerms.push('brand_contains');
+        }
+        
+        // Check if notes contain the full query
+        if (allNotes.includes(queryLower)) {
+          score += 300;
+          matchedTerms.push('notes_contain');
+        }
+        
+        // Check if ID contains the full query
+        if (searchableId.includes(queryLower)) {
+          score += 250;
+          matchedTerms.push('id_contains');
+        }
+        
+        // Check if year contains the full query
+        if (searchableYear.includes(queryLower)) {
+          score += 200;
+          matchedTerms.push('year_contains');
+        }
+        
+        // Check each word individually
+        queryWords.forEach(word => {
+          if (word.length < 2) return;
+          
+          // Name contains word
+          if (searchableName.includes(word)) {
+            score += 150;
+            matchedTerms.push(`name_word:${word}`);
+          }
+          
+          // Brand contains word
+          if (searchableBrand.includes(word)) {
+            score += 120;
+            matchedTerms.push(`brand_word:${word}`);
+          }
+          
+          // Notes contain word
+          if (allNotes.includes(word)) {
+            score += 100;
+            matchedTerms.push(`note_word:${word}`);
+          }
+          
+          // ID contains word
+          if (searchableId.includes(word)) {
+            score += 80;
+            matchedTerms.push(`id_word:${word}`);
+          }
+          
+          // Check if any name word starts with this query word
+          const nameWords = searchableName.split(/\s+/);
+          nameWords.forEach(nameWord => {
+            if (nameWord.startsWith(word) && word.length > 2) {
+              score += 70;
+              matchedTerms.push(`name_starts_with:${word}`);
+            }
+          });
+          
+          // Check if any note word starts with this query word
+          const noteWords = allNotes.split(/\s+/);
+          noteWords.forEach(noteWord => {
+            if (noteWord.startsWith(word) && word.length > 2) {
+              score += 60;
+              matchedTerms.push(`note_starts_with:${word}`);
+            }
+          });
+        });
+        
+        // Boost score for multiple word matches
+        let wordMatchCount = 0;
+        queryWords.forEach(word => {
+          if (searchableName.includes(word) || 
+              searchableBrand.includes(word) || 
+              allNotes.includes(word) ||
+              searchableId.includes(word)) {
+            wordMatchCount++;
+          }
+        });
+        
+        if (wordMatchCount > 1) {
+          score += wordMatchCount * 50;
+          matchedTerms.push(`multiple_words:${wordMatchCount}`);
+        }
       }
       
       // Add to results if score is above threshold
-      if (score > 20) {
+      if (score > 10) {
         results.push({
           ...perfume,
-          matchScore: score
+          matchScore: score,
+          matchedTerms: matchedTerms
         });
       }
     });
@@ -1854,14 +1922,14 @@
     });
   }
 
-  // ===== PERFORM SEARCH WITH SMART FILTERING =====
+  // ===== PERFORM SEARCH WITH UNIVERSAL MATCHING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      // Use advanced search for catalog
-      let catalogResults = advancedSearch(query);
+      // Use universal search for catalog
+      let catalogResults = universalSearch(query);
       
       // Search in your products
       let yourMatches = fcProducts.filter(p => 
@@ -1872,6 +1940,12 @@
       
       let html = '';
       let hasAnyResults = false;
+      
+      // Log search results for debugging
+      console.log(`Search for "${query}" found ${catalogResults.length} catalog matches`);
+      if (catalogResults.length > 0) {
+        console.log('Top matches:', catalogResults.slice(0, 3).map(p => p.name));
+      }
       
       // Only show catalog results if they have matching products in store
       if (catalogResults.length > 0) {
