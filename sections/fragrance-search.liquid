@@ -1226,7 +1226,27 @@ function findInspiredProducts(catalogPerfume) {
     
     return matches;
   }
+// ===== FUZZY MATCH FUNCTION =====
+function fuzzyMatch(str, query) {
+  if (!str || !query) return false;
 
+  str = str.toLowerCase();
+  query = query.toLowerCase();
+
+  // Exact match shortcut
+  if (str.includes(query)) return true;
+
+  // Simple character similarity match
+  let score = 0;
+  for (let i = 0; i < query.length; i++) {
+    if (str.includes(query[i])) {
+      score++;
+    }
+  }
+
+  // 60% similarity threshold
+  return score >= Math.floor(query.length * 0.6);
+}
   // ===== SIMPLE SEARCH FOR CATALOG =====
   function simpleCatalogSearch(query) {
     if (!query || query.length < 1) return [];
