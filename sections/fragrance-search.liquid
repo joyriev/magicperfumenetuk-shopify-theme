@@ -4,8 +4,8 @@
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
   - DIRECT MAPPING for accurate product matching
-  - FIXED: Uses original Shopify product images
-  - FIXED: "View Product" changed to "Add to Cart" with proper functionality
+  - FIXED: Uses original Shopify product images (like .../077W_c.webp)
+  - FIXED: "Add to Cart" now uses AJAX cart functionality, not redirect
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -1345,18 +1345,18 @@
         </div>
       `;
     } else {
-      // FALLBACK: If Shopify product not found, still show Add to Cart with URL redirect
-      console.log('Using fallback for:', mappedProduct.title);
-      
-      // Try one more time to find by product number
+      // If we can't find the Shopify product, try one more aggressive approach
+      // Extract the product number and search again
       const productNumber = extractProductNumber(mappedProduct.title);
       if (productNumber) {
+        // Try to find ANY product with this number
         const fallbackProduct = fcProducts.find(p => {
           const pNumber = extractProductNumber(p.title);
           return pNumber === productNumber;
         });
         
         if (fallbackProduct) {
+          console.log('Found fallback product by number:', fallbackProduct.title);
           const priceFormatted = fallbackProduct.price ? '£' + (fallbackProduct.price / 100).toFixed(2) : '£19.99';
           
           return `
@@ -1366,9 +1366,9 @@
                 <img class="fc-product-image" src="${fallbackProduct.image}" alt="${fallbackProduct.title}" loading="lazy">
                 <div class="fc-product-title">${fallbackProduct.title}</div>
                 <div class="fc-product-price">${priceFormatted}</div>
-                <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${fallbackProduct.url}'">Add to Cart</button>
+                <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${fallbackProduct.variant})">Add to Cart</button>
                 <div>
-                  <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${fallbackProduct.url}'">View Details</span>
+                  <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${fallbackProduct.url}')">View Details</span>
                 </div>
               </div>
             </div>
@@ -1376,7 +1376,8 @@
         }
       }
       
-      // Last resort - use mapped product data but with Add to Cart button
+      // Last resort - but still try to use Add to Cart with redirect
+      console.log('Using last resort for:', mappedProduct.title);
       return `
         <div class="fc-product-card">
           <div class="fc-badge">${badge}</div>
