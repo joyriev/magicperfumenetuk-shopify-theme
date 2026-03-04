@@ -1204,118 +1204,123 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL WITH MATCHING SHOPIFY PRODUCTS =====
-  window.fcShowPerfumeDetail = function(perfumeId) {
-    const perfume = findPerfumeById(perfumeId);
-    if (!perfume) return;
+  // ===== SHOW PERFUME DETAIL WITH DIRECT PRODUCT MAPPING =====
+window.fcShowPerfumeDetail = function(perfumeId) {
+  const perfume = findPerfumeById(perfumeId);
+  if (!perfume) return;
+  
+  currentView = 'detail';
+  steps.style.display = 'none';
+  
+  // Get the directly mapped Shopify product
+  const mappedProduct = window.PerfumeCatalog.getShopifyProductByPerfumeId(perfumeId);
+  
+  let html = `
+    <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
+  `;
+  
+  if (mappedProduct) {
+    html += `<div class="fc-subsection-title">Our Inspired Version</div>`;
+    html += '<div class="fc-grid-2col">';
     
-    currentView = 'detail';
-    steps.style.display = 'none';
+    // RECOMMENDED: The exact mapped product
+    html += renderDirectProductCard(mappedProduct, 'Recommended');
     
-    // Find matching products for this specific perfume
-    const matchingResults = findMatchingShopifyProducts(perfume);
-    
-    let html = `
-      <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
-    `;
-    
-    if (matchingResults.length > 0) {
-      html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
-      html += '<div class="fc-grid-2col">';
-      
-      // RECOMMENDED: The best matching product
-      if (matchingResults.length >= 1) {
-        html += renderYourProductCard(matchingResults[0].product, 'Recommended');
-      }
-      
-      // YOU MIGHT LIKE IT: Second best match or random product
-      let secondProduct = null;
-      
-      if (matchingResults.length >= 2) {
-        secondProduct = matchingResults[1].product;
-      } else {
-        // Pick a random product that's not the first match
-        const otherProducts = fcProducts.filter(p => p.id !== matchingResults[0].product.id);
-        if (otherProducts.length > 0) {
-          secondProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
-        }
-      }
-      
-      if (secondProduct) {
-        html += renderYourProductCard(secondProduct, 'You might like it');
-      }
-      
-      html += '</div>';
-    } else {
-      // No matches found, show random products
-      html += `<div class="fc-subsection-title">You Might Also Like</div>`;
-      html += '<div class="fc-grid-2col">';
-      
-      const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
-      if (randomProducts.length >= 1) {
-        html += renderYourProductCard(randomProducts[0], 'Recommended');
-      }
-      if (randomProducts.length >= 2) {
-        html += renderYourProductCard(randomProducts[1], 'You might like it');
-      }
-      
-      html += '</div>';
+    // YOU MIGHT LIKE IT: Random product from your collection
+    const otherProducts = fcProducts.filter(p => p.title !== mappedProduct.title);
+    if (otherProducts.length > 0) {
+      const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
+      html += renderYourProductCard(randomProduct, 'You might like it');
     }
     
-    // Show catalog perfume details
-    html += `
-      <div class="fc-detailed-view">
-        <div class="fc-detailed-header">
-          <img class="fc-detailed-image" src="${perfume.image}" 
-               alt="${perfume.name}"
-               loading="lazy"
-               onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
-          <div>
-            <div class="fc-detailed-name">${perfume.name}</div>
-            <div class="fc-detailed-brand">${perfume.brand}</div>
-            ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
-            ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
-          </div>
-        </div>
-
-        <div class="fc-notes-section">
-          ${perfume.top_notes ? `
-            <div class="fc-note-category">
-              <h4>TOP NOTES</h4>
-              <div class="fc-note-tags">
-                ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-              </div>
-            </div>
-          ` : ''}
-          
-          ${perfume.heart_notes ? `
-            <div class="fc-note-category">
-              <h4>HEART NOTES</h4>
-              <div class="fc-note-tags">
-                ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-              </div>
-            </div>
-          ` : ''}
-          
-          ${perfume.base_notes ? `
-            <div class="fc-note-category">
-              <h4>BASE NOTES</h4>
-              <div class="fc-note-tags">
-                ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-        
-        <div class="fc-description">
-          ${perfume.description}
+    html += '</div>';
+  } else {
+    // Fallback if no mapping exists
+    html += `<div class="fc-subsection-title">You Might Like</div>`;
+    html += '<div class="fc-grid-2col">';
+    
+    const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
+    if (randomProducts.length >= 1) {
+      html += renderYourProductCard(randomProducts[0], 'Recommended');
+    }
+    if (randomProducts.length >= 2) {
+      html += renderYourProductCard(randomProducts[1], 'You might like it');
+    }
+    
+    html += '</div>';
+  }
+  
+  // Show catalog perfume details
+  html += `
+    <div class="fc-detailed-view">
+      <div class="fc-detailed-header">
+        <img class="fc-detailed-image" src="${perfume.image}" 
+             alt="${perfume.name}"
+             loading="lazy"
+             onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
+        <div>
+          <div class="fc-detailed-name">${perfume.name}</div>
+          <div class="fc-detailed-brand">${perfume.brand}</div>
+          ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
+          ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
         </div>
       </div>
-    `;
-    
-    content.innerHTML = html;
-  };
 
+      <div class="fc-notes-section">
+        ${perfume.top_notes ? `
+          <div class="fc-note-category">
+            <h4>TOP NOTES</h4>
+            <div class="fc-note-tags">
+              ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+        
+        ${perfume.heart_notes ? `
+          <div class="fc-note-category">
+            <h4>HEART NOTES</h4>
+            <div class="fc-note-tags">
+              ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+        
+        ${perfume.base_notes ? `
+          <div class="fc-note-category">
+            <h4>BASE NOTES</h4>
+            <div class="fc-note-tags">
+              ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+      
+      <div class="fc-description">
+        ${perfume.description}
+      </div>
+    </div>
+  `;
+  
+  content.innerHTML = html;
+};
+
+// ===== RENDER DIRECT PRODUCT CARD FROM MAPPING =====
+function renderDirectProductCard(product, badge) {
+  return `
+    <div class="fc-product-card">
+      <div class="fc-badge">${badge}</div>
+      <div class="fc-product-inner">
+        <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
+        <div class="fc-product-title">${product.title}</div>
+        <div class="fc-product-price">${product.price}</div>
+        <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Product</button>
+        <div>
+          <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Details</span>
+        </div>
+      </div>
+    </div>
+  ;
+}
   // ===== IMPROVED FUNCTION TO FIND MATCHING SHOPIFY PRODUCTS =====
   function findMatchingShopifyProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
