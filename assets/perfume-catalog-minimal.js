@@ -403,7 +403,7 @@ window.PerfumeCatalog = {
     },
     {
       id: "dior_sauvage_elixir",
-      name: "Sauvage Elixir Dior",
+      name: "Dior Sauvage Elixir",
       brand: "Dior",
       image: "https://magicperfume.co.uk/cdn/shop/files/Dior-Sauvage-Elixir-Parfum-for-Men.jpg?v=1772016795",
       top_notes: ["Grapefruit", "Nutmeg", "Cinnamon"],
