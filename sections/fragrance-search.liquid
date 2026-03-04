@@ -1041,15 +1041,54 @@
     });
   }
 
-  // ===== HARDCODED RULES - THESE ALWAYS WORK =====
+  // ===== FIXED & CLEAN MATCHING =====
+function findInspiredProducts(catalogPerfume) {
+  if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
   
-  // RULE 1: If catalog is "Code" (men's version), ALWAYS show No. 260 first
-  if (catalogId === "armani_code" || catalogName === "code" || (catalogName.includes("code") && !catalogName.includes("women"))) {
-    const no260 = fcProducts.find(p => 
-      p.title.includes("260") || 
-      p.title.includes("No. 260") || 
-      p.title.includes("No 260")
+  const catalogName = (catalogPerfume.name || '').toLowerCase();
+  const matches = [];
+  const addedIds = new Set();
+
+  // ===== 1️⃣ HARDCODED FIX FOR CODE =====
+  if (catalogName.includes("code")) {
+    
+    const no260 = fcProducts.find(p =>
+      p.title.toLowerCase().includes("no. 260") ||
+      p.title.toLowerCase().includes("no 260")
     );
+
+    if (no260) {
+      matches.push({ product: no260, priority: 1 });
+      addedIds.add(no260.id);
+    }
+
+    const no135 = fcProducts.find(p =>
+      p.title.toLowerCase().includes("no. 135") ||
+      p.title.toLowerCase().includes("no 135")
+    );
+
+    if (no135 && !addedIds.has(no135.id)) {
+      matches.push({ product: no135, priority: 2 });
+      addedIds.add(no135.id);
+    }
+  }
+
+  // ===== 2️⃣ NORMAL MATCHING =====
+  fcProducts.forEach(product => {
+    if (addedIds.has(product.id)) return;
+
+    const title = product.title.toLowerCase();
+
+    if (title.includes(catalogName)) {
+      matches.push({ product, priority: 3 });
+      addedIds.add(product.id);
+    }
+  });
+
+  matches.sort((a, b) => a.priority - b.priority);
+
+  return matches;
+}
 // ===== FUZZY MATCH FUNCTION =====
 function fuzzyMatch(str, query) {
   if (!str || !query) return false;
