@@ -7,8 +7,8 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **DIRECT MATCHING: Shows product if it contains ANY word from catalog perfume**
-  - **SIMPLE & FOOLPROOF: No points, no complex logic, just direct matching**
+  - **FIXED: Uses "Inspired by" text from product title for matching**
+  - **DIRECT MATCHING: Shows product if "Inspired by" text contains catalog perfume name**
   - **NO RESULTS: When no matches exist, shows popular suggestions**
 {% endcomment %}
 
@@ -1024,104 +1024,63 @@
     return html;
   }
 
-  // ===== SIMPLE DIRECT MATCHING FOR INSPIRED PRODUCTS =====
+  // ===== FIXED: FIND INSPIRED PRODUCTS USING "INSPIRED BY" TEXT =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
-    const catalogBrand = catalogPerfume.brand.toLowerCase();
-    
-    // Split catalog name into meaningful words (ignore common words)
-    const catalogWords = catalogName.split(/\s+/).filter(word => 
-      word.length > 2 && !['the', 'for', 'with', 'and', 'eau', 'de', 'parfum', 'toilette'].includes(word)
-    );
+    const catalogWords = catalogName.split(/\s+/).filter(word => word.length > 2);
     
     const matches = [];
     
     fcProducts.forEach(product => {
-      const productTitle = product.title.toLowerCase();
       const inspiredName = getInspiredName(product.title);
-      const nutaName = getNutaName(product);
       
-      // Check 1: NUTA match (most reliable)
-      if (nutaName) {
-        const nutaLower = nutaName.toLowerCase();
-        
-        // If nuta contains the catalog name (e.g., "Code for Women" contains "Code")
-        if (nutaLower.includes(catalogName)) {
-          matches.push({
-            product,
-            matchType: 'nuta_contains'
-          });
-          return;
-        }
-        
-        // If catalog name contains the nuta
-        if (catalogName.includes(nutaLower)) {
-          matches.push({
-            product,
-            matchType: 'nuta_in_catalog'
-          });
-          return;
-        }
-      }
+      if (!inspiredName) return; // Skip products without "Inspired by" text
       
-      // Check 2: Inspired by text match
-      if (inspiredName) {
-        const inspiredLower = inspiredName.toLowerCase();
-        
-        // If inspired name contains the catalog name
-        if (inspiredLower.includes(catalogName)) {
-          matches.push({
-            product,
-            matchType: 'inspired_contains'
-          });
-          return;
-        }
-        
-        // If catalog name contains the inspired name
-        if (catalogName.includes(inspiredLower)) {
-          matches.push({
-            product,
-            matchType: 'inspired_in_catalog'
-          });
-          return;
-        }
-      }
+      const inspiredLower = inspiredName.toLowerCase();
       
-      // Check 3: Product title contains catalog name
-      if (productTitle.includes(catalogName)) {
+      // Check 1: Inspired name exactly matches catalog name
+      if (inspiredLower === catalogName) {
         matches.push({
           product,
-          matchType: 'title_contains'
+          matchType: 'exact_match'
         });
         return;
       }
       
-      // Check 4: Product title contains any catalog words
+      // Check 2: Inspired name contains catalog name
+      if (inspiredLower.includes(catalogName)) {
+        matches.push({
+          product,
+          matchType: 'inspired_contains'
+        });
+        return;
+      }
+      
+      // Check 3: Catalog name contains inspired name
+      if (catalogName.includes(inspiredLower)) {
+        matches.push({
+          product,
+          matchType: 'catalog_contains'
+        });
+        return;
+      }
+      
+      // Check 4: Any catalog word is in inspired name
       for (const word of catalogWords) {
-        if (productTitle.includes(word)) {
+        if (inspiredLower.includes(word)) {
           matches.push({
             product,
-            matchType: `title_word_${word}`
+            matchType: `word_match_${word}`
           });
           return;
         }
-      }
-      
-      // Check 5: Product title contains catalog brand
-      if (catalogBrand && productTitle.includes(catalogBrand)) {
-        matches.push({
-          product,
-          matchType: 'brand_match'
-        });
-        return;
       }
     });
     
     console.log(`Found ${matches.length} matches for "${catalogPerfume.name}"`);
     
-    // Return matches (already in the order they were found)
     return matches;
   }
 
