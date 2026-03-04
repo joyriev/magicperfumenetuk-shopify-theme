@@ -14,7 +14,7 @@
       "name": "Home Hero Banner",
       "settings": {
         "image": "shopify://shop_images/herobanner.webp",
-        "mobile_image": "shopify://shop_images/herobanner.webp",
+        "mobile_image": "shopify://shop_images/heromobile.webp",
         "link": "shopify://products/4x-30ml-perfume-bottles"
       }
     },
