@@ -3,9 +3,7 @@
   - Fixed search functionality - NOW WORKING PROPERLY
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
-  - Improved matching for Chanel No.5 → No. 077
-  - Improved matching for Musc Noir → No. 457
-  - Improved matching for Bleu de Chanel
+  - DIRECT MAPPING for accurate product matching
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -923,6 +921,7 @@
     
     // Add from PerfumeCatalog if it exists
     if (window.PerfumeCatalog) {
+      // Get all array properties (brands)
       for (let brandKey in window.PerfumeCatalog) {
         if (Array.isArray(window.PerfumeCatalog[brandKey])) {
           allPerfumes.push(...window.PerfumeCatalog[brandKey]);
@@ -931,108 +930,6 @@
     }
     
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
-  }
-
-  // ===== NORMALIZE STRING FOR BETTER MATCHING =====
-  function normalizeString(str) {
-    if (!str) return '';
-    return str.toLowerCase()
-              .replace(/[^\w\s]/g, ' ') // Replace punctuation with space
-              .replace(/\s+/g, ' ')      // Normalize spaces
-              .trim();
-  }
-
-  // ===== EXTRACT KEYWORDS FROM PRODUCT TITLE =====
-  function extractKeywords(title) {
-    if (!title) return [];
-    
-    const normalized = normalizeString(title);
-    const words = normalized.split(' ');
-    
-    // Remove common words and keep meaningful ones
-    const stopWords = ['inspired', 'by', 'the', 'and', 'for', 'her', 'him', 'men', 'women', 'man', 'woman', 'edp', 'eau', 'de', 'parfum', 'toilette', 'with', 'from', 'new'];
-    
-    return words.filter(word => 
-      word.length > 2 && !stopWords.includes(word)
-    );
-  }
-
-  // ===== LEVENSHTEIN DISTANCE FOR FUZZY MATCHING =====
-  function levenshteinDistance(a, b) {
-    if (a.length === 0) return b.length;
-    if (b.length === 0) return a.length;
-    
-    const matrix = [];
-    for (let i = 0; i <= b.length; i++) {
-      matrix[i] = [i];
-    }
-    for (let j = 0; j <= a.length; j++) {
-      matrix[0][j] = j;
-    }
-    
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        if (b.charAt(i - 1) === a.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          );
-        }
-      }
-    }
-    return matrix[b.length][a.length];
-  }
-
-  // ===== IMPROVED SIMILARITY SCORE =====
-  function calculateSimilarity(str1, str2) {
-    if (!str1 || !str2) return 0;
-    
-    const s1 = normalizeString(str1);
-    const s2 = normalizeString(str2);
-    
-    // Exact match
-    if (s1 === s2) return 100;
-    
-    // One contains the other
-    if (s1.includes(s2) || s2.includes(s1)) {
-      return 80;
-    }
-    
-    // Check keyword overlap
-    const keywords1 = extractKeywords(s1);
-    const keywords2 = extractKeywords(s2);
-    
-    let matches = 0;
-    for (const kw1 of keywords1) {
-      for (const kw2 of keywords2) {
-        if (kw1.includes(kw2) || kw2.includes(kw1)) {
-          matches++;
-          break;
-        }
-      }
-    }
-    
-    if (keywords1.length > 0 && keywords2.length > 0) {
-      const matchPercentage = (matches / Math.max(keywords1.length, keywords2.length)) * 100;
-      if (matchPercentage > 30) {
-        return Math.min(70, matchPercentage);
-      }
-    }
-    
-    // Fuzzy match for typos
-    const distance = levenshteinDistance(s1.substring(0, 15), s2.substring(0, 15));
-    const maxLength = Math.max(s1.length, s2.length);
-    if (maxLength > 0) {
-      const similarity = ((maxLength - distance) / maxLength) * 100;
-      if (similarity > 50) {
-        return similarity;
-      }
-    }
-    
-    return 0;
   }
 
   // ===== SIMPLE SEARCH FUNCTION - SHOWS ALL PRODUCTS =====
@@ -1205,122 +1102,195 @@
   }
 
   // ===== SHOW PERFUME DETAIL WITH DIRECT PRODUCT MAPPING =====
-window.fcShowPerfumeDetail = function(perfumeId) {
-  const perfume = findPerfumeById(perfumeId);
-  if (!perfume) return;
-  
-  currentView = 'detail';
-  steps.style.display = 'none';
-  
-  // Get the directly mapped Shopify product
-  const mappedProduct = window.PerfumeCatalog.getShopifyProductByPerfumeId(perfumeId);
-  
-  let html = `
-    <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
-  `;
-  
-  if (mappedProduct) {
-    html += `<div class="fc-subsection-title">Our Inspired Version</div>`;
-    html += '<div class="fc-grid-2col">';
+  window.fcShowPerfumeDetail = function(perfumeId) {
+    const perfume = findPerfumeById(perfumeId);
+    if (!perfume) return;
     
-    // RECOMMENDED: The exact mapped product
-    html += renderDirectProductCard(mappedProduct, 'Recommended');
+    currentView = 'detail';
+    steps.style.display = 'none';
     
-    // YOU MIGHT LIKE IT: Random product from your collection
-    const otherProducts = fcProducts.filter(p => p.title !== mappedProduct.title);
-    if (otherProducts.length > 0) {
-      const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
-      html += renderYourProductCard(randomProduct, 'You might like it');
-    }
+    // Get the directly mapped Shopify product
+    const mappedProduct = getShopifyProductByPerfumeId(perfumeId);
     
-    html += '</div>';
-  } else {
-    // Fallback if no mapping exists
-    html += `<div class="fc-subsection-title">You Might Like</div>`;
-    html += '<div class="fc-grid-2col">';
+    let html = `
+      <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
+    `;
     
-    const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
-    if (randomProducts.length >= 1) {
-      html += renderYourProductCard(randomProducts[0], 'Recommended');
-    }
-    if (randomProducts.length >= 2) {
-      html += renderYourProductCard(randomProducts[1], 'You might like it');
-    }
-    
-    html += '</div>';
-  }
-  
-  // Show catalog perfume details
-  html += `
-    <div class="fc-detailed-view">
-      <div class="fc-detailed-header">
-        <img class="fc-detailed-image" src="${perfume.image}" 
-             alt="${perfume.name}"
-             loading="lazy"
-             onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
-        <div>
-          <div class="fc-detailed-name">${perfume.name}</div>
-          <div class="fc-detailed-brand">${perfume.brand}</div>
-          ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
-          ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
-        </div>
-      </div>
-
-      <div class="fc-notes-section">
-        ${perfume.top_notes ? `
-          <div class="fc-note-category">
-            <h4>TOP NOTES</h4>
-            <div class="fc-note-tags">
-              ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-            </div>
-          </div>
-        ` : ''}
-        
-        ${perfume.heart_notes ? `
-          <div class="fc-note-category">
-            <h4>HEART NOTES</h4>
-            <div class="fc-note-tags">
-              ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-            </div>
-          </div>
-        ` : ''}
-        
-        ${perfume.base_notes ? `
-          <div class="fc-note-category">
-            <h4>BASE NOTES</h4>
-            <div class="fc-note-tags">
-              ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
-            </div>
-          </div>
-        ` : ''}
-      </div>
+    if (mappedProduct) {
+      html += `<div class="fc-subsection-title">Our Inspired Version</div>`;
+      html += '<div class="fc-grid-2col">';
       
-      <div class="fc-description">
-        ${perfume.description}
-      </div>
-    </div>
-  `;
-  
-  content.innerHTML = html;
-};
+      // RECOMMENDED: The exact mapped product
+      html += renderDirectProductCard(mappedProduct, 'Recommended');
+      
+      // YOU MIGHT LIKE IT: Random product from your collection
+      const otherProducts = fcProducts.filter(p => p.title !== mappedProduct.title);
+      if (otherProducts.length > 0) {
+        const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
+        html += renderYourProductCard(randomProduct, 'You might like it');
+      }
+      
+      html += '</div>';
+    } else {
+      // Fallback if no mapping exists - use findMatchingShopifyProducts
+      const matchingResults = findMatchingShopifyProducts(perfume);
+      
+      if (matchingResults.length > 0) {
+        html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
+        html += '<div class="fc-grid-2col">';
+        
+        // RECOMMENDED: The best matching product
+        if (matchingResults.length >= 1) {
+          html += renderYourProductCard(matchingResults[0].product, 'Recommended');
+        }
+        
+        // YOU MIGHT LIKE IT: Second best match
+        if (matchingResults.length >= 2) {
+          html += renderYourProductCard(matchingResults[1].product, 'You might like it');
+        } else {
+          const otherProducts = fcProducts.filter(p => p.id !== matchingResults[0].product.id);
+          if (otherProducts.length > 0) {
+            const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
+            html += renderYourProductCard(randomProduct, 'You might like it');
+          }
+        }
+        
+        html += '</div>';
+      } else {
+        html += `<div class="fc-subsection-title">You Might Like</div>`;
+        html += '<div class="fc-grid-2col">';
+        
+        const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
+        if (randomProducts.length >= 1) {
+          html += renderYourProductCard(randomProducts[0], 'Recommended');
+        }
+        if (randomProducts.length >= 2) {
+          html += renderYourProductCard(randomProducts[1], 'You might like it');
+        }
+        
+        html += '</div>';
+      }
+    }
+    
+    // Show catalog perfume details
+    html += `
+      <div class="fc-detailed-view">
+        <div class="fc-detailed-header">
+          <img class="fc-detailed-image" src="${perfume.image}" 
+               alt="${perfume.name}"
+               loading="lazy"
+               onerror="this.src='https://via.placeholder.com/110x110?text=Perfume'">
+          <div>
+            <div class="fc-detailed-name">${perfume.name}</div>
+            <div class="fc-detailed-brand">${perfume.brand}</div>
+            ${perfume.year ? `<div class="fc-detailed-meta">${perfume.year}</div>` : ''}
+            ${perfume.gender ? `<div class="fc-detailed-meta">${perfume.gender}</div>` : ''}
+          </div>
+        </div>
 
-// ===== RENDER DIRECT PRODUCT CARD FROM MAPPING =====
-function renderDirectProductCard(product, badge) {
-  return `
-    <div class="fc-product-card">
-      <div class="fc-badge">${badge}</div>
-      <div class="fc-product-inner">
-        <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
-        <div class="fc-product-title">${product.title}</div>
-        <div class="fc-product-price">${product.price}</div>
-        <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Product</button>
-        <div>
-          <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Details</span>
+        <div class="fc-notes-section">
+          ${perfume.top_notes ? `
+            <div class="fc-note-category">
+              <h4>TOP NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.top_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${perfume.heart_notes ? `
+            <div class="fc-note-category">
+              <h4>HEART NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.heart_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${perfume.base_notes ? `
+            <div class="fc-note-category">
+              <h4>BASE NOTES</h4>
+              <div class="fc-note-tags">
+                ${perfume.base_notes.map(note => `<span class="fc-note-tag">${note}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+        
+        <div class="fc-description">
+          ${perfume.description}
         </div>
       </div>
-    </div>
-  ;
-}
+    `;
+    
+    content.innerHTML = html;
+  };
+
+  // ===== GET SHOPIFY PRODUCT BY PERFUME ID =====
+  function getShopifyProductByPerfumeId(perfumeId) {
+    if (!window.PerfumeCatalog) return null;
+    
+    for (let brandKey in window.PerfumeCatalog) {
+      if (Array.isArray(window.PerfumeCatalog[brandKey])) {
+        const perfume = window.PerfumeCatalog[brandKey].find(p => p.id === perfumeId);
+        if (perfume && perfume.shopifyProduct) {
+          return perfume.shopifyProduct;
+        }
+      }
+    }
+    return null;
+  }
+
+  // ===== RENDER DIRECT PRODUCT CARD FROM MAPPING =====
+  function renderDirectProductCard(product, badge) {
+    return `
+      <div class="fc-product-card">
+        <div class="fc-badge">${badge}</div>
+        <div class="fc-product-inner">
+          <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
+          <div class="fc-product-title">${product.title}</div>
+          <div class="fc-product-price">${product.price}</div>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Product</button>
+          <div>
+            <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Details</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== EXTRACT KEYWORDS FROM PRODUCT TITLE =====
+  function extractKeywords(title) {
+    if (!title) return [];
+    
+    const normalized = title.toLowerCase()
+      .replace(/[^\w\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+      
+    const words = normalized.split(' ');
+    
+    // Remove common words
+    const stopWords = ['inspired', 'by', 'the', 'and', 'for', 'her', 'him', 'men', 'women', 'man', 'woman', 'edp', 'eau', 'de', 'parfum', 'toilette', 'with', 'from', 'new'];
+    
+    return words.filter(word => 
+      word.length > 2 && !stopWords.includes(word)
+    );
+  }
+
+  // ===== CALCULATE SIMILARITY SCORE =====
+  function calculateSimilarity(str1, str2) {
+    if (!str1 || !str2) return 0;
+    
+    const s1 = str1.toLowerCase();
+    const s2 = str2.toLowerCase();
+    
+    if (s1 === s2) return 100;
+    if (s1.includes(s2) || s2.includes(s1)) return 80;
+    
+    return 0;
+  }
+
   // ===== IMPROVED FUNCTION TO FIND MATCHING SHOPIFY PRODUCTS =====
   function findMatchingShopifyProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
@@ -1346,7 +1316,6 @@ function renderDirectProductCard(product, badge) {
 
     // Check if catalog perfume matches any special mapping
     const catalogLower = catalogName.toLowerCase();
-    let specialMatchFound = false;
 
     for (const [key, values] of Object.entries(specialMappings)) {
       if (catalogLower.includes(key) || key.includes(catalogLower)) {
@@ -1359,7 +1328,6 @@ function renderDirectProductCard(product, badge) {
             if (titleLower.includes(value)) {
               matches.push({ product, score: 500 });
               addedIds.add(product.id);
-              specialMatchFound = true;
               console.log(`Special match: ${product.title} for ${catalogName}`);
               break;
             }
@@ -1376,7 +1344,6 @@ function renderDirectProductCard(product, badge) {
       const title = product.title;
       const titleLower = title.toLowerCase();
       let score = 0;
-      let matchReasons = [];
       
       // ===== SPECIAL HANDLING FOR CODE =====
       if (catalogLower.includes('code')) {
@@ -1396,13 +1363,10 @@ function renderDirectProductCard(product, badge) {
       if (inspiredMatch) {
         const inspiredName = inspiredMatch[1].toLowerCase();
         
-        // Check if inspired name matches catalog name
         if (inspiredName.includes(catalogLower) || catalogLower.includes(inspiredName)) {
           score += 300;
-          matchReasons.push('inspired match');
         }
         
-        // Check for keyword matches
         const inspiredKeywords = extractKeywords(inspiredName);
         const catalogKeywords = extractKeywords(catalogLower);
         
@@ -1410,7 +1374,6 @@ function renderDirectProductCard(product, badge) {
           for (const ck of catalogKeywords) {
             if (ik.includes(ck) || ck.includes(ik)) {
               score += 100;
-              matchReasons.push(`keyword: ${ik}`);
               break;
             }
           }
@@ -1424,7 +1387,6 @@ function renderDirectProductCard(product, badge) {
       if (catalogNumberMatch && productNumberMatch) {
         if (catalogNumberMatch[1] === productNumberMatch[1]) {
           score += 400;
-          matchReasons.push('exact number match');
         }
       }
       
@@ -1434,7 +1396,6 @@ function renderDirectProductCard(product, badge) {
         for (const word of brandWords) {
           if (word.length > 2 && titleLower.includes(word)) {
             score += 50;
-            matchReasons.push(`brand: ${word}`);
           }
         }
       }
@@ -1443,14 +1404,13 @@ function renderDirectProductCard(product, badge) {
       const similarity = calculateSimilarity(title, catalogName);
       if (similarity > 40) {
         score += similarity;
-        matchReasons.push(`similarity: ${similarity}%`);
       }
       
       // If score is meaningful, add to matches
       if (score > 50) {
         matches.push({ product, score });
         addedIds.add(product.id);
-        console.log(`Match found: ${product.title} with score ${score}`, matchReasons);
+        console.log(`Match found: ${product.title} with score ${score}`);
       }
     });
 
@@ -1507,9 +1467,6 @@ function renderDirectProductCard(product, badge) {
       {% endfor %}
     ];
     console.log('✓ Loaded', fcProducts.length, 'products');
-    
-    // Log all product titles for debugging
-    console.log('Product titles:', fcProducts.map(p => p.title));
   }
 
   // ===== SHOW NOTIFICATION =====
@@ -1774,13 +1731,6 @@ function renderDirectProductCard(product, badge) {
     searchPopup.addEventListener('click', function(e) {
       e.stopPropagation();
     });
-    
-    // Test matching for specific perfumes
-    setTimeout(() => {
-      console.log('Testing specific matches:');
-      console.log('- Chanel No.5 should match No. 077');
-      console.log('- Musc Noir should match No. 457');
-    }, 1000);
   });
 
 })(); 
