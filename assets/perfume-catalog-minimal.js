@@ -14,7 +14,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Vanilla", "Cedar"],
       description: "A sensual and mysterious fragrance that celebrates the power of musk. Musc Noir opens with juicy plum, leading to a heart of tuberose and musk. The base is warm and addictive with patchouli and vanilla.",
       year: "2018",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["457"] // No. 457 - Inspired by Musc Noir For Her
     }
   ],
   
@@ -30,7 +31,8 @@ window.PerfumeCatalog = {
       base_notes: ["Musk", "Patchouli", "Vetiver", "Cedar"],
       description: "A vibrant and unexpected floral fragrance. Chance opens with a burst of pink pepper and quince, leading to a luminous heart of hyacinth and jasmine. The base is warm and sensual with musk and patchouli.",
       year: "2003",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["006"] // No. 006 - Inspired by Chance
     },
     {
       id: "chanel_coco",
@@ -42,7 +44,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Amber", "Opium", "Benzoin"],
       description: "A sumptuous and sensual oriental fragrance that embodies the spirit of Mademoiselle Chanel. Coco opens with spicy coriander and fruity peach, leading to a rich floral heart. The base is deep and opulent with sandalwood and amber.",
       year: "1984",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["079"] // No. 079 - Inspired by Coco
     },
     {
       id: "chanel_bleu",
@@ -54,7 +57,8 @@ window.PerfumeCatalog = {
       base_notes: ["Incense", "Vetiver", "Cedar", "Sandalwood"],
       description: "A timeless and sophisticated fragrance for men that embodies the spirit of freedom. Bleu de Chanel opens with a fresh and vibrant burst of citrus and mint, leading to a spicy heart of ginger and nutmeg. The base is deep and sensual with incense and woody notes.",
       year: "2010",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["252"] // No. 252 - Inspired by Bleu
     },
     {
       id: "chanel_allure_homme_sport",
@@ -66,7 +70,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Vetiver"],
       description: "A fresh and energetic fragrance for the active man. Allure Homme Sport captures the invigorating spirit of sport with sparkling citrus and aquatic notes, leading to a warm and sensual heart of cedar and tonka.",
       year: "2004",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["222"] // No. 222 - Inspired by Allure Homme Sport
     },
     {
       id: "chanel_no5",
@@ -78,7 +83,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Sandalwood", "Vetiver", "Musk"],
       description: "The most legendary fragrance in the world, Chanel No 5 is an abstract floral aldehyde that revolutionized perfumery. Created in 1921 by Ernest Beaux, it opens with a burst of sparkling aldehydes that give way to a rich bouquet of jasmine and rose.",
       year: "1921",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["077"] // No. 077 - Inspired by No. 5
     },
     {
       id: "chanel_coco_mademoiselle",
@@ -90,7 +96,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Vanilla", "Musk", "Vetiver"],
       description: "A fresh and modern oriental fragrance that captures the spirit of a young, confident woman. Coco Mademoiselle opens with sparkling citrus notes, leading to a romantic floral heart of rose and jasmine.",
       year: "2001",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["067", "139"] // No. 067 - Mademoiselle Intense, No. 139 - Mademoiselle
     }
   ],
   
@@ -106,7 +113,8 @@ window.PerfumeCatalog = {
       base_notes: ["Amber", "Myrrh", "Benzoin"],
       description: "A dark and intoxicating vanilla fragrance. Vanille Fatale opens with precious saffron and neroli, leading to a heart of rich vanilla blended with smoky coffee and leather.",
       year: "2017",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["053"] // No. 053 - Inspired by Vanille Fatale
     },
     {
       id: "tomford_tobacco_vanille",
@@ -118,7 +126,8 @@ window.PerfumeCatalog = {
       base_notes: ["Dried Fruits", "Woody Notes"],
       description: "A warm and spicy fragrance with tobacco and vanilla notes. Rich, opulent and sophisticated, this is a signature scent for those who appreciate the finer things in life.",
       year: "2007",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["193"] // No. 193 - Inspired by Tobacco Vanille
     },
     {
       id: "tomford_cherry_smoke",
@@ -130,7 +139,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Musk", "Sandalwood"],
       description: "A seductive and mysterious blend of sweet cherry and smoky notes. Cherry Smoke opens with juicy cherry and saffron, leading to a heart of rose and jasmine infused with a wisp of smoke.",
       year: "2020",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["434"] // No. 434 - Inspired by Cherry Smoke
     },
     {
       id: "tomford_lost_cherry",
@@ -142,7 +152,8 @@ window.PerfumeCatalog = {
       base_notes: ["Peru Balsam", "Benzoin", "Vanilla", "Cedar"],
       description: "A seductive and playful fragrance that captures the essence of a forbidden fruit. Lost Cherry opens with juicy cherry and almond, leading to a heart of rose and jasmine.",
       year: "2018",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["438"] // No. 438 - Inspired by Lost Cherry
     },
     {
       id: "tomford_oud_wood",
@@ -154,7 +165,8 @@ window.PerfumeCatalog = {
       base_notes: ["Tonka", "Amber", "Vanilla"],
       description: "A mysterious and exotic blend of rare oud wood with smoky notes. Oud Wood opens with rosewood and cardamom, leading to a heart of sandalwood, vetiver, and precious oud.",
       year: "2007",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["287"] // No. 287 - Inspired by Oud Wood
     },
     {
       id: "tomford_fucking_fabulous",
@@ -166,7 +178,8 @@ window.PerfumeCatalog = {
       base_notes: ["Tonka", "Amber", "Woody Notes"],
       description: "A bold, provocative fragrance with leather and almond notes. Daring, unique and incredibly fabulous, this fragrance is not for the faint of heart.",
       year: "2017",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: ["232"] // No. 232 - Inspired by Fucking Fabulous
     }
   ],
   
@@ -182,7 +195,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Tonka Bean", "Cedar"],
       description: "A seductive and addictive gourmand fragrance. La Belle opens with juicy pear, leading to a floral heart of jasmine. The base is warm and intoxicating with vanilla and tonka bean.",
       year: "2019",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["412"] // No. 412 - Inspired by La Belle
     },
     {
       id: "jpg_ultra_male",
@@ -194,7 +208,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Woody Notes"],
       description: "A powerful and seductive fragrance that pushes the boundaries of masculinity. Ultra Male opens with juicy pear and fresh mint, leading to a spicy heart of cinnamon.",
       year: "2015",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["349"] // No. 349 - Inspired by Ultra Male
     },
     {
       id: "jpg_classique_essence",
@@ -206,7 +221,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Musk"],
       description: "A more intense and sensual interpretation of the iconic Classique. This essence opens with spicy ginger and rose, leading to a rich floral heart of tuberose.",
       year: "2013",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["442"] // No. 442 - Inspired by Classique Essence de Parfum
     },
     {
       id: "jpg_le_male",
@@ -218,7 +234,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Tonka Bean", "Amber", "Cedar"],
       description: "An iconic and seductive fragrance for the modern man. Le Male opens with fresh mint and lavender, creating an aromatic and invigorating start. The heart reveals spicy cinnamon and orange blossom, while the base is warm and sensual with vanilla and tonka bean.",
       year: "1995",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["247"] // No. 247 - Inspired by Le Male
     }
   ],
   
@@ -234,7 +251,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Chestnut", "Tonka Bean"],
       description: "A warm and sensual fragrance that celebrates the strength of connection. Stronger With You opens with spicy cardamom, leading to an aromatic heart of sage and lavender.",
       year: "2017",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["291"] // No. 291 - Inspired by Stronger with You
     },
     {
       id: "armani_stronger_with_you_intensely",
@@ -246,7 +264,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Chestnut", "Tonka Bean", "Amber"],
       description: "A more intense and powerful interpretation of Stronger With You. This version opens with even more spice, leading to a deeper, richer heart.",
       year: "2019",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["318"] // No. 318 - Inspired by Stronger With You Intensely
     },
     {
       id: "armani_code",
@@ -258,7 +277,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Cedar", "Tonka Bean"],
       description: "A sophisticated and seductive fragrance for the modern man. Code opens with fresh bergamot and lemon, leading to a heart of olive blossom. The base is warm and sensual with leather and tonka bean.",
       year: "2004",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["260"] // No. 260 - Inspired by Code (MEN'S VERSION)
     },
     {
       id: "armani_acqua_di_gio",
@@ -270,7 +290,8 @@ window.PerfumeCatalog = {
       base_notes: ["Cedar", "Patchouli", "Musk"],
       description: "A timeless aquatic classic that captures the essence of the Mediterranean Sea. The citrus opening is fresh and invigorating, while the aromatic heart adds depth.",
       year: "1996",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["221"] // No. 221 - Inspired by Acqua Di Gio
     },
     {
       id: "armani_code_for_women",
@@ -282,7 +303,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Sandalwood", "Musk"],
       description: "A seductive and elegant oriental floral fragrance. The orange blossom opening is bright and feminine, while the heart of honey and almond adds a gourmand twist.",
       year: "2006",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["135"] // No. 135 - Inspired by Code for Women
     },
     {
       id: "armani_my_way",
@@ -294,7 +316,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Cedar", "White Musk"],
       description: "A radiant and ethical fragrance that celebrates authenticity and connection. My Way opens with bright orange blossom, leading to a heart of tuberose and jasmine.",
       year: "2020",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["140"] // No. 140 - Inspired by MY WAY
     },
     {
       id: "armani_emporio_she",
@@ -306,7 +329,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Vanilla"],
       description: "A fresh and feminine fragrance that captures the spirit of modern youth. Emporio Armani She opens with bright lemon and rose, leading to a floral heart of jasmine and peony.",
       year: "1998",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["150"] // No. 150 - Inspired by Emporio She
     },
     {
       id: "armani_si",
@@ -318,7 +342,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Patchouli", "Benzoin"],
       description: "A sophisticated and modern chypre fragrance that celebrates feminine strength. Si opens with fruity black currant, leading to a romantic heart of rose.",
       year: "2013",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["129"] // No. 129 - Inspired by Si
     },
     {
       id: "armani_emporio_he",
@@ -330,7 +355,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A fresh and masculine fragrance for the modern man. Emporio Armani He opens with bright citrus, leading to a woody heart of cedar. The base is warm and sensual with sandalwood and musk.",
       year: "1998",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["242"] // No. 242 - Inspired by He
     }
   ],
   
@@ -346,7 +372,8 @@ window.PerfumeCatalog = {
       base_notes: ["Virginia Cedar", "Vetiver"],
       description: "An intense and sensual fragrance that enhances masculinity. The iris is at the heart, creating an incredibly smooth and powdery character that evolves throughout the day.",
       year: "2011",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["277"] // No. 277 - Inspired by Homme Intense
     },
     {
       id: "dior_homme",
@@ -358,7 +385,8 @@ window.PerfumeCatalog = {
       base_notes: ["Cedar", "Vetiver", "Leather"],
       description: "A refined, elegant fragrance with iris at its heart. Dior Homme is a modern classic that has redefined masculine perfumery. It opens with fresh lavender and bergamot, leading to a heart uniquely centered around iris.",
       year: "2005",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["211"] // No. 211 - Inspired by Homme
     },
     {
       id: "dior_sauvage_parfum",
@@ -370,7 +398,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Vanilla", "Amber"],
       description: "A deeper, more intense interpretation of Sauvage. This parfum version opens with fresh bergamot, leading to a heart of lavender and star anise. The base is warm and sensual with sandalwood and vanilla.",
       year: "2018",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["338"] // No. 338 - Inspired by Sauvage Parfum
     },
     {
       id: "dior_sauvage_elixir",
@@ -382,7 +411,8 @@ window.PerfumeCatalog = {
       base_notes: ["Liquorice", "Patchouli", "Sandalwood"],
       description: "A bold and intense reinterpretation of Sauvage. Spicy and woody notes create an unexpected, powerful and elegant elixir. The opening is an explosion of spicy grapefruit and cinnamon, leading to a heart of lavender and star anise.",
       year: "2021",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["366"] // No. 366 - Inspired by Sauvage Elixir
     },
     {
       id: "dior_fahrenheit",
@@ -394,7 +424,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Vetiver", "Amber"],
       description: "A revolutionary fragrance that combines floral, woody and leather notes. Fahrenheit opens with a unique blend of hawthorn and nutmeg, leading to a surprising heart of leather and violet.",
       year: "1988",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["206"] // No. 206 - Inspired by Fahrenheit
     },
     {
       id: "dior_fahrenheit_le_parfum",
@@ -406,7 +437,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Vetiver", "Amber", "Myrrh"],
       description: "A deeper, more intense interpretation of the iconic Fahrenheit. Le Parfum amplifies the leather and violet notes, adding rich incense and myrrh for a darker, more mysterious character.",
       year: "2015",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["350"] // No. 350 - Inspired by Fahrenheit Le Parfum
     },
     {
       id: "dior_jadore",
@@ -418,7 +450,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A floral bouquet of exceptional richness. J'adore opens with fresh fruity notes of pear and melon, leading to a magnificent heart of jasmine and rose. The base of vanilla and musk provides a warm, comforting foundation.",
       year: "1999",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["159"] // No. 159 - Inspired by J'Adore
     },
     {
       id: "dior_hypnotic_poison",
@@ -430,7 +463,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Almond", "Musk"],
       description: "A mysterious and sensual fragrance that weaves a spell of seduction. Hypnotic Poison opens with a unique combination of bitter almond and coconut, leading to a floral heart of rose and jasmine.",
       year: "1998",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["145"] // No. 145 - Inspired Hypnotic Poison
     },
     {
       id: "dior_homme_parfum",
@@ -442,7 +476,8 @@ window.PerfumeCatalog = {
       base_notes: ["Virginia Cedar", "Vetiver", "Leather", "Amber Accord"],
       description: "The most concentrated and luxurious version of Dior Homme. This fragrance tells the story of a meeting between the suave and fleshy notes of iris with the powerful accords of amber woods.",
       year: "2025",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["196"] // No. 196 - Inspired by Le Parfum
     },
     {
       id: "dior_miss_cherie",
@@ -454,7 +489,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Musk", "Cedar"],
       description: "A playful and romantic fragrance that captures the spirit of a young woman in love. Miss Dior Chérie opens with a burst of juicy strawberry and mandarin, with a hint of pink pepper for sparkle.",
       year: "2005",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["082"] // No. 082 - Inspired by Miss Cherie
     }
   ],
   
@@ -470,7 +506,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Cedar", "Patchouli"],
       description: "A bold and edgy fragrance that captures the spirit of rock culture. Black Opium opens with a burst of coffee and pink pepper, leading to a floral heart of jasmine. The base is warm and addictive with vanilla and patchouli.",
       year: "2014",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["132"] // No. 132 - Inspired by Black Opium
     },
     {
       id: "ysl_libre",
@@ -482,7 +519,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Cedar"],
       description: "A bold and free-spirited fragrance that combines the freshness of lavender with the sensuality of orange blossom. Libre opens with aromatic lavender, leading to a heart of orange blossom.",
       year: "2019",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["034"] // No. 034 - Inspired by Libre
     },
     {
       id: "ysl_opium",
@@ -494,7 +532,8 @@ window.PerfumeCatalog = {
       base_notes: ["Opium", "Myrrh", "Amber", "Sandalwood"],
       description: "A legendary oriental fragrance that is both spicy and sensual. Opium opens with a burst of mandarin and clove, leading to a rich floral heart. The base is deep and intoxicating with opium and myrrh.",
       year: "1977",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["083"] // No. 083 - Inspired by Opium
     },
     {
       id: "ysl_la_vie_est_belle",
@@ -506,7 +545,8 @@ window.PerfumeCatalog = {
       base_notes: ["Praline", "Vanilla", "Patchouli", "Tonka Bean"],
       description: "A radiant and joyful fragrance that celebrates the beauty of life. La Vie Est Belle opens with fruity black currant and pear, leading to an elegant iris heart. The base is sweet and comforting with praline and vanilla.",
       year: "2012",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["101"] // No. 101 - Inspired by La Vie Est Belle
     },
     {
       id: "ysl_la_vie_est_belle_intensement",
@@ -518,7 +558,8 @@ window.PerfumeCatalog = {
       base_notes: ["Praline", "Vanilla", "Patchouli", "Tonka Bean"],
       description: "A more intense and voluptuous interpretation of La Vie Est Belle. This version opens with sparkling mandarin, leading to a rich floral heart of tuberose and jasmine. The base is even more addictive with praline and vanilla.",
       year: "2017",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["109"] // No. 109 - Inspired by La Vie Est Belle Intensement
     },
     {
       id: "ysl_manifesto",
@@ -530,7 +571,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Tonka Bean", "Cedar"],
       description: "A woody vanilla fragrance that captures the spirit of a free woman. Manifesto opens with fresh green notes, leading to a heart of jasmine. The base is warm and sensual with vanilla and tonka bean.",
       year: "2012",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["134"] // No. 134 - Inspired by Manifesto
     },
     {
       id: "ysl_y",
@@ -542,7 +584,8 @@ window.PerfumeCatalog = {
       base_notes: ["Amber", "Cedar", "Musk"],
       description: "A fresh and woody fragrance that represents a new generation. Y opens with sparkling bergamot and ginger, leading to an aromatic heart of sage. The base is warm and sensual with amber and cedar.",
       year: "2017",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["283"] // No. 283 - Inspired by Y
     },
     {
       id: "ysl_nuit_blanche",
@@ -554,7 +597,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Cedar", "Patchouli"],
       description: "A fresh and luminous interpretation of Black Opium. Nuit Blanche captures the magic of a sleepless night with sparkling coffee and orange blossom, leading to a floral heart of jasmine.",
       year: "2017",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["197"] // No. 197 - Inspired by Nuit Blanche
     }
   ],
   
@@ -570,7 +614,8 @@ window.PerfumeCatalog = {
       base_notes: ["Cedar", "Amber", "Musk"],
       description: "A fresh and elegant rose fragrance that captures the spirit of the modern woman. Chloé opens with sparkling peony and lychee, leading to a heart of romantic rose. The base is soft and sensual with cedar and musk.",
       year: "2008",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["024"] // No. 024 - Inspired by Chloe
     },
     {
       id: "chloe_nomade",
@@ -582,7 +627,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Amber", "Cedar"],
       description: "A free-spirited and adventurous fragrance for the modern woman. Nomade opens with juicy mirabelle, leading to a floral heart of rose and jasmine. The base is warm and sensual with patchouli and amber.",
       year: "2018",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["049"] // No. 049 - Inspired by Nomade
     }
   ],
   
@@ -598,7 +644,8 @@ window.PerfumeCatalog = {
       base_notes: ["Oakmoss", "Amber", "Patchouli"],
       description: "A fresh and powerful fragrance for the victorious man. Invictus opens with zesty grapefruit and sea notes, leading to an aromatic heart of bay leaf. The base is warm and sensual with oakmoss and amber.",
       year: "2013",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["228"] // No. 228 - Inspired by Invictus
     },
     {
       id: "paco_one_million",
@@ -610,7 +657,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Amber", "Patchouli"],
       description: "A bold and seductive fragrance for the man who knows his worth. 1 Million opens with fresh grapefruit and mint, leading to a spicy heart of cinnamon. The base is rich and sensual with leather and amber.",
       year: "2008",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["275"] // No. 275 - Inspired by One Million
     },
     {
       id: "paco_one_million_elixir",
@@ -622,7 +670,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Amber", "Vanilla", "Patchouli"],
       description: "A more intense and concentrated version of the iconic 1 Million. This elixir opens with even brighter citrus, leading to a spicier heart with saffron.",
       year: "2020",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["334"] // No. 334 - Inspired by One Million Elixir
     },
     {
       id: "paco_phantom",
@@ -634,7 +683,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Cedar"],
       description: "A futuristic and connected fragrance for a new generation. Phantom opens with fresh lemon and lavender, leading to an aromatic heart of sage. The base is warm and sensual with vanilla and amber.",
       year: "2021",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["399"] // No. 399 - Inspired by Phantom
     },
     {
       id: "paco_fame",
@@ -646,7 +696,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Vanilla", "Musk"],
       description: "A vibrant and modern fragrance that celebrates self-expression. Fame opens with juicy mango, leading to a floral heart of jasmine. The base is warm and sensual with sandalwood and vanilla.",
       year: "2022",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["498"] // No. 498 - Inspired by Fame
     },
     {
       id: "paco_lady_million",
@@ -658,7 +709,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Amber", "Cedar"],
       description: "A dazzling and glamorous fragrance for the modern woman. Lady Million opens with juicy raspberry, leading to a floral heart of orange blossom and honey. The base is warm and sensual with patchouli and amber.",
       year: "2010",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["023"] // No. 023 - Inspired by Lady Million
     }
   ],
   
@@ -674,7 +726,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Amber"],
       description: "A classic and sophisticated fragrance for the successful modern man. Boss Bottled opens with fresh apple and citrus, leading to a woody heart of cedar and sandalwood. The base is warm and elegant with vanilla and musk.",
       year: "1998",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["234"] // No. 234 - Inspired by Bottled
     },
     {
       id: "boss_bottled_night",
@@ -686,7 +739,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A mysterious and seductive fragrance for evening wear. Boss Bottled Night opens with aromatic lavender and cardamom, leading to a heart of violet leaf and ebony wood. The base is warm and sensual with sandalwood and musk.",
       year: "2010",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["274"] // No. 274 - Inspired by Bottled Night
     },
     {
       id: "boss_woman",
@@ -698,7 +752,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Vanilla"],
       description: "A classic and elegant fragrance for the successful modern woman. Boss Woman opens with fresh mandarin and apple, leading to a floral heart of rose and jasmine. The base is warm and sophisticated with sandalwood and vanilla.",
       year: "2000",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["060"] // No. 60 - Inspired by Boss Woman
     },
     {
       id: "boss_alive",
@@ -710,19 +765,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A vibrant and energetic fragrance that celebrates the joy of being alive. Boss Alive opens with juicy apple and black currant, leading to a spicy floral heart of rose and cinnamon. The base is warm and sensual with vanilla and musk.",
       year: "2019",
-      gender: "Female"
-    },
-    {
-      id: "boss_bottled_infinite",
-      name: "Boss Bottled Infinite",
-      brand: "Hugo Boss",
-      image: "https://magicperfume.co.uk/cdn/shop/files/bottled.png",
-      top_notes: ["Grapefruit", "Apple", "Cinnamon"],
-      heart_notes: ["Cedar", "Sage", "Geranium"],
-      base_notes: ["Sandalwood", "Musk", "Amber"],
-      description: "A fresh and energetic interpretation of the iconic Boss Bottled. Infinite opens with zesty grapefruit and apple, leading to a woody heart of cedar. The base is warm and confident with sandalwood and musk.",
-      year: "2020",
-      gender: "Male"
+      gender: "Female",
+      productNumbers: ["098"] // No. 098 - Inspired by ALIVE
     },
     {
       id: "boss_the_scent",
@@ -734,7 +778,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Patchouli", "Cedar"],
       description: "A seductive and magnetic fragrance that captures the essence of attraction. The Scent opens with spicy ginger, leading to a heart of lavender and maninka fruit. The base is warm and sensual with leather and patchouli.",
       year: "2015",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["184", "270"] // No. 184 and No. 270 - Inspired by The Scent
     }
   ],
   
@@ -750,7 +795,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Sandalwood", "Musk"],
       description: "A romantic and timeless fragrance that captures the essence of love. Trésor opens with juicy peach and apricot, leading to a floral heart of lily of the valley. The base is warm and sensual with vanilla and sandalwood.",
       year: "1990",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["141"] // No. 141 - Inspired by Tresor
     },
     {
       id: "lancome_idole",
@@ -762,7 +808,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A modern and elegant fragrance for the new generation of women. Idôle opens with fresh pear and bergamot, leading to a heart of rose and jasmine. The base is clean and sensual with vanilla and musk.",
       year: "2019",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["055"] // No. 55 - Inspired by Idole
     },
     {
       id: "lancome_la_vie_est_belle",
@@ -774,7 +821,8 @@ window.PerfumeCatalog = {
       base_notes: ["Praline", "Vanilla", "Patchouli", "Tonka Bean"],
       description: "A radiant and joyful fragrance that celebrates the beauty of life. La Vie Est Belle opens with fruity black currant and pear, leading to an elegant iris heart. The base is sweet and comforting with praline and vanilla.",
       year: "2012",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["101"] // No. 101 - Inspired by La Vie Est Belle
     }
   ],
   
@@ -790,7 +838,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vetiver", "Benzoin", "Cedar", "Oakmoss"],
       description: "A powerful and original fragrance that celebrates the connection between man and earth. Terre d'Hermès opens with zesty citrus and flint, leading to a mineral heart of pepper and cedar. The base is deep and earthy with vetiver and oakmoss.",
       year: "2006",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["227"] // No. 227 - Inspired by Terre
     }
   ],
   
@@ -806,7 +855,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A bold and modern floral fragrance that captures the energy of urban life. Rush opens with bright freesia and water lily, leading to a heart of romantic rose and jasmine. The base is warm and sensual with sandalwood and musk.",
       year: "1999",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["167"] // No. 167 - Inspired by Rush
     },
     {
       id: "gucci_rush_2",
@@ -818,7 +868,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A fresh and vibrant floral fragrance that captures the energy of modern life. Rush 2 opens with bright freesia and water lily, leading to a heart of romantic rose and jasmine.",
       year: "2001",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["163"] // No. 163 - Inspired by Rush 2
     },
     {
       id: "gucci_flora",
@@ -830,7 +881,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Patchouli", "Musk"],
       description: "A fresh and elegant floral fragrance that captures the spirit of a garden in bloom. Flora opens with bright citrus and peony, leading to a heart of rose and osmanthus. The base is warm and sensual with sandalwood and patchouli.",
       year: "2009",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["162"] // No. 162 - Inspired by Flora
     }
   ],
   
@@ -846,7 +898,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Tonka Bean", "Musk"],
       description: "A fresh and aromatic fragrance for the modern man. Uomo Born in Roma opens with zesty mandarin and salt, leading to an aromatic heart of lavender. The base is warm and sensual with vanilla and tonka bean.",
       year: "2019",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["360"] // No. 360 - Inspired by Uomo Born in Roma
     },
     {
       id: "valentino_born_in_roma",
@@ -858,7 +911,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A modern and edgy fragrance that captures the spirit of Rome's youth culture. Born in Roma opens with juicy black currant, leading to a floral heart of rose and jasmine.",
       year: "2019",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["469"] // No. 469 - Inspired by Born in Roma
     }
   ],
   
@@ -874,19 +928,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Tonka Bean", "Cedar"],
       description: "A bold and playful fragrance with a gourmand heart. Scandal opens with juicy mandarin and gardenia, leading to a heart of rich honey. The base is warm and sensual with patchouli and tonka bean.",
       year: "2017",
-      gender: "Female"
-    },
-    {
-      id: "cacharel_amor_amor",
-      name: "Amor Amor",
-      brand: "Cacharel",
-      image: "https://magicperfume.co.uk/cdn/shop/files/SCANDAL.jpg",
-      top_notes: ["Grapefruit", "Mandarin", "Black Currant"],
-      heart_notes: ["Rose", "Jasmine", "Lily of the Valley"],
-      base_notes: ["Vanilla", "Musk", "Patchouli"],
-      description: "A vibrant and romantic fragrance that captures the feeling of falling in love. Amor Amor opens with juicy grapefruit and black currant, leading to a floral heart of rose and jasmine. The base is warm and comforting with vanilla and musk.",
-      year: "1999",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["192"] // No. 192 - Inspired by SCANDAL
     }
   ],
   
@@ -902,7 +945,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A poetic and delicate fragrance that celebrates the beauty of the poppy flower. Flower opens with fresh hawthorn and black currant, leading to a floral heart of rose and jasmine. The base is soft and sensual with vanilla and musk.",
       year: "2000",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["074"] // No. 074 - Inspired by Flower
     }
   ],
   
@@ -918,7 +962,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Caramel"],
       description: "A playful and indulgent gourmand fragrance that captures the spirit of fun and femininity. Candy opens with sweet caramel, leading to a heart of warm benzoin. The base is creamy and addictive with vanilla and musk.",
       year: "2011",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["182"] // No. 182 - Inspired by Candy
     }
   ],
   
@@ -934,7 +979,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Vanilla", "Tonka Bean", "Cedar"],
       description: "A bold and distinctive fragrance that is both sweet and spicy. Joop! Homme opens with cinnamon and citrus, leading to a floral heart. The base is warm and sensual with vanilla and sandalwood.",
       year: "1989",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["211"] // No. 211 - Inspired by Homme (JOOP!)
     }
   ],
   
@@ -950,7 +996,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Oakmoss", "Brazilian Rosewood"],
       description: "A mysterious and seductive fragrance that plays on the duality of angel and demon. The spicy saffron opening is intriguing, while the floral heart is both angelic and sensual. The vanilla and oakmoss base is dark and addictive.",
       year: "2006",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["142"] // No. 142 - Inspired by Ange Ou Demon
     },
     {
       id: "givenchy_paradoxe",
@@ -962,7 +1009,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Cedar"],
       description: "A modern and paradoxical fragrance that plays with contrasts. Paradoxe opens with juicy pear, leading to a floral heart of orange blossom. The base is warm and sensual with vanilla and amber.",
       year: "2022",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["437"] // No. 437 - Inspired by Paradoxe
     }
   ],
   
@@ -978,7 +1026,8 @@ window.PerfumeCatalog = {
       base_notes: ["Cedar", "Amber", "Musk"],
       description: "A fresh and sunny fragrance that captures the essence of the Mediterranean. Light Blue opens with sparkling Sicilian lemon and apple, leading to a floral heart of jasmine and white rose. The base is warm and sensual with cedar and musk.",
       year: "2001",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["017"] // No. 017 - Inspired by Light Blue
     },
     {
       id: "dolce_the_one",
@@ -990,7 +1039,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Amber", "Musk"],
       description: "A sophisticated and sensual fragrance that captures the essence of a timeless woman. The One opens with juicy peach and lychee, leading to a floral heart of rose and jasmine. The base is warm and addictive with vanilla and amber.",
       year: "2006",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["094"] // No. 094 - Inspired by The One
     }
   ],
   
@@ -1006,7 +1056,8 @@ window.PerfumeCatalog = {
       base_notes: ["Musk", "Amber", "Cedar"],
       description: "A fresh and aquatic fragrance inspired by the Mediterranean Sea. Aqva opens with bright mandarin and neroli, leading to a heart of water notes and sage. The base is warm and sensual with musk and amber.",
       year: "2005",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["305"] // No. 305 - Inspired by Aqva Pour Homme
     }
   ],
   
@@ -1022,7 +1073,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A timeless and romantic fragrance that celebrates lasting love. Eternity opens with fresh citrus, leading to a floral heart of lily of the valley and rose. The base is warm and sensual with sandalwood and musk.",
       year: "1988",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["106", "215"] // No. 106 and No. 215 - Inspired by Eternity
     },
     {
       id: "ck_one",
@@ -1034,7 +1086,8 @@ window.PerfumeCatalog = {
       base_notes: ["Cedar", "Musk", "Oakmoss", "Amber"],
       description: "A revolutionary fragrance that broke down all barriers. A clean, fresh, and universally appealing citrus aromatic. It was the first great 'shared' scent and remains a timeless symbol of unity and simplicity.",
       year: "1994",
-      gender: "Unisex"
+      gender: "Unisex",
+      productNumbers: [] // No specific product number
     }
   ],
   
@@ -1050,7 +1103,8 @@ window.PerfumeCatalog = {
       base_notes: ["Musk", "Amber", "Cedar"],
       description: "A fresh and aquatic fragrance that captures the power and freshness of the ocean. Cool Water opens with invigorating sea water and mint, leading to a floral heart of jasmine. The base is clean and sensual with musk and amber.",
       year: "1988",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["200"] // No. 200 - Inspired by Cool Water
     }
   ],
   
@@ -1066,7 +1120,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Tonka Bean", "Cedar", "Patchouli"],
       description: "A bold and glamorous interpretation of Good Girl. Very Good Girl opens with juicy red currant and litchi, leading to a heart of luxurious rose. The base is warm and sensual with vanilla and patchouli.",
       year: "2021",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["404"] // No. 404 - Inspired by Very Good Girl
     },
     {
       id: "carolina_good_girl_velvet_fatale",
@@ -1078,7 +1133,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Vanilla", "Patchouli", "Tonka Bean"],
       description: "A darker, more mysterious interpretation of Good Girl. Velvet Fatale opens with juicy plum and saffron, leading to a rich floral heart. The base is deep and sensual with leather and vanilla.",
       year: "2022",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["461"] // No. 461 - Inspired by Good Girl Velvet Fatale
     }
   ],
   
@@ -1094,7 +1150,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Vanilla", "Chocolate", "Caramel"],
       description: "A revolutionary gourmand fragrance that changed perfumery forever. Angel opens with a unique blend of cotton candy and bergamot, leading to a fruity heart of honey and red berries. The base is rich and intoxicating with patchouli, vanilla, and chocolate.",
       year: "1992",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["113"] // No. 113 - Inspired by Angel
     },
     {
       id: "mugler_angel_nova",
@@ -1106,7 +1163,8 @@ window.PerfumeCatalog = {
       base_notes: ["Akigalawood", "Benzoin", "Vanilla"],
       description: "A radiant and fruity interpretation of the iconic Angel. Angel Nova opens with juicy raspberry and lychee, leading to a heart of luxurious rose. The base is modern and woody with akigalawood and vanilla.",
       year: "2020",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["166"] // No. 166 - Inspired by Angel Nova
     }
   ],
   
@@ -1122,7 +1180,8 @@ window.PerfumeCatalog = {
       base_notes: ["Leather", "Vetiver", "Amber", "Musk"],
       description: "A powerful and intense fragrance for the modern man. Extreme opens with spicy ginger and cardamom, leading to an aromatic heart of sage and lavender. The base is deep and sensual with leather, vetiver, and amber.",
       year: "2015",
-      gender: "Male"
+      gender: "Male",
+      productNumbers: ["286"] // No. 286 - Inspired by Extreme
     }
   ],
   
@@ -1138,7 +1197,8 @@ window.PerfumeCatalog = {
       base_notes: ["Sandalwood", "Musk", "Amber"],
       description: "A sparkling and elegant fragrance that captures the brilliance of diamonds. Diamonds opens with bright citrus notes, leading to a floral heart of rose and jasmine. The base is warm and sensual with sandalwood and musk.",
       year: "2000",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["040"] // No. 040 - Inspired by Diamonds
     }
   ],
   
@@ -1154,7 +1214,8 @@ window.PerfumeCatalog = {
       base_notes: ["Vanilla", "Musk", "Cedar"],
       description: "A fresh and elegant fragrance that celebrates the beauty of life. Ma Vie opens with bright citrus, leading to a floral heart of rose and jasmine. The base is warm and sensual with vanilla and musk.",
       year: "2010",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["058"] // No. 058 - Inspired by Ma Vie
     }
   ],
   
@@ -1170,7 +1231,8 @@ window.PerfumeCatalog = {
       base_notes: ["Patchouli", "Vanilla", "Cedar"],
       description: "A vibrant and passionate fragrance that captures the intensity of red. Deep Red opens with juicy black currant, leading to a floral heart of rose and jasmine. The base is warm and sensual with patchouli and vanilla.",
       year: "2006",
-      gender: "Female"
+      gender: "Female",
+      productNumbers: ["022"] // No. 022 - Inspired by Deep Red
     }
   ],
 
@@ -1191,7 +1253,8 @@ window.PerfumeCatalog = {
             perfume.year,
             ...(perfume.top_notes || []),
             ...(perfume.heart_notes || []),
-            ...(perfume.base_notes || [])
+            ...(perfume.base_notes || []),
+            ...(perfume.productNumbers || []) // Also search by product numbers
           ].join(' ').toLowerCase();
           
           // Check if query matches ANY part of the perfume
