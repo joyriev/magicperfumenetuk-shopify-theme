@@ -1647,7 +1647,7 @@ function findInspiredProducts(catalogPerfume) {
       currentView = 'search';
     });
     
-    setTimeout(updateCartCount, 500);
+    setTimeout(fetchCartAndUpdate, 500);
     
     document.addEventListener('click', function(event) {
       if (!searchPopup.contains(event.target) && !stickyButton.contains(event.target) && searchPopup.classList.contains('active')) {
