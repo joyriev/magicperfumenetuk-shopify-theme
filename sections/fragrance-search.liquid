@@ -7,8 +7,9 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **COMPREHENSIVE MATCHING: Checks nuta, inspired text, title, brand, numbers, special cases**
-  - **FIXED: Shows both No. 260 (Code) and No. 135 (Code for Women)**
+  - **FIXED: Shows both No. 260 (Code men) and No. 135 (Code for Women)**
+  - **GENDER-AWARE: Detects men's vs women's versions**
+  - **PRODUCT NUMBER DETECTION: Direct matching for No. 260 and No. 135**
   - **NO RESULTS: When no matches exist, shows popular suggestions**
 {% endcomment %}
 
@@ -1127,13 +1128,23 @@
     return html;
   }
 
-  // ===== COMPREHENSIVE MATCHING FOR INSPIRED PRODUCTS =====
+  // ===== COMPREHENSIVE MATCHING FOR INSPIRED PRODUCTS - FIXED =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogBrand = catalogPerfume.brand.toLowerCase();
     const catalogNumber = (catalogPerfume.name.match(/\d+/) || [])[0];
+    
+    // Check if this is the men's version (Code without "for women")
+    const isMensVersion = catalogName === 'code' || 
+                         (catalogName.includes('code') && !catalogName.includes('women') && !catalogName.includes('for'));
+    
+    // Check if this is the women's version
+    const isWomensVersion = catalogName.includes('code for women') || 
+                            catalogName.includes('code for her');
+    
+    console.log(`Matching for: "${catalogName}" (Men's: ${isMensVersion}, Women's: ${isWomensVersion})`);
     
     // Use a Map to store unique products with their best score
     const productMap = new Map();
@@ -1148,6 +1159,39 @@
       const productNumber = getProductNumber(product.title);
       const nutaName = getNutaName(product);
       
+      // ===== SPECIAL CASE: MEN'S VERSION OF CODE =====
+      if (isMensVersion) {
+        // Check if this is No. 260 - Inspired by Code (men's version)
+        if (productTitle.includes('260') || productTitle.includes('no. 260')) {
+          score += 2000;
+          matchReasons.push('exact_product_number_260');
+        }
+        
+        // Check if product title contains "Code" but NOT "women" or "for her"
+        if (productTitle.includes('code') && 
+            !productTitle.includes('women') && 
+            !productTitle.includes('for women') && 
+            !productTitle.includes('for her')) {
+          score += 1000;
+          matchReasons.push('mens_code_version');
+        }
+      }
+      
+      // ===== SPECIAL CASE: WOMEN'S VERSION OF CODE =====
+      if (isWomensVersion) {
+        // Check if this is No. 135 - Inspired by Code for Women
+        if (productTitle.includes('135') || productTitle.includes('no. 135')) {
+          score += 2000;
+          matchReasons.push('exact_product_number_135');
+        }
+        
+        // Check if product title contains "Code for Women"
+        if (productTitle.includes('code for women')) {
+          score += 1500;
+          matchReasons.push('womens_code_version');
+        }
+      }
+      
       // ===== METHOD 1: NUTA METAFIELD MATCHING =====
       if (nutaName) {
         const nutaLower = nutaName.toLowerCase();
@@ -1157,35 +1201,22 @@
           score += 1000;
           matchReasons.push('nuta_exact');
         }
-        // Nuta contains catalog name (e.g., "Code for Women" contains "Code")
+        // Nuta contains catalog name
         else if (nutaLower.includes(catalogName)) {
-          score += 800;
-          matchReasons.push('nuta_contains');
+          // But penalize if it's men's catalog matching women's nuta
+          if (isMensVersion && nutaLower.includes('women')) {
+            score += 200; // Lower score for wrong gender
+            matchReasons.push('nuta_contains_wrong_gender');
+          } else {
+            score += 800;
+            matchReasons.push('nuta_contains');
+          }
         }
         // Catalog name contains nuta
         else if (catalogName.includes(nutaLower)) {
           score += 600;
           matchReasons.push('nuta_in_catalog');
         }
-        
-        // Word-by-word matching with nuta
-        const nutaWords = nutaLower.split(/\s+/);
-        const catalogWords = catalogName.split(/\s+/);
-        
-        catalogWords.forEach(cWord => {
-          if (cWord.length < 2) return;
-          nutaWords.forEach(nWord => {
-            if (nWord === cWord) {
-              score += 200;
-              matchReasons.push('nuta_word_match');
-            } else if (nWord.includes(cWord) || cWord.includes(nWord)) {
-              if (nWord.length > 2 && cWord.length > 2) {
-                score += 100;
-                matchReasons.push('nuta_partial');
-              }
-            }
-          });
-        });
       }
       
       // ===== METHOD 2: INSPIRED BY TEXT MATCHING =====
@@ -1199,40 +1230,33 @@
         }
         // Inspired name contains catalog name
         else if (inspiredLower.includes(catalogName)) {
-          score += 400;
-          matchReasons.push('inspired_contains');
+          // Penalize wrong gender matches
+          if (isMensVersion && inspiredLower.includes('women')) {
+            score += 150;
+            matchReasons.push('inspired_contains_wrong_gender');
+          } else {
+            score += 400;
+            matchReasons.push('inspired_contains');
+          }
         }
         // Catalog name contains inspired name
         else if (catalogName.includes(inspiredLower)) {
           score += 300;
           matchReasons.push('inspired_in_catalog');
         }
-        
-        // Word-by-word matching with inspired name
-        const inspiredWords = inspiredLower.split(/\s+/);
-        const catalogWords = catalogName.split(/\s+/);
-        
-        catalogWords.forEach(cWord => {
-          if (cWord.length < 2) return;
-          inspiredWords.forEach(iWord => {
-            if (iWord === cWord) {
-              score += 150;
-              matchReasons.push('inspired_word_match');
-            } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
-              if (iWord.length > 2 && cWord.length > 2) {
-                score += 75;
-                matchReasons.push('inspired_partial');
-              }
-            }
-          });
-        });
       }
       
       // ===== METHOD 3: PRODUCT TITLE DIRECT MATCHING =====
       // Check if product title contains catalog name
       if (productTitle.includes(catalogName)) {
-        score += 300;
-        matchReasons.push('title_contains');
+        // Penalize wrong gender matches
+        if (isMensVersion && productTitle.includes('women')) {
+          score += 100;
+          matchReasons.push('title_contains_wrong_gender');
+        } else {
+          score += 300;
+          matchReasons.push('title_contains');
+        }
       }
       
       // Check if product title contains catalog brand
@@ -1245,8 +1269,14 @@
       const catalogWords = catalogName.split(/\s+/);
       catalogWords.forEach(cWord => {
         if (cWord.length > 2 && productTitle.includes(cWord)) {
-          score += 100;
-          matchReasons.push(`title_word:${cWord}`);
+          // Penalize wrong gender for "code"
+          if (cWord === 'code' && isMensVersion && productTitle.includes('women')) {
+            score += 25;
+            matchReasons.push(`title_word_wrong_gender:${cWord}`);
+          } else {
+            score += 100;
+            matchReasons.push(`title_word:${cWord}`);
+          }
         }
       });
       
@@ -1256,22 +1286,17 @@
         matchReasons.push('number_match');
       }
       
-      // ===== METHOD 5: CHECK FOR "CODE" WITHOUT "WOMEN" =====
-      // Special case: If catalog is "Code" (men's) and product has "Code" but not "Women"
-      if (catalogName === 'code' && 
-          productTitle.includes('code') && 
-          !productTitle.includes('women') && 
-          !productTitle.includes('for women')) {
-        score += 350;
-        matchReasons.push('code_men_version');
+      // ===== METHOD 5: DIRECT PRODUCT NUMBER DETECTION =====
+      // Check for No. 260 (men's Code)
+      if (productTitle.includes('260') || productTitle.includes('no. 260')) {
+        score += 300;
+        matchReasons.push('product_260_detected');
       }
       
-      // Special case: If catalog is "Code for Women" and product has "Code for Women"
-      if (catalogName.includes('code for women') && 
-          (productTitle.includes('code for women') || 
-           (inspiredName && inspiredName.toLowerCase().includes('code for women')))) {
-        score += 450;
-        matchReasons.push('code_women_version');
+      // Check for No. 135 (women's Code)
+      if (productTitle.includes('135') || productTitle.includes('no. 135')) {
+        score += 300;
+        matchReasons.push('product_135_detected');
       }
       
       // Only add if score is significant
