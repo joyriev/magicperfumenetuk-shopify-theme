@@ -99,7 +99,7 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Free delivery on all orders over €50!",
+            "perk_title": "Free delivery on all orders over £50!",
             "perk_content": "This week only"
           }
         },
@@ -108,7 +108,7 @@
           "settings": {
             "perk_image": "shopify://shop_images/SAVINGS.avif",
             "perk_title": "Exclusive discounts for returning customers",
-            "perk_content": "Vouchers up to €100"
+            "perk_content": "Vouchers up to £100"
           }
         },
         "perks_yTdgqz": {
