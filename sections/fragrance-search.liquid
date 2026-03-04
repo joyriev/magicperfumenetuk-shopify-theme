@@ -1576,9 +1576,9 @@ function findInspiredProducts(catalogPerfume) {
       const catalogResults = simpleCatalogSearch(query);
       
       // Search in your products (by title)
-      const yourMatches = fcProducts.filter(p => 
-        p.title.toLowerCase().includes(query.toLowerCase())
-      );
+      const yourMatches = fcProducts.filter(p =>
+  fuzzyMatch(p.title, query)
+);
       
       let html = '';
       
