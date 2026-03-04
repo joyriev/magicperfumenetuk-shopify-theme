@@ -936,6 +936,7 @@
 
   // ===== EXTRACT PRODUCT NUMBER FROM TITLE =====
   function extractProductNumber(title) {
+    if (!title) return null;
     const match = title.match(/No\.?\s*(\d+)/i);
     return match ? match[1] : null;
   }
@@ -1132,7 +1133,8 @@
       html += renderMappedProductCard(mappedProduct, 'Recommended');
       
       // YOU MIGHT LIKE IT: Random product from your collection with Add to Cart
-      const otherProducts = fcProducts.filter(p => p.id !== findShopifyProductByMappedProduct(mappedProduct)?.id);
+      const recommendedProduct = findShopifyProductByMappedProduct(mappedProduct);
+      const otherProducts = fcProducts.filter(p => !recommendedProduct || p.id !== recommendedProduct.id);
       if (otherProducts.length > 0) {
         const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
         html += renderYourProductCard(randomProduct, 'You might like it');
@@ -1253,29 +1255,67 @@
   function findShopifyProductByMappedProduct(mappedProduct) {
     if (!mappedProduct || !mappedProduct.title) return null;
     
-    // Extract product number from mapped product title
+    console.log('Looking for Shopify product matching:', mappedProduct.title);
+    
+    // Method 1: Extract product number from mapped product title
     const productNumber = extractProductNumber(mappedProduct.title);
     
     if (productNumber) {
+      console.log('Extracted product number:', productNumber);
+      
       // Find by product number in title
-      return fcProducts.find(p => {
+      const match = fcProducts.find(p => {
         const pNumber = extractProductNumber(p.title);
         return pNumber === productNumber;
       });
+      
+      if (match) {
+        console.log('Found match by number:', match.title);
+        return match;
+      }
     }
     
-    // Fallback to title match
-    return fcProducts.find(p => p.title === mappedProduct.title);
+    // Method 2: Try exact title match
+    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
+    if (exactMatch) {
+      console.log('Found exact title match:', exactMatch.title);
+      return exactMatch;
+    }
+    
+    // Method 3: Try to match by URL
+    if (mappedProduct.url) {
+      const urlSlug = mappedProduct.url.split('/').pop();
+      const match = fcProducts.find(p => p.url.includes(urlSlug));
+      if (match) {
+        console.log('Found match by URL:', match.title);
+        return match;
+      }
+    }
+    
+    // Method 4: Try partial title match
+    const partialMatch = fcProducts.find(p => {
+      const pTitle = p.title.toLowerCase();
+      const mTitle = mappedProduct.title.toLowerCase();
+      return pTitle.includes(mTitle) || mTitle.includes(pTitle);
+    });
+    
+    if (partialMatch) {
+      console.log('Found match by partial title:', partialMatch.title);
+      return partialMatch;
+    }
+    
+    console.log('No match found for:', mappedProduct.title);
+    return null;
   }
 
-  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART =====
+  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - FIXED VERSION =====
   function renderMappedProductCard(mappedProduct, badge) {
     // Find the actual Shopify product that matches this mapped product
     const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
     
     if (shopifyProduct) {
-      // Use the Shopify product's data (including image) and Add to Cart
-      const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : mappedProduct.price;
+      // SUCCESS: Found the Shopify product - use its image and Add to Cart
+      const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : '£19.99';
       
       let displayNumber = '';
       let displayName = shopifyProduct.title;
@@ -1305,7 +1345,38 @@
         </div>
       `;
     } else {
-      // Fallback if Shopify product not found
+      // FALLBACK: If Shopify product not found, still show Add to Cart with URL redirect
+      console.log('Using fallback for:', mappedProduct.title);
+      
+      // Try one more time to find by product number
+      const productNumber = extractProductNumber(mappedProduct.title);
+      if (productNumber) {
+        const fallbackProduct = fcProducts.find(p => {
+          const pNumber = extractProductNumber(p.title);
+          return pNumber === productNumber;
+        });
+        
+        if (fallbackProduct) {
+          const priceFormatted = fallbackProduct.price ? '£' + (fallbackProduct.price / 100).toFixed(2) : '£19.99';
+          
+          return `
+            <div class="fc-product-card">
+              <div class="fc-badge">${badge}</div>
+              <div class="fc-product-inner">
+                <img class="fc-product-image" src="${fallbackProduct.image}" alt="${fallbackProduct.title}" loading="lazy">
+                <div class="fc-product-title">${fallbackProduct.title}</div>
+                <div class="fc-product-price">${priceFormatted}</div>
+                <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${fallbackProduct.url}'">Add to Cart</button>
+                <div>
+                  <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${fallbackProduct.url}'">View Details</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+      
+      // Last resort - use mapped product data but with Add to Cart button
       return `
         <div class="fc-product-card">
           <div class="fc-badge">${badge}</div>
@@ -1313,7 +1384,7 @@
             <img class="fc-product-image" src="${mappedProduct.image}" alt="${mappedProduct.title}" loading="lazy">
             <div class="fc-product-title">${mappedProduct.title}</div>
             <div class="fc-product-price">${mappedProduct.price}</div>
-            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">View Product</button>
+            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">Add to Cart</button>
             <div>
               <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">View Details</span>
             </div>
