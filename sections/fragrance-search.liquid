@@ -7,8 +7,8 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **STRICT UNIQUE MATCHING: No duplicate products, hierarchical priority system**
-  - **NUTA METAFIELD PRIORITY: Uses product.metafields.custom.nuta for perfect matching**
+  - **COMPREHENSIVE MATCHING: Checks nuta, inspired text, title, brand, numbers, special cases**
+  - **FIXED: Shows both No. 260 (Code) and No. 135 (Code for Women)**
   - **NO RESULTS: When no matches exist, shows popular suggestions**
 {% endcomment %}
 
@@ -1127,7 +1127,7 @@
     return html;
   }
 
-  // ===== STRICT UNIQUE MATCHING FOR INSPIRED PRODUCTS =====
+  // ===== COMPREHENSIVE MATCHING FOR INSPIRED PRODUCTS =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
@@ -1140,7 +1140,7 @@
     
     fcProducts.forEach(product => {
       let score = 0;
-      let matchType = '';
+      let matchReasons = [];
       
       // Get product identifiers
       const productTitle = product.title.toLowerCase();
@@ -1148,69 +1148,130 @@
       const productNumber = getProductNumber(product.title);
       const nutaName = getNutaName(product);
       
-      // ===== METHOD 1: NUTA EXACT MATCH (HIGHEST PRIORITY) =====
+      // ===== METHOD 1: NUTA METAFIELD MATCHING =====
       if (nutaName) {
         const nutaLower = nutaName.toLowerCase();
         
+        // Nuta exactly matches catalog name
         if (nutaLower === catalogName) {
-          score = 1000;
-          matchType = 'nuta_exact';
+          score += 1000;
+          matchReasons.push('nuta_exact');
         }
-        // Nuta contains catalog name (e.g., "Musc Noir For Her" contains "Musc Noir")
+        // Nuta contains catalog name (e.g., "Code for Women" contains "Code")
         else if (nutaLower.includes(catalogName)) {
-          score = 800;
-          matchType = 'nuta_contains';
+          score += 800;
+          matchReasons.push('nuta_contains');
         }
         // Catalog name contains nuta
         else if (catalogName.includes(nutaLower)) {
-          score = 600;
-          matchType = 'nuta_in_catalog';
+          score += 600;
+          matchReasons.push('nuta_in_catalog');
         }
+        
+        // Word-by-word matching with nuta
+        const nutaWords = nutaLower.split(/\s+/);
+        const catalogWords = catalogName.split(/\s+/);
+        
+        catalogWords.forEach(cWord => {
+          if (cWord.length < 2) return;
+          nutaWords.forEach(nWord => {
+            if (nWord === cWord) {
+              score += 200;
+              matchReasons.push('nuta_word_match');
+            } else if (nWord.includes(cWord) || cWord.includes(nWord)) {
+              if (nWord.length > 2 && cWord.length > 2) {
+                score += 100;
+                matchReasons.push('nuta_partial');
+              }
+            }
+          });
+        });
       }
       
-      // ===== METHOD 2: INSPIRED BY TEXT MATCH (if no nuta match) =====
-      if (score === 0 && inspiredName) {
+      // ===== METHOD 2: INSPIRED BY TEXT MATCHING =====
+      if (inspiredName) {
         const inspiredLower = inspiredName.toLowerCase();
         
         // Inspired name exactly matches catalog name
         if (inspiredLower === catalogName) {
-          score = 500;
-          matchType = 'inspired_exact';
+          score += 500;
+          matchReasons.push('inspired_exact');
         }
         // Inspired name contains catalog name
         else if (inspiredLower.includes(catalogName)) {
-          score = 400;
-          matchType = 'inspired_contains';
+          score += 400;
+          matchReasons.push('inspired_contains');
         }
         // Catalog name contains inspired name
         else if (catalogName.includes(inspiredLower)) {
-          score = 300;
-          matchType = 'inspired_in_catalog';
-        }
-      }
-      
-      // ===== METHOD 3: NUMBER MATCHING (if no other matches) =====
-      if (score === 0 && catalogNumber && productNumber && catalogNumber === productNumber) {
-        score = 200;
-        matchType = 'number_match';
-      }
-      
-      // ===== METHOD 4: BRAND + WORD MATCHING (lowest priority) =====
-      if (score === 0) {
-        // Check if product title contains brand
-        if (catalogBrand && productTitle.includes(catalogBrand)) {
-          score += 50;
-          matchType = 'brand_match';
+          score += 300;
+          matchReasons.push('inspired_in_catalog');
         }
         
-        // Check if product title contains catalog words
+        // Word-by-word matching with inspired name
+        const inspiredWords = inspiredLower.split(/\s+/);
         const catalogWords = catalogName.split(/\s+/);
+        
         catalogWords.forEach(cWord => {
-          if (cWord.length > 2 && productTitle.includes(cWord)) {
-            score += 25;
-            matchType = 'word_match';
-          }
+          if (cWord.length < 2) return;
+          inspiredWords.forEach(iWord => {
+            if (iWord === cWord) {
+              score += 150;
+              matchReasons.push('inspired_word_match');
+            } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
+              if (iWord.length > 2 && cWord.length > 2) {
+                score += 75;
+                matchReasons.push('inspired_partial');
+              }
+            }
+          });
         });
+      }
+      
+      // ===== METHOD 3: PRODUCT TITLE DIRECT MATCHING =====
+      // Check if product title contains catalog name
+      if (productTitle.includes(catalogName)) {
+        score += 300;
+        matchReasons.push('title_contains');
+      }
+      
+      // Check if product title contains catalog brand
+      if (catalogBrand && productTitle.includes(catalogBrand)) {
+        score += 200;
+        matchReasons.push('brand_in_title');
+      }
+      
+      // Check if product title contains any catalog words
+      const catalogWords = catalogName.split(/\s+/);
+      catalogWords.forEach(cWord => {
+        if (cWord.length > 2 && productTitle.includes(cWord)) {
+          score += 100;
+          matchReasons.push(`title_word:${cWord}`);
+        }
+      });
+      
+      // ===== METHOD 4: NUMBER MATCHING =====
+      if (catalogNumber && productNumber && catalogNumber === productNumber) {
+        score += 400;
+        matchReasons.push('number_match');
+      }
+      
+      // ===== METHOD 5: CHECK FOR "CODE" WITHOUT "WOMEN" =====
+      // Special case: If catalog is "Code" (men's) and product has "Code" but not "Women"
+      if (catalogName === 'code' && 
+          productTitle.includes('code') && 
+          !productTitle.includes('women') && 
+          !productTitle.includes('for women')) {
+        score += 350;
+        matchReasons.push('code_men_version');
+      }
+      
+      // Special case: If catalog is "Code for Women" and product has "Code for Women"
+      if (catalogName.includes('code for women') && 
+          (productTitle.includes('code for women') || 
+           (inspiredName && inspiredName.toLowerCase().includes('code for women')))) {
+        score += 450;
+        matchReasons.push('code_women_version');
       }
       
       // Only add if score is significant
@@ -1220,7 +1281,7 @@
           productMap.set(product.id, {
             product,
             score,
-            matchType
+            matchReasons: matchReasons.join(', ')
           });
         }
       }
@@ -1232,7 +1293,7 @@
     
     console.log(`Found ${matches.length} unique matches for "${catalogPerfume.name}"`);
     matches.forEach(m => {
-      console.log(`- ${m.product.title} (score: ${m.score}, type: ${m.matchType})`);
+      console.log(`- ${m.product.title} (score: ${m.score}, reasons: ${m.matchReasons})`);
     });
     
     return matches;
@@ -1351,7 +1412,7 @@
       if (inspiredMatches.length >= 1) {
         html += renderYourProductCard(inspiredMatches[0].product, 'Recommended', {
           score: inspiredMatches[0].score,
-          matchType: inspiredMatches[0].matchType
+          matchReasons: inspiredMatches[0].matchReasons
         });
       }
       
@@ -1359,7 +1420,7 @@
       if (inspiredMatches.length >= 2) {
         html += renderYourProductCard(inspiredMatches[1].product, 'You might like it', {
           score: inspiredMatches[1].score,
-          matchType: inspiredMatches[1].matchType
+          matchReasons: inspiredMatches[1].matchReasons
         });
       } else {
         // If only one match, show a random different product
@@ -1601,7 +1662,7 @@
     
     // Debug info (remove in production)
     const debugInfo = matchInfo ? 
-      `<div style="font-size: 8px; color: #999; margin-top: 2px;">${matchInfo.matchType} (${matchInfo.score})</div>` : '';
+      `<div style="font-size: 8px; color: #999; margin-top: 2px;">Score: ${matchInfo.score}</div>` : '';
     
     return `
       <div class="fc-product-card">
