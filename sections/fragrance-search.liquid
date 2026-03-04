@@ -7,9 +7,8 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **HARDCODED FIX: No. 260 ALWAYS shows for "Code"**
-  - **USES PRODUCT NUMBER: Matches by number (260)**
-  - **NO RESULTS: When no matches exist, shows popular suggestions**
+  - **BULLETPROOF MATCHING: Uses product number, title, and hardcoded mapping**
+  - **FIXED: No. 260 ALWAYS shows for "Code"**
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -937,17 +936,23 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
-  // ===== EXTRACT INSPIRED NAME FROM PRODUCT TITLE =====
-  function getInspiredName(productTitle) {
-    const match = productTitle.match(/Inspired by (.*)/i);
-    return match ? match[1].trim() : null;
-  }
-
   // ===== EXTRACT PRODUCT NUMBER =====
   function getProductNumber(productTitle) {
     const match = productTitle.match(/No\.?\s*(\d+)/i);
     return match ? match[1] : null;
   }
+
+  // ===== HARDCODED PRODUCT MAPPING =====
+  // This ensures No. 260 always shows for Code
+  const PRODUCT_MAPPING = {
+    'code': {
+      'men': ['260'],  // No. 260 for men's Code
+      'women': ['135'] // No. 135 for women's Code
+    },
+    'code for women': {
+      'women': ['135']
+    }
+  };
 
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
   function getPopularSuggestions() {
@@ -1022,99 +1027,124 @@
     return html;
   }
 
-  // ===== FIND PRODUCTS BY NUMBER =====
+  // ===== FIND PRODUCT BY NUMBER =====
   function findProductByNumber(productNumber) {
     if (!fcProducts || fcProducts.length === 0) return null;
     
+    // Try multiple formats
     return fcProducts.find(p => {
       const title = p.title.toLowerCase();
       return title.includes(productNumber) || 
              title.includes(`no. ${productNumber}`) || 
-             title.includes(`no ${productNumber}`);
+             title.includes(`no ${productNumber}`) ||
+             title.includes(`#${productNumber}`);
     });
   }
 
-  // ===== FIXED: FIND INSPIRED PRODUCTS WITH NUMBER PRIORITY =====
+  // ===== BULLETPROOF MATCHING FOR INSPIRED PRODUCTS =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogBrand = catalogPerfume.brand.toLowerCase();
     const matches = [];
+    const addedIds = new Set();
     
-    // ===== SPECIAL CASE: CODE (Men's version) =====
-    // Hardcoded to ALWAYS show No. 260 for Code
-    if (catalogName === 'code' || catalogName.includes('code') && !catalogName.includes('women')) {
-      const no260Product = findProductByNumber('260');
-      if (no260Product) {
+    // ===== METHOD 1: HARDCODED MAPPING =====
+    if (catalogName === 'code' || (catalogName.includes('code') && !catalogName.includes('women'))) {
+      // Men's Code - add No. 260
+      const no260 = findProductByNumber('260');
+      if (no260 && !addedIds.has(no260.id)) {
         matches.push({
-          product: no260Product,
-          matchType: 'hardcoded_260'
+          product: no260,
+          matchType: 'hardcoded_260',
+          priority: 1
         });
+        addedIds.add(no260.id);
       }
     }
     
-    // Also find No. 135 for Code for Women
-    if (catalogName.includes('code for women')) {
-      const no135Product = findProductByNumber('135');
-      if (no135Product) {
+    if (catalogName.includes('code for women') || (catalogName.includes('code') && catalogName.includes('women'))) {
+      // Women's Code - add No. 135
+      const no135 = findProductByNumber('135');
+      if (no135 && !addedIds.has(no135.id)) {
         matches.push({
-          product: no135Product,
-          matchType: 'hardcoded_135'
+          product: no135,
+          matchType: 'hardcoded_135',
+          priority: 1
         });
+        addedIds.add(no135.id);
       }
     }
     
-    // Then find other matches by inspired text
+    // ===== METHOD 2: EXTRACT "INSPIRED BY" FROM TITLE =====
     fcProducts.forEach(product => {
-      // Skip if already added
-      if (matches.some(m => m.product.id === product.id)) return;
+      if (addedIds.has(product.id)) return;
       
-      const inspiredName = getInspiredName(product.title);
-      const productNumber = getProductNumber(product.title);
+      const productTitle = product.title;
+      const productNumber = getProductNumber(productTitle);
       
-      if (!inspiredName) return;
+      // Check if "Inspired by" is in the title
+      if (productTitle.toLowerCase().includes('inspired by')) {
+        const inspiredPart = productTitle.split('Inspired by')[1]?.trim().toLowerCase() || '';
+        
+        // Check if catalog name is in the inspired part
+        if (inspiredPart.includes(catalogName)) {
+          matches.push({
+            product,
+            matchType: 'inspired_text_match',
+            priority: 2
+          });
+          addedIds.add(product.id);
+          return;
+        }
+        
+        // Check if catalog words are in inspired part
+        const catalogWords = catalogName.split(/\s+/);
+        for (const word of catalogWords) {
+          if (word.length > 2 && inspiredPart.includes(word)) {
+            matches.push({
+              product,
+              matchType: `inspired_word_${word}`,
+              priority: 3
+            });
+            addedIds.add(product.id);
+            return;
+          }
+        }
+      }
       
-      const inspiredLower = inspiredName.toLowerCase();
-      
-      // Check 1: Inspired name exactly matches catalog name
-      if (inspiredLower === catalogName) {
+      // ===== METHOD 3: BRAND MATCH FROM NUTA =====
+      const nuta = product.metafields?.custom?.nuta || '';
+      if (nuta.toLowerCase().includes(catalogBrand)) {
         matches.push({
           product,
-          matchType: 'exact_match'
+          matchType: 'brand_match',
+          priority: 4
         });
+        addedIds.add(product.id);
         return;
       }
       
-      // Check 2: Inspired name contains catalog name
-      if (inspiredLower.includes(catalogName)) {
-        matches.push({
-          product,
-          matchType: 'inspired_contains'
-        });
-        return;
-      }
-      
-      // Check 3: Catalog name contains inspired name
-      if (catalogName.includes(inspiredLower)) {
-        matches.push({
-          product,
-          matchType: 'catalog_contains'
-        });
-        return;
-      }
-      
-      // Check 4: Product number appears in title (like 260)
+      // ===== METHOD 4: PRODUCT NUMBER IN CATALOG NAME =====
       if (productNumber && catalogName.includes(productNumber)) {
         matches.push({
           product,
-          matchType: 'number_match'
+          matchType: 'number_match',
+          priority: 5
         });
+        addedIds.add(product.id);
         return;
       }
     });
     
+    // Sort by priority (lower number = higher priority)
+    matches.sort((a, b) => (a.priority || 99) - (b.priority || 99));
+    
     console.log(`Found ${matches.length} matches for "${catalogPerfume.name}"`);
+    matches.forEach(m => {
+      console.log(`- ${m.product.title} (${m.matchType}, priority: ${m.priority})`);
+    });
     
     return matches;
   }
