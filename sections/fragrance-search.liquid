@@ -934,6 +934,12 @@
     console.log(`✓ Combined catalog: ${allPerfumes.length} perfumes`);
   }
 
+  // ===== EXTRACT PRODUCT NUMBER FROM TITLE =====
+  function extractProductNumber(title) {
+    const match = title.match(/No\.?\s*(\d+)/i);
+    return match ? match[1] : null;
+  }
+
   // ===== SIMPLE SEARCH FUNCTION - SHOWS ALL PRODUCTS =====
   function searchProducts(query) {
     if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
@@ -1126,7 +1132,7 @@
       html += renderMappedProductCard(mappedProduct, 'Recommended');
       
       // YOU MIGHT LIKE IT: Random product from your collection with Add to Cart
-      const otherProducts = fcProducts.filter(p => p.title !== mappedProduct.title);
+      const otherProducts = fcProducts.filter(p => p.id !== findShopifyProductByMappedProduct(mappedProduct)?.id);
       if (otherProducts.length > 0) {
         const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
         html += renderYourProductCard(randomProduct, 'You might like it');
@@ -1243,10 +1249,29 @@
     return null;
   }
 
+  // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT =====
+  function findShopifyProductByMappedProduct(mappedProduct) {
+    if (!mappedProduct || !mappedProduct.title) return null;
+    
+    // Extract product number from mapped product title
+    const productNumber = extractProductNumber(mappedProduct.title);
+    
+    if (productNumber) {
+      // Find by product number in title
+      return fcProducts.find(p => {
+        const pNumber = extractProductNumber(p.title);
+        return pNumber === productNumber;
+      });
+    }
+    
+    // Fallback to title match
+    return fcProducts.find(p => p.title === mappedProduct.title);
+  }
+
   // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART =====
   function renderMappedProductCard(mappedProduct, badge) {
     // Find the actual Shopify product that matches this mapped product
-    const shopifyProduct = fcProducts.find(p => p.title === mappedProduct.title);
+    const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
     
     if (shopifyProduct) {
       // Use the Shopify product's data (including image) and Add to Cart
