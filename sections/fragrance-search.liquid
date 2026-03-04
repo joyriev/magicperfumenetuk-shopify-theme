@@ -7,11 +7,8 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **ADVANCED MATCHING ALGORITHM**
-    - Levenshtein distance for fuzzy matching
-    - Scoring system with priority boost
-    - Handles typos professionally
-    - No. 260 ALWAYS ranks highest for "Code"
+  - **IMPROVED MATCHING: Works with typos, no spaces, partial names**
+  - **FIXED: Shows your Shopify products when clicking catalog items**
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -968,96 +965,175 @@
     return matrix[b.length][a.length];
   }
 
+  // ===== NORMALIZE STRING FOR BETTER MATCHING =====
+  function normalizeString(str) {
+    if (!str) return '';
+    return str.toLowerCase()
+              .replace(/[^\w\s]/g, '') // Remove punctuation
+              .replace(/\s+/g, ' ')     // Normalize spaces
+              .trim();
+  }
+
+  // ===== IMPROVED SIMILARITY SCORE =====
+  function calculateSimilarity(str1, str2) {
+    if (!str1 || !str2) return 0;
+    
+    const s1 = normalizeString(str1);
+    const s2 = normalizeString(str2);
+    
+    // Exact match after normalization
+    if (s1 === s2) return 100;
+    
+    // One string contains the other
+    if (s1.includes(s2) || s2.includes(s1)) {
+      return 80;
+    }
+    
+    // Check word by word
+    const words1 = s1.split(' ');
+    const words2 = s2.split(' ');
+    
+    let matchedWords = 0;
+    for (const word1 of words1) {
+      for (const word2 of words2) {
+        if (word1.length > 2 && word2.length > 2) {
+          if (word1.includes(word2) || word2.includes(word1)) {
+            matchedWords++;
+            break;
+          }
+        }
+      }
+    }
+    
+    if (matchedWords > 0) {
+      return Math.min(70, matchedWords * 20);
+    }
+    
+    // Levenshtein distance for fuzzy matching
+    const maxLength = Math.max(s1.length, s2.length);
+    if (maxLength > 0) {
+      const distance = levenshteinDistance(s1, s2);
+      const similarity = ((maxLength - distance) / maxLength) * 100;
+      
+      // Only return if reasonably similar (over 40%)
+      if (similarity > 40) {
+        return similarity;
+      }
+    }
+    
+    return 0;
+  }
+
   // ===== ADVANCED SCORING SYSTEM =====
   function calculateMatchScore(product, query) {
     if (!query || query.length < 1) return 0;
     
-    const title = product.title.toLowerCase();
+    const title = product.title || '';
     const queryLower = query.toLowerCase().trim();
     let score = 0;
     
     // ===== PRIORITY BOOST FOR CODE PERFUMES =====
-    // This ensures No. 260 always ranks highest for "Code"
-    if (queryLower.includes('code') || queryLower.includes('code')) {
-      if (title.includes('no. 260') || title.includes('no 260')) {
-        score += 1000; // Massive boost for No. 260 when searching for Code
-      } else if (title.includes('no. 135') || title.includes('no 135')) {
-        score += 500; // Good boost for No. 135
+    if (queryLower.includes('code')) {
+      if (title.toLowerCase().includes('no. 260') || title.toLowerCase().includes('no 260')) {
+        score += 1000;
+      } else if (title.toLowerCase().includes('no. 135') || title.toLowerCase().includes('no 135')) {
+        score += 500;
       }
     }
     
     // ===== EXACT MATCH (highest score) =====
-    if (title === queryLower) {
+    if (title.toLowerCase() === queryLower) {
       score += 100;
     }
     
-    // ===== CONTAINS MATCH (good score) =====
-    if (title.includes(queryLower)) {
-      score += 50;
+    // ===== NORMALIZED MATCH =====
+    const normalizedTitle = normalizeString(title);
+    const normalizedQuery = normalizeString(query);
+    
+    if (normalizedTitle === normalizedQuery) {
+      score += 95;
     }
     
-    // ===== WORD BOUNDARY MATCH (better than contains) =====
-    const words = title.split(/\s+/);
-    for (const word of words) {
-      if (word === queryLower) {
-        score += 75;
-      } else if (word.startsWith(queryLower) || word.endsWith(queryLower)) {
-        score += 30;
-      }
+    // ===== CONTAINS MATCH (ignoring spaces) =====
+    const titleNoSpaces = title.toLowerCase().replace(/\s+/g, '');
+    const queryNoSpaces = queryLower.replace(/\s+/g, '');
+    
+    if (titleNoSpaces.includes(queryNoSpaces)) {
+      score += 85;
     }
     
-    // ===== NUMBER MATCHING (for product numbers) =====
-    const numberMatch = product.title.match(/No\.?\s*(\d+)/i);
-    if (numberMatch) {
-      const productNumber = numberMatch[1];
-      if (queryLower === productNumber || queryLower === `no ${productNumber}` || queryLower === `no. ${productNumber}`) {
-        score += 80;
-      }
-    }
+    // ===== WORD BY WORD MATCHING =====
+    const titleWords = title.toLowerCase().split(/\s+/);
+    const queryWords = queryLower.split(/\s+/);
     
-    // ===== FUZZY MATCH using Levenshtein distance =====
-    // Only apply fuzzy if query is at least 3 characters
-    if (queryLower.length >= 3) {
-      const maxDistance = Math.max(2, Math.floor(queryLower.length * 0.3)); // Allow 30% error margin
-      const distance = levenshteinDistance(title.substring(0, queryLower.length), queryLower);
+    for (const qWord of queryWords) {
+      if (qWord.length < 2) continue;
       
-      if (distance <= maxDistance) {
-        // Higher score for closer matches
-        score += Math.max(0, 25 - (distance * 5));
+      for (const tWord of titleWords) {
+        if (tWord.includes(qWord) || qWord.includes(tWord)) {
+          score += 20;
+          break;
+        }
       }
     }
     
-    // ===== BONUS for brand name matches =====
-    if (product.metafields && product.metafields.custom && product.metafields.custom.nuta) {
-      const brandInfo = product.metafields.custom.nuta.toLowerCase();
-      if (brandInfo.includes(queryLower)) {
-        score += 40;
-      }
+    // ===== SIMILARITY SCORE =====
+    const similarity = calculateSimilarity(title, query);
+    if (similarity > 0) {
+      score += similarity;
     }
     
-    return score;
+    return Math.round(score);
   }
 
-  // ===== ADVANCED SEARCH WITH SCORING =====
-  function advancedSearch(query) {
-    if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) return [];
+  // ===== FIND MATCHING SHOPIFY PRODUCTS FOR CATALOG PERFUME =====
+  function findMatchingShopifyProducts(catalogPerfume) {
+    if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
-    const results = [];
-    
+    const catalogName = catalogPerfume.name || '';
+    const catalogBrand = catalogPerfume.brand || '';
+    const matches = [];
+    const addedIds = new Set();
+
+    // Score each product
     fcProducts.forEach(product => {
-      const score = calculateMatchScore(product, query);
-      if (score > 0) {
-        results.push({
-          product: product,
-          score: score
-        });
+      if (addedIds.has(product.id)) return;
+      
+      const title = product.title || '';
+      let score = 0;
+      
+      // ===== SPECIAL HANDLING FOR CODE =====
+      if (catalogName.toLowerCase().includes("code")) {
+        if (title.toLowerCase().includes("no. 260") || title.toLowerCase().includes("no 260")) {
+          matches.push({ product, score: 1000, matchType: 'exact' });
+          addedIds.add(product.id);
+          return;
+        } else if (title.toLowerCase().includes("no. 135") || title.toLowerCase().includes("no 135")) {
+          matches.push({ product, score: 500, matchType: 'good' });
+          addedIds.add(product.id);
+          return;
+        }
+      }
+      
+      // Calculate match score
+      score = calculateMatchScore(product, catalogName);
+      
+      // Also try matching with brand + name
+      const brandPlusName = catalogBrand + ' ' + catalogName;
+      const brandScore = calculateMatchScore(product, brandPlusName);
+      
+      score = Math.max(score, brandScore);
+      
+      if (score > 30) { // Threshold for considering a match
+        matches.push({ product, score, matchType: score > 80 ? 'excellent' : 'good' });
+        addedIds.add(product.id);
       }
     });
-    
+
     // Sort by score (highest first)
-    results.sort((a, b) => b.score - a.score);
-    
-    return results;
+    matches.sort((a, b) => b.score - a.score);
+
+    return matches;
   }
 
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
@@ -1066,10 +1142,9 @@
     
     const suggestions = [];
     
-    // Popular fragrance keywords that people often search for
+    // Popular fragrance keywords
     const popularKeywords = ['Sauvage', 'Chanel', 'Dior', 'No. 5', 'Bleu', 'Black Opium', 'La Vie Est Belle', 'Angel', 'J\'adore', 'Acqua'];
     
-    // First, try to find products matching popular keywords
     popularKeywords.forEach(keyword => {
       const matches = fcProducts.filter(p => 
         p.title.toLowerCase().includes(keyword.toLowerCase())
@@ -1077,7 +1152,6 @@
       suggestions.push(...matches);
     });
     
-    // If we don't have enough, add some random products
     if (suggestions.length < 8) {
       const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random());
       suggestions.push(...randomProducts);
@@ -1133,74 +1207,6 @@
     return html;
   }
 
-  // ===== FIND PRODUCT BY NUMBER =====
-  function findProductByNumber(productNumber) {
-    if (!fcProducts || fcProducts.length === 0) return null;
-    
-    // Try multiple formats
-    return fcProducts.find(p => {
-      const title = p.title.toLowerCase();
-      return title.includes(productNumber) || 
-             title.includes(`no. ${productNumber}`) || 
-             title.includes(`no ${productNumber}`) ||
-             title.includes(`#${productNumber}`);
-    });
-  }
-
-  // ===== ADVANCED INSPIRED PRODUCTS MATCHING WITH SCORING =====
-  function findInspiredProducts(catalogPerfume) {
-    if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
-    
-    const catalogName = (catalogPerfume.name || '').toLowerCase();
-    const matches = [];
-    const addedIds = new Set();
-
-    // Score each product
-    fcProducts.forEach(product => {
-      if (addedIds.has(product.id)) return;
-      
-      const title = product.title.toLowerCase();
-      let priority = 999; // Default low priority
-      
-      // ===== SPECIAL HANDLING FOR CODE =====
-      if (catalogName.includes("code")) {
-        if (title.includes("no. 260") || title.includes("no 260")) {
-          priority = 1; // Highest priority for No. 260
-        } else if (title.includes("no. 135") || title.includes("no 135")) {
-          priority = 2; // Second priority for No. 135
-        }
-      }
-      
-      // Calculate match score
-      if (priority === 999) {
-        // Use our scoring system for normal matches
-        const score = calculateMatchScore(product, catalogName);
-        if (score > 0) {
-          // Convert score to priority (lower is better)
-          // Score 100+ = priority 3, 50-99 = priority 4, 1-49 = priority 5
-          if (score >= 100) priority = 3;
-          else if (score >= 50) priority = 4;
-          else if (score >= 25) priority = 5;
-          else priority = 6;
-        }
-      }
-      
-      if (priority < 999) {
-        matches.push({ product, priority, score: 100 - priority }); // Score for sorting
-        addedIds.add(product.id);
-      }
-    });
-
-    // Sort by priority (lower number = higher priority)
-    matches.sort((a, b) => {
-      if (a.priority !== b.priority) return a.priority - b.priority;
-      // If same priority, use title match strength
-      return b.score - a.score;
-    });
-
-    return matches;
-  }
-
   // ===== SIMPLE SEARCH FOR CATALOG =====
   function simpleCatalogSearch(query) {
     if (!query || query.length < 1) return [];
@@ -1212,7 +1218,6 @@
       const searchableName = (perfume.name || '').toLowerCase();
       const searchableBrand = (perfume.brand || '').toLowerCase();
       
-      // Simple contains check
       if (searchableName.includes(queryLower) || searchableBrand.includes(queryLower)) {
         results.push(perfume);
       }
@@ -1248,7 +1253,7 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL WITH INSPIRED PRODUCTS =====
+  // ===== SHOW PERFUME DETAIL WITH MATCHING SHOPIFY PRODUCTS =====
   window.fcShowPerfumeDetail = function(perfumeId) {
     const perfume = findPerfumeById(perfumeId);
     if (!perfume) return;
@@ -1256,29 +1261,31 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    const inspiredMatches = findInspiredProducts(perfume);
+    // Find matching Shopify products
+    const matchingProducts = findMatchingShopifyProducts(perfume);
     
     let html = `
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    if (inspiredMatches.length > 0) {
+    // Show matching Shopify products if found
+    if (matchingProducts.length > 0) {
       html += `<div class="fc-subsection-title">Our Inspired Versions</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // First product gets "Recommended"
-      if (inspiredMatches.length >= 1) {
-        html += renderYourProductCard(inspiredMatches[0].product, 'Recommended');
+      // First product gets "Recommended" (best match)
+      if (matchingProducts.length >= 1) {
+        html += renderYourProductCard(matchingProducts[0].product, 'Recommended');
       }
       
       // Second product gets "You might like it"
-      if (inspiredMatches.length >= 2) {
-        html += renderYourProductCard(inspiredMatches[1].product, 'You might like it');
+      if (matchingProducts.length >= 2) {
+        html += renderYourProductCard(matchingProducts[1].product, 'You might like it');
       } else {
-        // If only one match, show the next best product
-        const otherProducts = fcProducts.filter(p => p.id !== inspiredMatches[0].product.id);
+        // If only one match, show another product as suggestion
+        const otherProducts = fcProducts.filter(p => p.id !== matchingProducts[0].product.id);
         if (otherProducts.length > 0) {
-          // Pick a product that might be related
+          // Find next best match
           let bestMatch = null;
           let bestScore = 0;
           
@@ -1294,6 +1301,18 @@
           html += renderYourProductCard(selectedProduct, 'You might like it');
         }
       }
+      
+      html += '</div>';
+    } else {
+      // No matches found, show suggestions
+      html += `<div class="fc-subsection-title">You Might Also Like</div>`;
+      html += '<div class="fc-grid-2col">';
+      
+      const suggestions = getPopularSuggestions().slice(0, 2);
+      suggestions.forEach((product, index) => {
+        const badge = index === 0 ? 'Recommended' : 'You might like it';
+        html += renderYourProductCard(product, badge);
+      });
       
       html += '</div>';
     }
@@ -1558,11 +1577,20 @@
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      // Simple search in catalog
+      // Search in catalog
       const catalogResults = simpleCatalogSearch(query);
       
-      // Advanced search in your products with scoring
-      const yourMatches = advancedSearch(query);
+      // Search in your products with scoring
+      const yourMatches = [];
+      fcProducts.forEach(product => {
+        const score = calculateMatchScore(product, query);
+        if (score > 30) {
+          yourMatches.push({ product, score });
+        }
+      });
+      
+      // Sort your products by score
+      yourMatches.sort((a, b) => b.score - a.score);
       
       let html = '';
       
@@ -1571,24 +1599,26 @@
         html += renderCatalogPerfumes(catalogResults, query);
       }
       
-      // Show your products if any (with scores)
+      // Show your products if any
       if (yourMatches.length > 0) {
         html += `<div class="fc-section-title">Our Versions (${yourMatches.length})</div>`;
         
-        // Display top matches (up to 4)
         yourMatches.slice(0, 4).forEach(match => {
           const p = match.product;
           const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
           
-          // Add score indicator (optional, for debugging)
-          const scoreIndicator = '★'.repeat(Math.min(5, Math.ceil(match.score / 20)));
+          // Show match quality indicator
+          let quality = '';
+          if (match.score > 200) quality = '🔥 Perfect';
+          else if (match.score > 100) quality = '✓ Great';
+          else if (match.score > 50) quality = '✓ Good';
           
           html += `
             <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
               <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
               <div class="fc-real-perfume-info">
                 <div class="fc-real-perfume-name">${p.title}</div>
-                <div class="fc-real-perfume-year">${priceFormatted} <span style="color: #C41E3A; margin-left: 8px;">${scoreIndicator}</span></div>
+                <div class="fc-real-perfume-year">${priceFormatted} <span style="color: #C41E3A; margin-left: 8px;">${quality}</span></div>
               </div>
             </div>
           `;
@@ -1656,8 +1686,7 @@
       e.stopPropagation();
     });
     
-    // Log special handling for Code perfumes
-    console.log('✓ Advanced matching enabled with priority boost for No. 260');
+    console.log('✓ Advanced matching initialized with special handling for Code perfumes');
   });
 
 })(); 
