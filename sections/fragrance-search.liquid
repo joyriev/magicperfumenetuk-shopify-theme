@@ -7,10 +7,9 @@
   - Buy 3 Get 1 Free offer with progress tracking
   - Cart stays open to let users add more items
   - Badges: "Recommended" (best match) and "You might like it" (second best)
-  - **ADVANCED FUZZY SEARCH: Handles brand + name combinations**
+  - **FIXED MATCHING LOGIC: Shows correct inspired products for each catalog perfume**
+  - **NUTA METAFIELD PRIORITY: Uses product.metafields.custom.nuta for perfect matching**
   - **GENDER-AWARE: Shows correct men/women versions**
-  - **SPELLING MISTAKES: Uses Levenshtein distance for fuzzy matching**
-  - **NUTA METAFIELD MATCHING: Uses product.metafields.custom.nuta for perfect matching**
   - **NO RESULTS: When no matches exist, shows popular suggestions**
 {% endcomment %}
 
@@ -1056,83 +1055,6 @@
     };
   }
 
-  // ===== CALCULATE NOTE SIMILARITY SCORE =====
-  function calculateNoteSimilarity(catalogNotes, productNotes) {
-    let score = 0;
-    let matchedNotes = [];
-    
-    const weights = {
-      top: 10,
-      heart: 15,
-      base: 20
-    };
-    
-    catalogNotes.top.forEach(catalogNote => {
-      productNotes.top.forEach(productNote => {
-        if (productNote === catalogNote) {
-          score += weights.top * 3;
-          matchedNotes.push(catalogNote);
-        } else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-          if (productNote.length > 3 && catalogNote.length > 3) {
-            score += weights.top;
-            matchedNotes.push(catalogNote);
-          }
-        } else {
-          const similarity = getSimilarityScore(productNote, catalogNote);
-          if (similarity > 0.7) {
-            score += weights.top * similarity;
-            matchedNotes.push(catalogNote);
-          }
-        }
-      });
-    });
-    
-    catalogNotes.heart.forEach(catalogNote => {
-      productNotes.heart.forEach(productNote => {
-        if (productNote === catalogNote) {
-          score += weights.heart * 3;
-          matchedNotes.push(catalogNote);
-        } else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-          if (productNote.length > 3 && catalogNote.length > 3) {
-            score += weights.heart;
-            matchedNotes.push(catalogNote);
-          }
-        } else {
-          const similarity = getSimilarityScore(productNote, catalogNote);
-          if (similarity > 0.7) {
-            score += weights.heart * similarity;
-            matchedNotes.push(catalogNote);
-          }
-        }
-      });
-    });
-    
-    catalogNotes.base.forEach(catalogNote => {
-      productNotes.base.forEach(productNote => {
-        if (productNote === catalogNote) {
-          score += weights.base * 3;
-          matchedNotes.push(catalogNote);
-        } else if (productNote.includes(catalogNote) || catalogNote.includes(productNote)) {
-          if (productNote.length > 3 && catalogNote.length > 3) {
-            score += weights.base;
-            matchedNotes.push(catalogNote);
-          }
-        } else {
-          const similarity = getSimilarityScore(productNote, catalogNote);
-          if (similarity > 0.7) {
-            score += weights.base * similarity;
-            matchedNotes.push(catalogNote);
-          }
-        }
-      });
-    });
-    
-    return {
-      score: Math.round(score),
-      matchedNotes: [...new Set(matchedNotes)]
-    };
-  }
-
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
   function getPopularSuggestions() {
     if (!fcProducts || fcProducts.length === 0) return [];
@@ -1206,163 +1128,12 @@
     return html;
   }
 
-  // ===== ADVANCED FUZZY SEARCH FOR CATALOG =====
-  function advancedCatalogSearch(query) {
-    if (!query || query.length < 1) return [];
-    
-    const queryLower = query.toLowerCase().trim();
-    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
-    const results = [];
-    
-    allPerfumes.forEach(perfume => {
-      let score = 0;
-      let matchedTerms = [];
-      
-      // Searchable fields
-      const searchableName = (perfume.name || '').toLowerCase();
-      const searchableBrand = (perfume.brand || '').toLowerCase();
-      const searchableGender = (perfume.gender || '').toLowerCase();
-      
-      // Get all notes
-      const allNotes = [
-        ...(perfume.top_notes || []),
-        ...(perfume.heart_notes || []),
-        ...(perfume.base_notes || [])
-      ].map(n => n.toLowerCase()).join(' ');
-      
-      // ===== BRAND + NAME COMBINATION MATCHING =====
-      // Check if query matches "brand name" pattern
-      const brandWords = searchableBrand.split(/\s+/);
-      const nameWords = searchableName.split(/\s+/);
-      
-      // Try to match first word as brand, rest as name
-      if (queryWords.length >= 2) {
-        const possibleBrand = queryWords[0];
-        const possibleName = queryWords.slice(1).join(' ');
-        
-        if (brandWords.some(bw => bw.includes(possibleBrand) || possibleBrand.includes(bw))) {
-          score += 300;
-          matchedTerms.push('brand_prefix');
-          
-          if (nameWords.some(nw => nw.includes(possibleName) || possibleName.includes(nw))) {
-            score += 400;
-            matchedTerms.push('name_suffix');
-          }
-        }
-      }
-      
-      // ===== EXACT BRAND MATCH =====
-      if (searchableBrand === queryLower) {
-        score += 1000;
-        matchedTerms.push('exact_brand');
-      }
-      
-      // ===== BRAND CONTAINS QUERY =====
-      if (searchableBrand.includes(queryLower)) {
-        score += 800;
-        matchedTerms.push('brand_contains');
-      }
-      
-      // ===== EXACT NAME MATCH =====
-      if (searchableName === queryLower) {
-        score += 900;
-        matchedTerms.push('exact_name');
-      }
-      
-      // ===== NAME CONTAINS QUERY =====
-      if (searchableName.includes(queryLower)) {
-        score += 700;
-        matchedTerms.push('name_contains');
-      }
-      
-      // ===== WORD-BY-WORD MATCHING WITH FUZZY =====
-      queryWords.forEach(qWord => {
-        if (qWord.length < 2) return;
-        
-        // Check brand words
-        brandWords.forEach(bWord => {
-          if (bWord === qWord) {
-            score += 200;
-            matchedTerms.push(`brand_word:${qWord}`);
-          } else if (bWord.includes(qWord) || qWord.includes(bWord)) {
-            if (bWord.length > 2 && qWord.length > 2) {
-              score += 100;
-              matchedTerms.push(`brand_partial:${qWord}`);
-            }
-          } else {
-            // Fuzzy match
-            const similarity = getSimilarityScore(bWord, qWord);
-            if (similarity > 0.7) {
-              score += similarity * 80;
-              matchedTerms.push(`brand_fuzzy:${qWord}`);
-            }
-          }
-        });
-        
-        // Check name words
-        nameWords.forEach(nWord => {
-          if (nWord === qWord) {
-            score += 150;
-            matchedTerms.push(`name_word:${qWord}`);
-          } else if (nWord.includes(qWord) || qWord.includes(nWord)) {
-            if (nWord.length > 2 && qWord.length > 2) {
-              score += 75;
-              matchedTerms.push(`name_partial:${qWord}`);
-            }
-          } else {
-            // Fuzzy match
-            const similarity = getSimilarityScore(nWord, qWord);
-            if (similarity > 0.7) {
-              score += similarity * 60;
-              matchedTerms.push(`name_fuzzy:${qWord}`);
-            }
-          }
-        });
-        
-        // Check notes
-        if (allNotes.includes(qWord)) {
-          score += 50;
-          matchedTerms.push(`note:${qWord}`);
-        }
-      });
-      
-      // ===== SINGLE LETTER SEARCH =====
-      if (query.length === 1) {
-        const firstLetter = queryLower[0];
-        if (searchableName[0] === firstLetter) {
-          score += 100;
-          matchedTerms.push('first_letter_name');
-        } else if (searchableBrand[0] === firstLetter) {
-          score += 80;
-          matchedTerms.push('first_letter_brand');
-        }
-      }
-      
-      if (score > 20) {
-        results.push({
-          ...perfume,
-          matchScore: score,
-          matchedTerms
-        });
-      }
-    });
-    
-    // Sort by score
-    return results.sort((a, b) => {
-      if (b.matchScore !== a.matchScore) {
-        return b.matchScore - a.matchScore;
-      }
-      return a.name.localeCompare(b.name);
-    });
-  }
-
-  // ===== FIND PRODUCTS INSPIRED BY THIS CATALOG PERFUME =====
+  // ===== FIXED: FIND PRODUCTS INSPIRED BY THIS CATALOG PERFUME =====
   function findInspiredProducts(catalogPerfume) {
     if (!fcProducts || fcProducts.length === 0 || !catalogPerfume) return [];
     
     const catalogName = catalogPerfume.name.toLowerCase();
     const catalogBrand = catalogPerfume.brand.toLowerCase();
-    const catalogGender = catalogPerfume.gender ? catalogPerfume.gender.toLowerCase() : '';
     const catalogNumber = (catalogPerfume.name.match(/\d+/) || [])[0];
     
     const matches = [];
@@ -1371,18 +1142,23 @@
       let score = 0;
       let matchedBy = [];
       
-      // ===== METHOD 1: NUTA METAFIELD MATCHING (BEST) =====
+      // Get product identifiers
+      const productTitle = product.title.toLowerCase();
+      const inspiredName = getInspiredName(product.title);
+      const productNumber = getProductNumber(product.title);
       const nutaName = getNutaName(product);
+      
+      // ===== METHOD 1: DIRECT NUTA MATCH (BEST) =====
       if (nutaName) {
         const nutaLower = nutaName.toLowerCase();
         
-        // Exact match
+        // Exact match with catalog name
         if (nutaLower === catalogName) {
           score += 1000;
           matchedBy.push('nuta_exact');
         }
         
-        // Nuta contains catalog name
+        // Nuta contains catalog name (e.g., "Musc Noir For Her" contains "Musc Noir")
         if (nutaLower.includes(catalogName)) {
           score += 800;
           matchedBy.push('nuta_contains');
@@ -1394,11 +1170,12 @@
           matchedBy.push('catalog_contains_nuta');
         }
         
-        // Word-by-word
+        // Word-by-word matching
         const nutaWords = nutaLower.split(/\s+/);
         const catalogWords = catalogName.split(/\s+/);
         
         catalogWords.forEach(cWord => {
+          if (cWord.length < 2) return;
           nutaWords.forEach(nWord => {
             if (nWord === cWord) {
               score += 200;
@@ -1408,61 +1185,70 @@
                 score += 100;
                 matchedBy.push('partial_match');
               }
-            } else {
-              const similarity = getSimilarityScore(nWord, cWord);
-              if (similarity > 0.7) {
-                score += similarity * 50;
-                matchedBy.push('fuzzy_match');
+            }
+          });
+        });
+      }
+      
+      // ===== METHOD 2: INSPIRED BY TEXT MATCH =====
+      if (inspiredName) {
+        const inspiredLower = inspiredName.toLowerCase();
+        
+        // Check if inspired name contains catalog name
+        if (inspiredLower.includes(catalogName)) {
+          score += 500;
+          matchedBy.push('inspired_contains');
+        }
+        
+        // Check if catalog name contains inspired name
+        if (catalogName.includes(inspiredLower)) {
+          score += 400;
+          matchedBy.push('catalog_contains_inspired');
+        }
+        
+        // Word-by-word matching
+        const inspiredWords = inspiredLower.split(/\s+/);
+        const catalogWords = catalogName.split(/\s+/);
+        
+        catalogWords.forEach(cWord => {
+          if (cWord.length < 2) return;
+          inspiredWords.forEach(iWord => {
+            if (iWord === cWord) {
+              score += 150;
+              matchedBy.push('inspired_word_match');
+            } else if (iWord.includes(cWord) || cWord.includes(iWord)) {
+              if (iWord.length > 2 && cWord.length > 2) {
+                score += 75;
+                matchedBy.push('inspired_partial');
               }
             }
           });
         });
       }
       
-      // ===== METHOD 2: INSPIRED BY TEXT =====
-      const inspiredName = getInspiredName(product.title);
-      if (inspiredName) {
-        const inspiredLower = inspiredName.toLowerCase();
-        
-        if (inspiredLower.includes(catalogName) || catalogName.includes(inspiredLower)) {
-          score += 400;
-          matchedBy.push('inspired_match');
-        }
-      }
-      
       // ===== METHOD 3: NUMBER MATCHING =====
-      const productNumber = getProductNumber(product.title);
       if (catalogNumber && productNumber && catalogNumber === productNumber) {
         score += 300;
         matchedBy.push('number_match');
       }
       
-      // ===== METHOD 4: GENDER MATCHING =====
-      // Check product title for gender indicators
-      const titleLower = product.title.toLowerCase();
-      if (catalogGender) {
-        if (catalogGender === 'male' && !titleLower.includes('women') && !titleLower.includes('female')) {
-          score += 50;
-          matchedBy.push('likely_male');
-        } else if (catalogGender === 'female' && (titleLower.includes('women') || titleLower.includes('female'))) {
-          score += 100;
-          matchedBy.push('gender_match');
-        } else if (catalogGender === 'female' && !titleLower.includes('male') && !titleLower.includes('homme')) {
-          score += 30;
-          matchedBy.push('likely_female');
-        }
+      // ===== METHOD 4: BRAND MATCHING =====
+      if (catalogBrand && productTitle.includes(catalogBrand)) {
+        score += 100;
+        matchedBy.push('brand_match');
       }
       
       // ===== METHOD 5: TITLE CONTAINS CATALOG WORDS =====
       const catalogWords = catalogName.split(/\s+/);
       catalogWords.forEach(cWord => {
-        if (cWord.length > 2 && titleLower.includes(cWord)) {
-          score += 40;
+        if (cWord.length > 2 && productTitle.includes(cWord)) {
+          score += 30;
           matchedBy.push('title_word');
         }
       });
       
-      if (score > 50) {
+      // Only add if score is significant
+      if (score > 100) {
         matches.push({
           product,
           matchScore: score,
@@ -1471,8 +1257,66 @@
       }
     });
     
-    // Sort by score
+    // Sort by score (highest first)
     return matches.sort((a, b) => b.matchScore - a.matchScore);
+  }
+
+  // ===== ADVANCED SEARCH FOR CATALOG =====
+  function advancedCatalogSearch(query) {
+    if (!query || query.length < 1) return [];
+    
+    const queryLower = query.toLowerCase().trim();
+    const queryWords = queryLower.split(/\s+/).filter(w => w.length > 0);
+    const results = [];
+    
+    allPerfumes.forEach(perfume => {
+      let score = 0;
+      
+      // Searchable fields
+      const searchableName = (perfume.name || '').toLowerCase();
+      const searchableBrand = (perfume.brand || '').toLowerCase();
+      
+      // Get all notes
+      const allNotes = [
+        ...(perfume.top_notes || []),
+        ...(perfume.heart_notes || []),
+        ...(perfume.base_notes || [])
+      ].map(n => n.toLowerCase()).join(' ');
+      
+      // ===== EXACT MATCHES =====
+      if (searchableName === queryLower) score += 1000;
+      if (searchableBrand === queryLower) score += 900;
+      
+      // ===== CONTAINS MATCHES =====
+      if (searchableName.includes(queryLower)) score += 700;
+      if (searchableBrand.includes(queryLower)) score += 600;
+      if (allNotes.includes(queryLower)) score += 500;
+      
+      // ===== WORD-BY-WORD MATCHING =====
+      queryWords.forEach(qWord => {
+        if (qWord.length < 2) return;
+        
+        if (searchableName.includes(qWord)) score += 200;
+        if (searchableBrand.includes(qWord)) score += 150;
+        if (allNotes.includes(qWord)) score += 100;
+      });
+      
+      // ===== SINGLE LETTER SEARCH =====
+      if (query.length === 1) {
+        const firstLetter = queryLower[0];
+        if (searchableName[0] === firstLetter) score += 100;
+        else if (searchableBrand[0] === firstLetter) score += 80;
+      }
+      
+      if (score > 20) {
+        results.push({
+          ...perfume,
+          matchScore: score
+        });
+      }
+    });
+    
+    return results.sort((a, b) => b.matchScore - a.matchScore);
   }
 
   // ===== RENDER CATALOG PERFUME LIST =====
@@ -1490,9 +1334,6 @@
     let html = `<div class="fc-section-title">Real Perfumes (${perfumes.length})</div>`;
     
     sortedPerfumes.slice(0, 8).forEach(perfume => {
-      // Show match score in debug (remove in production)
-      const scoreHint = perfume.matchScore ? ` (${perfume.matchScore})` : '';
-      
       html += `
         <div class="fc-real-perfume-item" onclick="window.fcShowPerfumeDetail('${perfume.id}')">
           <img class="fc-real-perfume-image" src="${perfume.image}" 
@@ -1500,7 +1341,7 @@
                loading="lazy"
                onerror="this.src='https://via.placeholder.com/60x60?text=Perfume'">
           <div class="fc-real-perfume-info">
-            <div class="fc-real-perfume-name">${perfume.name}${scoreHint}</div>
+            <div class="fc-real-perfume-name">${perfume.name}</div>
             <div class="fc-real-perfume-brand">${perfume.brand}</div>
             ${perfume.year ? `<div class="fc-real-perfume-year">${perfume.year}</div>` : ''}
           </div>
@@ -1775,10 +1616,6 @@
       displayName = inspiredMatch[1];
     }
     
-    // Show nuta if exists (for debugging - remove in production)
-    const nutaName = getNutaName(product);
-    const nutaHint = nutaName ? `<div style="font-size: 9px; color: #666; margin-top: 2px;">${nutaName}</div>` : '';
-    
     return `
       <div class="fc-product-card">
         <div class="fc-badge">${badge}</div>
@@ -1786,7 +1623,6 @@
           <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
           <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
           <div class="fc-product-price">${priceFormatted}</div>
-          ${nutaHint}
           <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant})">Add to Cart</button>
           <div>
             <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
@@ -1818,21 +1654,13 @@
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      // Advanced fuzzy search in catalog
+      // Advanced search in catalog
       const catalogResults = advancedCatalogSearch(query);
       
-      // Search in your products (by title and nuta)
-      const queryLower = query.toLowerCase();
-      const yourMatches = fcProducts.filter(p => {
-        // Check title
-        if (p.title.toLowerCase().includes(queryLower)) return true;
-        
-        // Check nuta
-        const nutaName = getNutaName(p);
-        if (nutaName && nutaName.toLowerCase().includes(queryLower)) return true;
-        
-        return false;
-      });
+      // Search in your products (by title)
+      const yourMatches = fcProducts.filter(p => 
+        p.title.toLowerCase().includes(query.toLowerCase())
+      );
       
       let html = '';
       
