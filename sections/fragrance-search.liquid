@@ -4,6 +4,8 @@
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
   - DIRECT MAPPING for accurate product matching
+  - FIXED: Uses original Shopify product images
+  - FIXED: "View Product" changed to "Add to Cart" with proper functionality
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -1120,10 +1122,10 @@
       html += `<div class="fc-subsection-title">Our Inspired Version</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // RECOMMENDED: The exact mapped product
-      html += renderDirectProductCard(mappedProduct, 'Recommended');
+      // RECOMMENDED: The exact mapped product with Add to Cart
+      html += renderMappedProductCard(mappedProduct, 'Recommended');
       
-      // YOU MIGHT LIKE IT: Random product from your collection
+      // YOU MIGHT LIKE IT: Random product from your collection with Add to Cart
       const otherProducts = fcProducts.filter(p => p.title !== mappedProduct.title);
       if (otherProducts.length > 0) {
         const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
@@ -1241,22 +1243,59 @@
     return null;
   }
 
-  // ===== RENDER DIRECT PRODUCT CARD FROM MAPPING =====
-  function renderDirectProductCard(product, badge) {
-    return `
-      <div class="fc-product-card">
-        <div class="fc-badge">${badge}</div>
-        <div class="fc-product-inner">
-          <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
-          <div class="fc-product-title">${product.title}</div>
-          <div class="fc-product-price">${product.price}</div>
-          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Product</button>
-          <div>
-            <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${product.url}'">View Details</span>
+  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART =====
+  function renderMappedProductCard(mappedProduct, badge) {
+    // Find the actual Shopify product that matches this mapped product
+    const shopifyProduct = fcProducts.find(p => p.title === mappedProduct.title);
+    
+    if (shopifyProduct) {
+      // Use the Shopify product's data (including image) and Add to Cart
+      const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : mappedProduct.price;
+      
+      let displayNumber = '';
+      let displayName = shopifyProduct.title;
+      
+      const numberMatch = shopifyProduct.title.match(/No\.?\s*(\d+)/i);
+      if (numberMatch) {
+        displayNumber = numberMatch[0];
+      }
+      
+      const inspiredMatch = shopifyProduct.title.match(/Inspired by (.*)/i);
+      if (inspiredMatch) {
+        displayName = inspiredMatch[1];
+      }
+      
+      return `
+        <div class="fc-product-card">
+          <div class="fc-badge">${badge}</div>
+          <div class="fc-product-inner">
+            <img class="fc-product-image" src="${shopifyProduct.image}" alt="${shopifyProduct.title}" loading="lazy">
+            <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
+            <div class="fc-product-price">${priceFormatted}</div>
+            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${shopifyProduct.variant})">Add to Cart</button>
+            <div>
+              <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${shopifyProduct.url}')">View Details</span>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
+    } else {
+      // Fallback if Shopify product not found
+      return `
+        <div class="fc-product-card">
+          <div class="fc-badge">${badge}</div>
+          <div class="fc-product-inner">
+            <img class="fc-product-image" src="${mappedProduct.image}" alt="${mappedProduct.title}" loading="lazy">
+            <div class="fc-product-title">${mappedProduct.title}</div>
+            <div class="fc-product-price">${mappedProduct.price}</div>
+            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">View Product</button>
+            <div>
+              <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">View Details</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
   }
 
   // ===== EXTRACT KEYWORDS FROM PRODUCT TITLE =====
