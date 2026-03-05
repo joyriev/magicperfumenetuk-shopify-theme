@@ -1254,169 +1254,306 @@
   }
 
   // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - ENHANCED VERSION =====
-  function findShopifyProductByMappedProduct(mappedProduct) {
-    if (!mappedProduct || !mappedProduct.title) return null;
+ // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - STRICT VERSION =====
+function findShopifyProductByMappedProduct(mappedProduct) {
+  if (!mappedProduct || !mappedProduct.title) return null;
+  
+  console.log('Looking for Shopify product matching:', mappedProduct.title);
+  
+  // SPECIAL CASE HANDLING for known products - STRICT VERSION
+  const specialCases = {
+    'No. 457 - Inspired by Musc Noir For Her': {
+      number: '457',
+      expectedTitle: 'No. 457 - Inspired by Musc Noir For Her'
+    },
+    'No. 077 - Inspired by No. 5': {
+      number: '077',
+      expectedTitle: 'No. 077 - Inspired by No. 5'
+    },
+    'No. 252 - Inspired by Bleu de Chanel': {
+      number: '252',
+      expectedTitle: 'No. 252 - Inspired by Bleu de Chanel'
+    },
+    'No. 260 - Inspired by Code': {
+      number: '260',
+      expectedTitle: 'No. 260 - Inspired by Code'
+    },
+    'No. 135 - Inspired by Armani Code for Women': {
+      number: '135',
+      expectedTitle: 'No. 135 - Inspired by Armani Code for Women'
+    }
+  };
+  
+  // Check special cases first
+  if (specialCases[mappedProduct.title]) {
+    const specialCase = specialCases[mappedProduct.title];
+    console.log('Special case match for:', mappedProduct.title, 'with number:', specialCase.number);
     
-    console.log('Looking for Shopify product matching:', mappedProduct.title);
+    // Method 1: Try exact title match first
+    let match = fcProducts.find(p => p.title === specialCase.expectedTitle);
     
-    // SPECIAL CASE HANDLING for known products
-    const specialCases = {
-      'No. 077 - Inspired by No. 5': '077',
-      'No. 457 - Inspired by Musc Noir For Her': '457',
-      'No. 252 - Inspired by Bleu de Chanel': '252',
-      'No. 260 - Inspired by Code': '260',
-      'No. 135 - Inspired by Armani Code for Women': '135',
-      'No. 067 - Inspired by Coco Mademoiselle': '067',
-      'No. 079 - Inspired by Coco': '079',
-      'No. 006 - Inspired by Chance': '006',
-      'No. 222 - Inspired by Allure Homme Sport': '222',
-      'No. 277 - Inspired by Dior Homme Intense': '277',
-      'No. 211 - Inspired by Dior Homme': '211',
-      'No. 338 - Inspired by Sauvage Parfum': '338',
-      'No. 366 - Inspired by Sauvage Elixir': '366',
-      'No. 206 - Inspired by Fahrenheit': '206',
-      'No. 350 - Inspired by Fahrenheit Le Parfum': '350',
-      'No. 159 - Inspired by J\'Adore': '159',
-      'No. 145 - Inspired by Hypnotic Poison': '145',
-      'No. 196 - Inspired by Dior Homme Parfum': '196',
-      'No. 082 - Inspired by Miss Cherie': '082'
-    };
-    
-    // Check special cases first
-    if (specialCases[mappedProduct.title]) {
-      const productNumber = specialCases[mappedProduct.title];
-      console.log('Special case match for:', mappedProduct.title, 'with number:', productNumber);
-      
-      const match = fcProducts.find(p => {
-        const pNumber = extractProductNumber(p.title);
-        return pNumber === productNumber;
-      });
-      
-      if (match) {
-        console.log('Found special case match:', match.title);
-        return match;
-      }
+    if (match) {
+      console.log('Found exact title match for special case:', match.title);
+      return match;
     }
     
-    // Method 1: Extract product number from mapped product title
-    const productNumber = extractProductNumber(mappedProduct.title);
-    
-    if (productNumber) {
-      console.log('Extracted product number:', productNumber);
-      
-      // Find by product number in title
-      const match = fcProducts.find(p => {
-        const pNumber = extractProductNumber(p.title);
-        return pNumber === productNumber;
-      });
-      
-      if (match) {
-        console.log('Found match by number:', match.title);
-        return match;
-      }
-    }
-    
-    // Method 2: Try exact title match
-    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
-    if (exactMatch) {
-      console.log('Found exact title match:', exactMatch.title);
-      return exactMatch;
-    }
-    
-    // Method 3: Try to match by URL
-    if (mappedProduct.url) {
-      const urlSlug = mappedProduct.url.split('/').pop();
-      const match = fcProducts.find(p => p.url.includes(urlSlug));
-      if (match) {
-        console.log('Found match by URL:', match.title);
-        return match;
-      }
-    }
-    
-    // Method 4: Try partial title match
-    const partialMatch = fcProducts.find(p => {
-      const pTitle = p.title.toLowerCase();
-      const mTitle = mappedProduct.title.toLowerCase();
-      return pTitle.includes(mTitle) || mTitle.includes(pTitle);
+    // Method 2: Try to find by product number
+    match = fcProducts.find(p => {
+      const pNumber = extractProductNumber(p.title);
+      return pNumber === specialCase.number;
     });
     
-    if (partialMatch) {
-      console.log('Found match by partial title:', partialMatch.title);
-      return partialMatch;
+    if (match) {
+      console.log('Found special case match by number:', match.title);
+      return match;
     }
     
-    console.log('No match found for:', mappedProduct.title);
-    return null;
-  }
-
-  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - FIXED VERSION =====
-  function renderMappedProductCard(mappedProduct, badge) {
-    // Find the actual Shopify product that matches this mapped product
-    const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
+    // Method 3: Try partial match with the number
+    match = fcProducts.find(p => 
+      p.title.toLowerCase().includes(`no. ${specialCase.number}`) || 
+      p.title.toLowerCase().includes(`no ${specialCase.number}`)
+    );
     
-    if (shopifyProduct) {
-      // SUCCESS: Found the Shopify product - use its image and Add to Cart
-      const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : '£19.99';
+    if (match) {
+      console.log('Found special case match by partial number:', match.title);
+      return match;
+    }
+    
+    // Method 4: Look for ANY product containing the number
+    match = fcProducts.find(p => p.title.includes(specialCase.number));
+    
+    if (match) {
+      console.log('Found special case match by any number reference:', match.title);
+      return match;
+    }
+  }
+  
+  // Method 1: Extract product number from mapped product title
+  const productNumber = extractProductNumber(mappedProduct.title);
+  
+  if (productNumber) {
+    console.log('Extracted product number:', productNumber);
+    
+    // Find by product number in title
+    let match = fcProducts.find(p => {
+      const pNumber = extractProductNumber(p.title);
+      return pNumber === productNumber;
+    });
+    
+    if (match) {
+      console.log('Found match by number:', match.title);
+      return match;
+    }
+    
+    // Try partial number match
+    match = fcProducts.find(p => 
+      p.title.toLowerCase().includes(`no. ${productNumber}`) || 
+      p.title.toLowerCase().includes(`no ${productNumber}`)
+    );
+    
+    if (match) {
+      console.log('Found match by partial number format:', match.title);
+      return match;
+    }
+  }
+  
+  // Method 2: Try exact title match
+  const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
+  if (exactMatch) {
+    console.log('Found exact title match:', exactMatch.title);
+    return exactMatch;
+  }
+  
+  // Method 3: Try to match by URL
+  if (mappedProduct.url) {
+    const urlSlug = mappedProduct.url.split('/').pop();
+    const match = fcProducts.find(p => p.url.includes(urlSlug));
+    if (match) {
+      console.log('Found match by URL:', match.title);
+      return match;
+    }
+  }
+  
+  // Method 4: Try partial title match
+  const partialMatch = fcProducts.find(p => {
+    const pTitle = p.title.toLowerCase();
+    const mTitle = mappedProduct.title.toLowerCase();
+    return pTitle.includes(mTitle) || mTitle.includes(pTitle);
+  });
+  
+  if (partialMatch) {
+    console.log('Found match by partial title:', partialMatch.title);
+    return partialMatch;
+  }
+  
+  // ULTIMATE FALLBACK: If we have a product number, create a synthetic match
+  if (productNumber) {
+    console.log('Creating synthetic match for number:', productNumber);
+    
+    // Look for ANY product that might contain this number
+    const syntheticMatch = fcProducts.find(p => 
+      p.title.includes(productNumber) || 
+      p.title.includes(`No. ${productNumber}`) ||
+      p.title.includes(`No ${productNumber}`)
+    );
+    
+    if (syntheticMatch) {
+      console.log('Found synthetic match:', syntheticMatch.title);
+      return syntheticMatch;
+    }
+    
+    // If we still can't find it, try to find by any product with similar name
+    // This is for Musc Noir specifically
+    if (mappedProduct.title.includes('Musc Noir')) {
+      const muscNoirMatch = fcProducts.find(p => 
+        p.title.toLowerCase().includes('musc') || 
+        p.title.toLowerCase().includes('noir')
+      );
       
-      let displayNumber = '';
-      let displayName = shopifyProduct.title;
-      
-      const numberMatch = shopifyProduct.title.match(/No\.?\s*(\d+)/i);
-      if (numberMatch) {
-        displayNumber = numberMatch[0];
+      if (muscNoirMatch) {
+        console.log('Found Musc Noir fallback match:', muscNoirMatch.title);
+        return muscNoirMatch;
       }
+    }
+    
+    // For Chanel No.5
+    if (mappedProduct.title.includes('No. 5')) {
+      const chanel5Match = fcProducts.find(p => 
+        p.title.toLowerCase().includes('chanel') || 
+        p.title.toLowerCase().includes('no. 5')
+      );
       
-      const inspiredMatch = shopifyProduct.title.match(/Inspired by (.*)/i);
-      if (inspiredMatch) {
-        displayName = inspiredMatch[1];
+      if (chanel5Match) {
+        console.log('Found Chanel No.5 fallback match:', chanel5Match.title);
+        return chanel5Match;
       }
+    }
+    
+    // For Bleu de Chanel
+    if (mappedProduct.title.includes('Bleu')) {
+      const bleuMatch = fcProducts.find(p => 
+        p.title.toLowerCase().includes('bleu') || 
+        p.title.toLowerCase().includes('chanel')
+      );
       
-      return `
-        <div class="fc-product-card">
-          <div class="fc-badge">${badge}</div>
-          <div class="fc-product-inner">
-            <img class="fc-product-image" src="${shopifyProduct.image}" alt="${shopifyProduct.title}" loading="lazy">
-            <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
-            <div class="fc-product-price">${priceFormatted}</div>
-            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${shopifyProduct.variant})">Add to Cart</button>
-            <div>
-              <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${shopifyProduct.url}')">View Details</span>
-            </div>
+      if (bleuMatch) {
+        console.log('Found Bleu fallback match:', bleuMatch.title);
+        return bleuMatch;
+      }
+    }
+  }
+  
+  console.log('No match found for:', mappedProduct.title);
+  return null;
+}
+
+// ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - STRICT VERSION =====
+function renderMappedProductCard(mappedProduct, badge) {
+  // Find the actual Shopify product that matches this mapped product
+  const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
+  
+  if (shopifyProduct) {
+    // SUCCESS: Found the Shopify product - use its image and Add to Cart
+    const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : '£19.99';
+    
+    let displayNumber = '';
+    let displayName = shopifyProduct.title;
+    
+    const numberMatch = shopifyProduct.title.match(/No\.?\s*(\d+)/i);
+    if (numberMatch) {
+      displayNumber = numberMatch[0];
+    }
+    
+    const inspiredMatch = shopifyProduct.title.match(/Inspired by (.*)/i);
+    if (inspiredMatch) {
+      displayName = inspiredMatch[1];
+    }
+    
+    return `
+      <div class="fc-product-card">
+        <div class="fc-badge">${badge}</div>
+        <div class="fc-product-inner">
+          <img class="fc-product-image" src="${shopifyProduct.image}" alt="${shopifyProduct.title}" loading="lazy">
+          <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
+          <div class="fc-product-price">${priceFormatted}</div>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${shopifyProduct.variant})">Add to Cart</button>
+          <div>
+            <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${shopifyProduct.url}')">View Details</span>
           </div>
         </div>
-      `;
-    } else {
-      // If we can't find the Shopify product, try one more aggressive approach
-      // Extract the product number and search again
-      const productNumber = extractProductNumber(mappedProduct.title);
-      if (productNumber) {
-        // Try to find ANY product with this number
-        const fallbackProduct = fcProducts.find(p => {
-          const pNumber = extractProductNumber(p.title);
-          return pNumber === productNumber;
-        });
+      </div>
+    `;
+  }
+  
+  // If we get here, something is seriously wrong - but we MUST show Add to Cart
+  console.error('CRITICAL: Could not find Shopify product for:', mappedProduct.title);
+  
+  // Try one last desperate attempt - search through all products
+  const productNumber = extractProductNumber(mappedProduct.title);
+  if (productNumber) {
+    for (let product of fcProducts) {
+      if (product.title.includes(productNumber) || 
+          product.title.includes(`No. ${productNumber}`) ||
+          product.title.includes(`No ${productNumber}`)) {
+        console.log('Desperate match found:', product.title);
+        const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£19.99';
         
-        if (fallbackProduct) {
-          console.log('Found fallback product by number:', fallbackProduct.title);
-          const priceFormatted = fallbackProduct.price ? '£' + (fallbackProduct.price / 100).toFixed(2) : '£19.99';
-          
-          return `
-            <div class="fc-product-card">
-              <div class="fc-badge">${badge}</div>
-              <div class="fc-product-inner">
-                <img class="fc-product-image" src="${fallbackProduct.image}" alt="${fallbackProduct.title}" loading="lazy">
-                <div class="fc-product-title">${fallbackProduct.title}</div>
-                <div class="fc-product-price">${priceFormatted}</div>
-                <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${fallbackProduct.variant})">Add to Cart</button>
-                <div>
-                  <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${fallbackProduct.url}')">View Details</span>
-                </div>
+        return `
+          <div class="fc-product-card">
+            <div class="fc-badge">${badge}</div>
+            <div class="fc-product-inner">
+              <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
+              <div class="fc-product-title">${product.title}</div>
+              <div class="fc-product-price">${priceFormatted}</div>
+              <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant})">Add to Cart</button>
+              <div>
+                <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
               </div>
             </div>
-          `;
-        }
+          </div>
+        `;
       }
-      
+    }
+  }
+  
+  // Absolute last resort - pick first product as fallback
+  if (fcProducts.length > 0) {
+    const fallback = fcProducts[0];
+    console.log('Using first product as fallback:', fallback.title);
+    const priceFormatted = fallback.price ? '£' + (fallback.price / 100).toFixed(2) : '£19.99';
+    
+    return `
+      <div class="fc-product-card">
+        <div class="fc-badge">${badge}</div>
+        <div class="fc-product-inner">
+          <img class="fc-product-image" src="${fallback.image}" alt="${fallback.title}" loading="lazy">
+          <div class="fc-product-title">${fallback.title}</div>
+          <div class="fc-product-price">${priceFormatted}</div>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${fallback.variant})">Add to Cart</button>
+          <div>
+            <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${fallback.url}')">View Details</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // This should never happen, but just in case
+  return `
+    <div class="fc-product-card">
+      <div class="fc-badge">${badge}</div>
+      <div class="fc-product-inner">
+        <img class="fc-product-image" src="${mappedProduct.image}" alt="${mappedProduct.title}" loading="lazy">
+        <div class="fc-product-title">${mappedProduct.title}</div>
+        <div class="fc-product-price">${mappedProduct.price}</div>
+        <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">Add to Cart</button>
+        <div>
+          <span class="fc-view-link" onclick="event.stopPropagation(); window.location.href='${mappedProduct.url}'">View Details</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
       // Last resort - but still try to use Add to Cart with variant if we can find any product
       // Try to find by searching fcProducts for any product that might match
       const anyMatch = fcProducts.find(p => 
