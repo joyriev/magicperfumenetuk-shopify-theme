@@ -1,13 +1,13 @@
 {% comment %}
   FRAGRANCE CODE SEARCH POPUP - PREMIUM DESIGN
   - Fixed search functionality - NOW WORKING PROPERLY
-  - Shows products for ANY search term
+  - FUZZY SEARCH: Finds products even with typos
   - Special handling for "code" shows both No. 260 and No. 135
   - HARDCODED MAPPINGS with correct variant IDs
   - FIXED: Uses correct product images (_c.webp format)
   - FIXED: Cart stays open after adding items
   - FIXED: Improved UI for offer banner
-  - FIXED: "Add to Cart" now uses AJAX with correct numeric variant IDs
+  - FIXED: "chanel blue" now finds Bleu de Chanel
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -973,7 +973,113 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== SIMPLE SEARCH FUNCTION =====
+  // ===== LEVENSHTEIN DISTANCE ALGORITHM FOR FUZZY MATCHING =====
+  function levenshteinDistance(a, b) {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+    
+    const matrix = [];
+    
+    // Initialize matrix
+    for (let i = 0; i <= b.length; i++) {
+      matrix[i] = [i];
+    }
+    
+    for (let j = 0; j <= a.length; j++) {
+      matrix[0][j] = j;
+    }
+    
+    // Fill matrix
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1, // substitution
+            matrix[i][j - 1] + 1,     // insertion
+            matrix[i - 1][j] + 1      // deletion
+          );
+        }
+      }
+    }
+    
+    return matrix[b.length][a.length];
+  }
+
+  // ===== CALCULATE SIMILARITY BETWEEN TWO STRINGS (FUZZY MATCH) =====
+  function calculateSimilarity(str1, str2) {
+    if (!str1 || !str2) return 0;
+    
+    const s1 = str1.toLowerCase();
+    const s2 = str2.toLowerCase();
+    
+    // Exact match
+    if (s1 === s2) return 1;
+    
+    // One contains the other
+    if (s1.includes(s2) || s2.includes(s1)) {
+      return 0.9;
+    }
+    
+    // Calculate Levenshtein distance for fuzzy matching
+    const distance = levenshteinDistance(s1, s2);
+    const maxLength = Math.max(s1.length, s2.length);
+    
+    if (maxLength === 0) return 1;
+    
+    // Convert distance to similarity score (0-1)
+    const similarity = 1 - (distance / maxLength);
+    
+    return similarity;
+  }
+
+  // ===== GENERATE QUERY VARIATIONS FOR BETTER MATCHING =====
+  function generateQueryVariations(query) {
+    const variations = [query];
+    
+    // Add common variations
+    if (query.includes('chanel blue')) {
+      variations.push('bleu de chanel');
+      variations.push('bleu chanel');
+      variations.push('chanel bleu');
+    }
+    
+    if (query.includes('bleu de chanel')) {
+      variations.push('chanel blue');
+      variations.push('blue chanel');
+    }
+    
+    // Handle common misspellings
+    if (query.includes('channel')) {
+      variations.push(query.replace('channel', 'chanel'));
+    }
+    
+    if (query.includes('noir')) {
+      variations.push('noir');
+    }
+    
+    if (query.includes('no 5') || query.includes('number 5')) {
+      variations.push('no. 5');
+      variations.push('chanel no 5');
+    }
+    
+    // Remove numbers from query for broader matching
+    const withoutNumbers = query.replace(/\d+/g, '').trim();
+    if (withoutNumbers && withoutNumbers !== query) {
+      variations.push(withoutNumbers);
+    }
+    
+    // Remove spaces for matching concatenated words
+    const withoutSpaces = query.replace(/\s+/g, '');
+    if (withoutSpaces !== query) {
+      variations.push(withoutSpaces);
+    }
+    
+    return [...new Set(variations)]; // Remove duplicates
+  }
+
+  // ===== SIMPLE SEARCH FUNCTION WITH FUZZY MATCHING =====
   function searchProducts(query) {
     if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
       return [];
@@ -1012,49 +1118,111 @@
       }
     }
     
-    // SECOND: Check ALL products for matches
+    // Create variations of the search query for better matching
+    const queryVariations = generateQueryVariations(queryLower);
+    console.log('Query variations:', queryVariations);
+    
+    // SECOND: Check ALL products with fuzzy matching
     fcProducts.forEach(product => {
       if (addedIds.has(product.id)) return;
       
       const title = product.title.toLowerCase();
       let score = 0;
       let matched = false;
+      let matchReasons = [];
       
-      // Direct title contains match (most important)
-      if (title.includes(queryLower)) {
-        score += 100;
-        matched = true;
-        console.log(`✅ Title match: ${product.title}`);
+      // Check each variation against the title
+      for (const variation of queryVariations) {
+        // Direct contains match (highest score)
+        if (title.includes(variation)) {
+          score += 100;
+          matched = true;
+          matchReasons.push(`direct:${variation}`);
+          break; // Found a match, no need to check other variations
+        }
       }
       
-      // Check individual words
-      const titleWords = title.split(/\s+/);
-      const queryWords = queryLower.split(/\s+/);
-      
-      for (const qWord of queryWords) {
-        if (qWord.length < 2) continue;
+      // If no direct match, try fuzzy matching
+      if (!matched) {
+        // Split query into words
+        const queryWords = queryLower.split(/\s+/).filter(w => w.length > 2);
         
-        for (const tWord of titleWords) {
-          if (tWord.includes(qWord)) {
-            score += 30;
-            matched = true;
-            console.log(`✅ Word match: "${qWord}" in "${product.title}"`);
-            break;
+        // Split title into words
+        const titleWords = title.split(/\s+/);
+        
+        for (const qWord of queryWords) {
+          for (const tWord of titleWords) {
+            // Check if word contains the query word (partial match)
+            if (tWord.includes(qWord)) {
+              score += 30;
+              matched = true;
+              matchReasons.push(`partial:${qWord} in ${tWord}`);
+              break;
+            }
+            
+            // Check if query word contains the title word
+            if (qWord.includes(tWord) && tWord.length > 2) {
+              score += 25;
+              matched = true;
+              matchReasons.push(`reverse:${tWord} in ${qWord}`);
+              break;
+            }
+            
+            // FUZZY MATCH: Check if words are similar (typo tolerance)
+            const similarity = calculateSimilarity(qWord, tWord);
+            if (similarity > 0.7) { // 70% similarity threshold
+              score += 20 * similarity;
+              matched = true;
+              matchReasons.push(`fuzzy:${qWord}~${tWord} (${Math.round(similarity*100)}%)`);
+              break;
+            }
           }
         }
       }
       
-      // Check for number matches
+      // Check for number matches (always exact)
       const numberMatch = product.title.match(/No\.?\s*(\d+)/i);
       if (numberMatch && queryLower.includes(numberMatch[1])) {
         score += 150;
         matched = true;
-        console.log(`✅ Number match: ${numberMatch[1]} in "${product.title}"`);
+        matchReasons.push(`number:${numberMatch[1]}`);
+      }
+      
+      // Special handling for common misspellings
+      if (!matched) {
+        // Handle "chanel blue" vs "bleu de chanel"
+        if ((queryLower.includes('chanel') || queryLower.includes('channel')) && 
+            (queryLower.includes('blue') || queryLower.includes('bleu'))) {
+          if (title.includes('bleu') && title.includes('chanel')) {
+            score += 80;
+            matched = true;
+            matchReasons.push('special:chanel blue');
+          }
+        }
+        
+        // Handle "noir" vs "noir"
+        if (queryLower.includes('noir') || queryLower.includes('noire')) {
+          if (title.includes('noir')) {
+            score += 80;
+            matched = true;
+            matchReasons.push('special:noir');
+          }
+        }
+        
+        // Handle "no. 5" vs "number 5" etc.
+        if (queryLower.includes('5') || queryLower.includes('five')) {
+          if (title.includes('no. 5') || title.includes('no 5')) {
+            score += 80;
+            matched = true;
+            matchReasons.push('special:no5');
+          }
+        }
       }
       
       if (matched) {
-        results.push({ product, score });
+        results.push({ product, score, matchReasons });
         addedIds.add(product.id);
+        console.log(`✅ Match: ${product.title} (Score: ${score})`, matchReasons);
       }
     });
     
@@ -1063,7 +1231,7 @@
       console.log('⚠️ No matches found, showing random products');
       fcProducts.slice(0, 10).forEach(product => {
         if (!addedIds.has(product.id)) {
-          results.push({ product, score: 1 });
+          results.push({ product, score: 1, matchReasons: ['fallback'] });
           addedIds.add(product.id);
         }
       });
@@ -1286,7 +1454,7 @@
         price: 999
       },
       {
-        catalogNames: ['bleu de chanel', 'bleu', 'chanel bleu'],
+        catalogNames: ['bleu de chanel', 'bleu', 'chanel bleu', 'blue chanel'],
         productNumber: '252',
         variantId: 52698254327919, // 30ml variant
         expectedTitle: 'No. 252 - Inspired by Bleu de Chanel',
