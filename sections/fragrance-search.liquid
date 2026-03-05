@@ -944,6 +944,11 @@
     return match ? match[1] : null;
   }
 
+  // ===== FIND PERFUME BY ID =====
+  function findPerfumeById(id) {
+    return allPerfumes.find(p => p.id === id);
+  }
+
   // ===== SIMPLE SEARCH FUNCTION - SHOWS ALL PRODUCTS =====
   function searchProducts(query) {
     if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
@@ -1520,6 +1525,11 @@
       }, 1500);
     });
   };
+
+  // ===== RENDER YOUR PRODUCT CARD (ALIAS FOR renderProductCard) =====
+  function renderYourProductCard(product, badge) {
+    return renderProductCard(product, badge);
+  }
 
   // ===== VIEW DETAILS =====
   window.fcViewDetails = function(url) {
