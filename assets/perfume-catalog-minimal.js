@@ -8,7 +8,7 @@ window.PerfumeCatalog = {
       id: "narciso_musc_noir",
       name: "Musc Noir Narciso Rodriguez",
       brand: "Narciso Rodriguez",
-      image: "https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601",
+      image: "https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200",
       top_notes: ["Plum", "Bergamot", "Mandarin"],
       heart_notes: ["Tuberose", "Jasmine", "Musk"],
       base_notes: ["Patchouli", "Vanilla", "Cedar"],
@@ -20,7 +20,7 @@ window.PerfumeCatalog = {
         title: "No. 457 - Inspired by Musc Noir For Her",
         url: "https://magicperfume.co.uk/products/magic-perfume-no-457w",
         price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601"
+        image: "https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200"
       }
     }
   ],
