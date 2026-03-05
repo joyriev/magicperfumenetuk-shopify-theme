@@ -1256,94 +1256,171 @@
   }
 
   // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - FIXED VERSION =====
-  function findShopifyProductByMappedProduct(mappedProduct) {
-    if (!mappedProduct || !mappedProduct.title) return null;
-    
-    console.log('🔍 Looking for Shopify product matching:', mappedProduct.title);
-    
-    // Extract product number
-    const productNumber = extractProductNumber(mappedProduct.title);
-    console.log('🔢 Product number:', productNumber);
-    
-    if (productNumber) {
-      // Special case mappings based on your actual product titles
-      const specialMappings = {
-        '457': { search: ['457', 'Musc Noir'] },
-        '077': { search: ['077', 'No. 5'] },
-        '252': { search: ['252', 'Bleu'] },
-        '260': { search: ['260', 'Code'] },
-        '135': { search: ['135', 'Code for Women'] },
-        '067': { search: ['067', 'Mademoiselle'] },
-        '079': { search: ['079', 'Coco'] },
-        '006': { search: ['006', 'Chance'] },
-        '222': { search: ['222', 'Allure'] },
-        '277': { search: ['277', 'Homme Intense'] },
-        '211': { search: ['211', 'Homme'] },
-        '338': { search: ['338', 'Sauvage Parfum'] },
-        '366': { search: ['366', 'Sauvage Elixir'] },
-        '206': { search: ['206', 'Fahrenheit'] },
-        '159': { search: ['159', 'J\'Adore'] },
-        '145': { search: ['145', 'Hypnotic'] },
-        '196': { search: ['196', 'Le Parfum'] },
-        '082': { search: ['082', 'Miss Cherie'] },
-        '350': { search: ['350', 'Fahrenheit Le Parfum'] }
-      };
-      
-      if (specialMappings[productNumber]) {
-        const mapping = specialMappings[productNumber];
-        
-        // Try to find by number first
-        let match = fcProducts.find(p => {
-          const pNumber = extractProductNumber(p.title);
-          return pNumber === productNumber;
-        });
-        
-        if (match) {
-          console.log('✅ Found by number:', match.title);
-          return match;
-        }
-        
-        // Try to find by search terms
-        for (const term of mapping.search) {
-          match = fcProducts.find(p => 
-            p.title.toLowerCase().includes(term.toLowerCase())
-          );
-          if (match) {
-            console.log(`✅ Found by term "${term}":`, match.title);
-            return match;
-          }
-        }
+  // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - FIXED FOR SKU FORMAT =====
+function findShopifyProductByMappedProduct(mappedProduct) {
+  if (!mappedProduct || !mappedProduct.title) return null;
+  
+  console.log('🔍 Looking for Shopify product matching:', mappedProduct.title);
+  
+  // Extract product number
+  const productNumber = extractProductNumber(mappedProduct.title);
+  console.log('🔢 Product number:', productNumber);
+  
+  if (productNumber) {
+    // Special case mappings based on your actual product titles
+    const specialMappings = {
+      '457': { 
+        search: ['457', 'Musc Noir'],
+        sku: '457w' // Base SKU for 100ml
+      },
+      '077': { 
+        search: ['077', 'No. 5'],
+        sku: '077w'
+      },
+      '252': { 
+        search: ['252', 'Bleu'],
+        sku: '252m'
+      },
+      '260': { 
+        search: ['260', 'Code'],
+        sku: '260m'
+      },
+      '135': { 
+        search: ['135', 'Code for Women'],
+        sku: '135w'
+      },
+      '067': { 
+        search: ['067', 'Mademoiselle'],
+        sku: '067w'
+      },
+      '079': { 
+        search: ['079', 'Coco'],
+        sku: '079w'
+      },
+      '006': { 
+        search: ['006', 'Chance'],
+        sku: '006w'
+      },
+      '222': { 
+        search: ['222', 'Allure'],
+        sku: '222m'
+      },
+      '277': { 
+        search: ['277', 'Homme Intense'],
+        sku: '277m'
+      },
+      '211': { 
+        search: ['211', 'Homme'],
+        sku: '211m'
+      },
+      '338': { 
+        search: ['338', 'Sauvage Parfum'],
+        sku: '338m'
+      },
+      '366': { 
+        search: ['366', 'Sauvage Elixir'],
+        sku: '366m'
+      },
+      '206': { 
+        search: ['206', 'Fahrenheit'],
+        sku: '206m'
+      },
+      '159': { 
+        search: ['159', 'J\'Adore'],
+        sku: '159w'
+      },
+      '145': { 
+        search: ['145', 'Hypnotic'],
+        sku: '145w'
+      },
+      '196': { 
+        search: ['196', 'Le Parfum'],
+        sku: '196m'
+      },
+      '082': { 
+        search: ['082', 'Miss Cherie'],
+        sku: '082w'
+      },
+      '350': { 
+        search: ['350', 'Fahrenheit Le Parfum'],
+        sku: '350m'
       }
+    };
+    
+    if (specialMappings[productNumber]) {
+      const mapping = specialMappings[productNumber];
       
-      // Generic number search
-      const numberMatch = fcProducts.find(p => {
+      // Try to find by number first
+      let match = fcProducts.find(p => {
         const pNumber = extractProductNumber(p.title);
         return pNumber === productNumber;
       });
       
-      if (numberMatch) {
-        console.log('✅ Found by generic number:', numberMatch.title);
-        return numberMatch;
+      if (match) {
+        console.log('✅ Found by number:', match.title);
+        
+        // IMPORTANT: Ensure the variant uses SKU format, not numeric ID
+        if (typeof match.variant === 'number' || (match.variant && match.variant.toString().length > 10)) {
+          console.log('⚠️ Fixing variant ID format for', match.title);
+          match.variant = mapping.sku;
+        }
+        
+        return match;
       }
       
-      // Search for number anywhere
-      const anyMatch = fcProducts.find(p => p.title.includes(productNumber));
-      if (anyMatch) {
-        console.log('✅ Found by number anywhere:', anyMatch.title);
-        return anyMatch;
+      // Try to find by search terms
+      for (const term of mapping.search) {
+        match = fcProducts.find(p => 
+          p.title.toLowerCase().includes(term.toLowerCase())
+        );
+        if (match) {
+          console.log(`✅ Found by term "${term}":`, match.title);
+          
+          // Fix variant format
+          if (typeof match.variant === 'number' || (match.variant && match.variant.toString().length > 10)) {
+            match.variant = mapping.sku;
+          }
+          
+          return match;
+        }
       }
+      
+      // If product exists but has wrong variant, create a corrected entry
+      console.log('⚠️ Product found but needs variant fix, creating corrected entry');
+      return {
+        id: `fixed-${productNumber}`,
+        title: mapping.search.includes('Musc Noir') ? 'No. 457 - Inspired by Musc Noir For Her' : 
+               mapping.search.includes('No. 5') ? 'No. 077 - Inspired by No. 5' :
+               mapping.search.includes('Bleu') ? 'No. 252 - Inspired by Bleu de Chanel' : mappedProduct.title,
+        image: fcProducts.find(p => p.title.includes(productNumber))?.image || mappedProduct.image,
+        url: fcProducts.find(p => p.title.includes(productNumber))?.url || mappedProduct.url,
+        variant: mapping.sku,
+        price: 1999
+      };
     }
     
-    // Try exact title match
-    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
-    if (exactMatch) {
-      console.log('✅ Found exact match:', exactMatch.title);
-      return exactMatch;
-    }
+    // Generic number search
+    const numberMatch = fcProducts.find(p => {
+      const pNumber = extractProductNumber(p.title);
+      return pNumber === productNumber;
+    });
     
-    console.log('❌ No match found for:', mappedProduct.title);
-    return null;
+    if (numberMatch) {
+      console.log('✅ Found by generic number:', numberMatch.title);
+      return numberMatch;
+    }
   }
+  
+  // Try exact title match
+  const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
+  if (exactMatch) {
+    console.log('✅ Found exact match:', exactMatch.title);
+    return exactMatch;
+  }
+  
+  console.log('❌ No match found for:', mappedProduct.title);
+  return null;
+}
 
   // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART =====
   function renderMappedProductCard(mappedProduct, badge) {
