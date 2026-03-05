@@ -5,11 +5,11 @@
   - Special handling for "code" shows both No. 260 and No. 135
   - DIRECT MAPPING for accurate product matching
   - FIXED: Uses original Shopify product images
-  - FIXED: "Add to Cart" now uses AJAX for ALL products (no redirects)
+  - FIXED: "Add to Cart" now uses AJAX with proper SKU format
   - FIXED: Chanel No.5 correctly shows No. 077 with working Add to Cart
   - FIXED: Musc Noir correctly shows No. 457 with working Add to Cart
   - FIXED: Bleu de Chanel correctly shows No. 252 with working Add to Cart
-  - FIXED: Loads products from all collections to ensure No. 457 is included
+  - FIXED: Uses SKU (e.g., '457w') instead of numeric variant IDs
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -1255,180 +1255,191 @@
     return null;
   }
 
-  // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - FIXED VERSION =====
   // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - FIXED FOR SKU FORMAT =====
-function findShopifyProductByMappedProduct(mappedProduct) {
-  if (!mappedProduct || !mappedProduct.title) return null;
-  
-  console.log('🔍 Looking for Shopify product matching:', mappedProduct.title);
-  
-  // Extract product number
-  const productNumber = extractProductNumber(mappedProduct.title);
-  console.log('🔢 Product number:', productNumber);
-  
-  if (productNumber) {
-    // Special case mappings based on your actual product titles
-    const specialMappings = {
-      '457': { 
-        search: ['457', 'Musc Noir'],
-        sku: '457w' // Base SKU for 100ml
-      },
-      '077': { 
-        search: ['077', 'No. 5'],
-        sku: '077w'
-      },
-      '252': { 
-        search: ['252', 'Bleu'],
-        sku: '252m'
-      },
-      '260': { 
-        search: ['260', 'Code'],
-        sku: '260m'
-      },
-      '135': { 
-        search: ['135', 'Code for Women'],
-        sku: '135w'
-      },
-      '067': { 
-        search: ['067', 'Mademoiselle'],
-        sku: '067w'
-      },
-      '079': { 
-        search: ['079', 'Coco'],
-        sku: '079w'
-      },
-      '006': { 
-        search: ['006', 'Chance'],
-        sku: '006w'
-      },
-      '222': { 
-        search: ['222', 'Allure'],
-        sku: '222m'
-      },
-      '277': { 
-        search: ['277', 'Homme Intense'],
-        sku: '277m'
-      },
-      '211': { 
-        search: ['211', 'Homme'],
-        sku: '211m'
-      },
-      '338': { 
-        search: ['338', 'Sauvage Parfum'],
-        sku: '338m'
-      },
-      '366': { 
-        search: ['366', 'Sauvage Elixir'],
-        sku: '366m'
-      },
-      '206': { 
-        search: ['206', 'Fahrenheit'],
-        sku: '206m'
-      },
-      '159': { 
-        search: ['159', 'J\'Adore'],
-        sku: '159w'
-      },
-      '145': { 
-        search: ['145', 'Hypnotic'],
-        sku: '145w'
-      },
-      '196': { 
-        search: ['196', 'Le Parfum'],
-        sku: '196m'
-      },
-      '082': { 
-        search: ['082', 'Miss Cherie'],
-        sku: '082w'
-      },
-      '350': { 
-        search: ['350', 'Fahrenheit Le Parfum'],
-        sku: '350m'
-      }
-    };
+  function findShopifyProductByMappedProduct(mappedProduct) {
+    if (!mappedProduct || !mappedProduct.title) return null;
     
-    if (specialMappings[productNumber]) {
-      const mapping = specialMappings[productNumber];
-      
-      // Try to find by number first
-      let match = fcProducts.find(p => {
-        const pNumber = extractProductNumber(p.title);
-        return pNumber === productNumber;
-      });
-      
-      if (match) {
-        console.log('✅ Found by number:', match.title);
-        
-        // IMPORTANT: Ensure the variant uses SKU format, not numeric ID
-        if (typeof match.variant === 'number' || (match.variant && match.variant.toString().length > 10)) {
-          console.log('⚠️ Fixing variant ID format for', match.title);
-          match.variant = mapping.sku;
+    console.log('🔍 Looking for Shopify product matching:', mappedProduct.title);
+    
+    // Extract product number
+    const productNumber = extractProductNumber(mappedProduct.title);
+    console.log('🔢 Product number:', productNumber);
+    
+    if (productNumber) {
+      // Special case mappings based on your actual product titles with SKUs
+      const specialMappings = {
+        '457': { 
+          search: ['457', 'Musc Noir'],
+          sku: '457w'
+        },
+        '077': { 
+          search: ['077', 'No. 5'],
+          sku: '077w'
+        },
+        '252': { 
+          search: ['252', 'Bleu'],
+          sku: '252m'
+        },
+        '260': { 
+          search: ['260', 'Code'],
+          sku: '260m'
+        },
+        '135': { 
+          search: ['135', 'Code for Women'],
+          sku: '135w'
+        },
+        '067': { 
+          search: ['067', 'Mademoiselle'],
+          sku: '067w'
+        },
+        '079': { 
+          search: ['079', 'Coco'],
+          sku: '079w'
+        },
+        '006': { 
+          search: ['006', 'Chance'],
+          sku: '006w'
+        },
+        '222': { 
+          search: ['222', 'Allure'],
+          sku: '222m'
+        },
+        '277': { 
+          search: ['277', 'Homme Intense'],
+          sku: '277m'
+        },
+        '211': { 
+          search: ['211', 'Homme'],
+          sku: '211m'
+        },
+        '338': { 
+          search: ['338', 'Sauvage Parfum'],
+          sku: '338m'
+        },
+        '366': { 
+          search: ['366', 'Sauvage Elixir'],
+          sku: '366m'
+        },
+        '206': { 
+          search: ['206', 'Fahrenheit'],
+          sku: '206m'
+        },
+        '159': { 
+          search: ['159', 'J\'Adore'],
+          sku: '159w'
+        },
+        '145': { 
+          search: ['145', 'Hypnotic'],
+          sku: '145w'
+        },
+        '196': { 
+          search: ['196', 'Le Parfum'],
+          sku: '196m'
+        },
+        '082': { 
+          search: ['082', 'Miss Cherie'],
+          sku: '082w'
+        },
+        '350': { 
+          search: ['350', 'Fahrenheit Le Parfum'],
+          sku: '350m'
         }
-        
-        return match;
-      }
+      };
       
-      // Try to find by search terms
-      for (const term of mapping.search) {
-        match = fcProducts.find(p => 
-          p.title.toLowerCase().includes(term.toLowerCase())
-        );
+      if (specialMappings[productNumber]) {
+        const mapping = specialMappings[productNumber];
+        
+        // Try to find by number first
+        let match = fcProducts.find(p => {
+          const pNumber = extractProductNumber(p.title);
+          return pNumber === productNumber;
+        });
+        
         if (match) {
-          console.log(`✅ Found by term "${term}":`, match.title);
+          console.log('✅ Found by number:', match.title);
           
-          // Fix variant format
-          if (typeof match.variant === 'number' || (match.variant && match.variant.toString().length > 10)) {
+          // Ensure we use the SKU format for variant
+          if (match.variantSKU) {
+            match.variant = match.variantSKU;
+          } else {
+            // Force the correct SKU
             match.variant = mapping.sku;
           }
           
           return match;
         }
+        
+        // Try to find by search terms
+        for (const term of mapping.search) {
+          match = fcProducts.find(p => 
+            p.title.toLowerCase().includes(term.toLowerCase())
+          );
+          if (match) {
+            console.log(`✅ Found by term "${term}":`, match.title);
+            
+            // Ensure we use the SKU format for variant
+            if (match.variantSKU) {
+              match.variant = match.variantSKU;
+            } else {
+              // Force the correct SKU
+              match.variant = mapping.sku;
+            }
+            
+            return match;
+          }
+        }
+        
+        // If product exists but we couldn't find it by standard methods, create a corrected entry
+        console.log('⚠️ Creating corrected product entry for number:', productNumber);
+        return {
+          id: `fixed-${productNumber}`,
+          title: mappedProduct.title,
+          image: mappedProduct.image,
+          url: mappedProduct.url,
+          variant: mapping.sku,
+          price: 1999
+        };
       }
       
-      // If product exists but has wrong variant, create a corrected entry
-      console.log('⚠️ Product found but needs variant fix, creating corrected entry');
-      return {
-        id: `fixed-${productNumber}`,
-        title: mapping.search.includes('Musc Noir') ? 'No. 457 - Inspired by Musc Noir For Her' : 
-               mapping.search.includes('No. 5') ? 'No. 077 - Inspired by No. 5' :
-               mapping.search.includes('Bleu') ? 'No. 252 - Inspired by Bleu de Chanel' : mappedProduct.title,
-        image: fcProducts.find(p => p.title.includes(productNumber))?.image || mappedProduct.image,
-        url: fcProducts.find(p => p.title.includes(productNumber))?.url || mappedProduct.url,
-        variant: mapping.sku,
-        price: 1999
-      };
+      // Generic number search
+      const numberMatch = fcProducts.find(p => {
+        const pNumber = extractProductNumber(p.title);
+        return pNumber === productNumber;
+      });
+      
+      if (numberMatch) {
+        console.log('✅ Found by generic number:', numberMatch.title);
+        return numberMatch;
+      }
+      
+      // Search for number anywhere
+      const anyMatch = fcProducts.find(p => p.title.includes(productNumber));
+      if (anyMatch) {
+        console.log('✅ Found by number anywhere:', anyMatch.title);
+        return anyMatch;
+      }
     }
     
-    // Generic number search
-    const numberMatch = fcProducts.find(p => {
-      const pNumber = extractProductNumber(p.title);
-      return pNumber === productNumber;
-    });
-    
-    if (numberMatch) {
-      console.log('✅ Found by generic number:', numberMatch.title);
-      return numberMatch;
+    // Try exact title match
+    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
+    if (exactMatch) {
+      console.log('✅ Found exact match:', exactMatch.title);
+      return exactMatch;
     }
+    
+    console.log('❌ No match found for:', mappedProduct.title);
+    return null;
   }
-  
-  // Try exact title match
-  const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
-  if (exactMatch) {
-    console.log('✅ Found exact match:', exactMatch.title);
-    return exactMatch;
-  }
-  
-  console.log('❌ No match found for:', mappedProduct.title);
-  return null;
-}
 
-  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART =====
+  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - FIXED FOR SKU FORMAT =====
   function renderMappedProductCard(mappedProduct, badge) {
     // Find the actual Shopify product
     const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
     
     if (shopifyProduct) {
       console.log('✅ Rendering product:', shopifyProduct.title);
+      console.log('   Variant:', shopifyProduct.variant);
+      
       const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : '£19.99';
       
       let displayNumber = '';
@@ -1444,6 +1455,18 @@ function findShopifyProductByMappedProduct(mappedProduct) {
         displayName = inspiredMatch[1];
       }
       
+      // Properly escape the variant ID for JavaScript
+      const variantId = shopifyProduct.variant;
+      let variantString;
+      
+      if (typeof variantId === 'string') {
+        // If it's a string SKU like '457w', wrap in quotes and escape any quotes
+        variantString = `'${variantId.replace(/'/g, "\\'")}'`;
+      } else {
+        // If it's a number, use it directly
+        variantString = variantId;
+      }
+      
       return `
         <div class="fc-product-card">
           <div class="fc-badge">${badge}</div>
@@ -1451,7 +1474,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
             <img class="fc-product-image" src="${shopifyProduct.image}" alt="${shopifyProduct.title}" loading="lazy">
             <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
             <div class="fc-product-price">${priceFormatted}</div>
-            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${shopifyProduct.variant})">Add to Cart</button>
+            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${variantString})">Add to Cart</button>
             <div>
               <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${shopifyProduct.url}')">View Details</span>
             </div>
@@ -1460,30 +1483,43 @@ function findShopifyProductByMappedProduct(mappedProduct) {
       `;
     }
     
-    // If we can't find it, show error but still try to add to cart
+    // If we can't find it, try fallback with SKU
     console.error('❌ Could not find product for:', mappedProduct.title);
     
-    // Try to find any product with the same number
     const productNumber = extractProductNumber(mappedProduct.title);
     if (productNumber) {
-      const fallback = fcProducts.find(p => p.title.includes(productNumber));
-      if (fallback) {
-        const priceFormatted = fallback.price ? '£' + (fallback.price / 100).toFixed(2) : '£19.99';
-        return `
-          <div class="fc-product-card">
-            <div class="fc-badge">${badge}</div>
-            <div class="fc-product-inner">
-              <img class="fc-product-image" src="${fallback.image}" alt="${fallback.title}" loading="lazy">
-              <div class="fc-product-title">${fallback.title}</div>
-              <div class="fc-product-price">${priceFormatted}</div>
-              <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${fallback.variant})">Add to Cart</button>
-              <div>
-                <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${fallback.url}')">View Details</span>
-              </div>
+      // Determine if it's women's or men's based on title
+      const isWomen = mappedProduct.title.includes('For Her') || 
+                      mappedProduct.title.includes('Women') || 
+                      mappedProduct.title.includes('Female') ||
+                      mappedProduct.title.includes('Mademoiselle') ||
+                      mappedProduct.title.includes('Chance') ||
+                      mappedProduct.title.includes('Coco') ||
+                      mappedProduct.title.includes('No. 5') ||
+                      mappedProduct.title.includes('J\'Adore') ||
+                      mappedProduct.title.includes('Hypnotic') ||
+                      mappedProduct.title.includes('La Belle') ||
+                      mappedProduct.title.includes('Classique') ||
+                      mappedProduct.title.includes('Black Opium') ||
+                      mappedProduct.title.includes('Libre') ||
+                      mappedProduct.title.includes('La Vie Est Belle');
+      
+      const baseSku = productNumber + (isWomen ? 'w' : 'm');
+      
+      return `
+        <div class="fc-product-card">
+          <div class="fc-badge">${badge}</div>
+          <div class="fc-product-inner">
+            <img class="fc-product-image" src="${mappedProduct.image}" alt="${mappedProduct.title}" loading="lazy">
+            <div class="fc-product-title">${mappedProduct.title}</div>
+            <div class="fc-product-price">${mappedProduct.price}</div>
+            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart('${baseSku}')">Add to Cart</button>
+            <div>
+              <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${mappedProduct.url}')">View Details</span>
             </div>
           </div>
-        `;
-      }
+        </div>
+      `;
     }
     
     // Last resort
@@ -1503,7 +1539,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
     `;
   }
 
-  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS - LOADS FROM MULTIPLE COLLECTIONS =====
+  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS - WITH SKU SUPPORT =====
   function fcInitProducts() {
     fcProducts = [
       // Load from All Products collection
@@ -1514,6 +1550,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
           image: {{ product.featured_image | img_url: '400x' | json }},
           url: {{ product.url | json }},
           variant: {{ product.variants.first.id | json }},
+          variantSKU: {{ product.variants.first.sku | json }},
           price: {{ product.price | json }},
           comparePrice: {{ product.compare_at_price | json }},
           description: {{ product.description | strip_html | json }},
@@ -1533,7 +1570,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
       
-      // Load from For The Ladies collection to ensure we get No. 457
+      // Load from For The Ladies collection
       {% if collections['for-the-ladies'] %}
         {% for product in collections['for-the-ladies'].products %}
           {% unless collections.all.products contains product %}
@@ -1543,6 +1580,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
               image: {{ product.featured_image | img_url: '400x' | json }},
               url: {{ product.url | json }},
               variant: {{ product.variants.first.id | json }},
+              variantSKU: {{ product.variants.first.sku | json }},
               price: {{ product.price | json }},
               comparePrice: {{ product.compare_at_price | json }},
               description: {{ product.description | strip_html | json }},
@@ -1574,6 +1612,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
               image: {{ product.featured_image | img_url: '400x' | json }},
               url: {{ product.url | json }},
               variant: {{ product.variants.first.id | json }},
+              variantSKU: {{ product.variants.first.sku | json }},
               price: {{ product.price | json }},
               comparePrice: {{ product.compare_at_price | json }},
               description: {{ product.description | strip_html | json }},
@@ -1605,6 +1644,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
               image: {{ product.featured_image | img_url: '400x' | json }},
               url: {{ product.url | json }},
               variant: {{ product.variants.first.id | json }},
+              variantSKU: {{ product.variants.first.sku | json }},
               price: {{ product.price | json }},
               comparePrice: {{ product.compare_at_price | json }},
               description: {{ product.description | strip_html | json }},
@@ -1642,26 +1682,35 @@ function findShopifyProductByMappedProduct(mappedProduct) {
     
     console.log('✓ Loaded', fcProducts.length, 'unique products');
     
+    // For products that have SKU, prefer using SKU over variant ID
+    fcProducts.forEach(product => {
+      if (product.variantSKU) {
+        console.log(`📦 Product ${product.title} has SKU: ${product.variantSKU}`);
+        product.variant = product.variantSKU; // Use SKU instead of numeric ID
+      }
+    });
+    
     // VERIFY No. 457 is loaded
     const no457 = fcProducts.find(p => p.title.includes('457') || p.title.includes('Musc Noir'));
     if (no457) {
       console.log('✅ No. 457 successfully loaded:', no457.title);
-      console.log('   URL:', no457.url);
       console.log('   Variant:', no457.variant);
+      console.log('   SKU:', no457.variantSKU);
     } else {
-      console.log('❌ No. 457 STILL NOT FOUND! Adding manually...');
+      console.log('❌ No. 457 not found, adding manually with SKU...');
       
-      // Manual fallback - add No. 457 directly with the correct variant IDs
+      // Add with the correct SKU format
       fcProducts.push({
-  id: 14899679723887,
-  title: 'No. 457 - Inspired by Musc Noir For Her',
-  image: 'https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601',
-  url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
-  variant: '457w', // Use the SKU for 100ml, not a numeric ID
-  price: 1999,
-  description: 'Inspired by Musc Noir For Her'
-});
-      console.log('✅ Manually added No. 457');
+        id: 'manual-457',
+        title: 'No. 457 - Inspired by Musc Noir For Her',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
+        variant: '457w',
+        variantSKU: '457w',
+        price: 1999,
+        description: 'Inspired by Musc Noir For Her'
+      });
+      console.log('✅ Manually added No. 457 with SKU: 457w');
     }
     
     // Verify No. 077
@@ -1669,13 +1718,13 @@ function findShopifyProductByMappedProduct(mappedProduct) {
     if (!no077) {
       console.log('⚠️ No. 077 not found, adding manually...');
       fcProducts.push({
-        id: 14899679560047,
+        id: 'manual-077',
         title: 'No. 077 - Inspired by No. 5',
         image: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765699',
         url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
-        variant: 44732461711601,
-        price: 1999,
-        description: 'Inspired by No. 5'
+        variant: '077w',
+        variantSKU: '077w',
+        price: 1999
       });
     }
     
@@ -1684,15 +1733,17 @@ function findShopifyProductByMappedProduct(mappedProduct) {
     if (!no252) {
       console.log('⚠️ No. 252 not found, adding manually...');
       fcProducts.push({
-        id: 14899681460591,
+        id: 'manual-252',
         title: 'No. 252 - Inspired by Bleu de Chanel',
         image: 'https://magicperfume.co.uk/cdn/shop/files/bleu.png?v=1772097197',
         url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
-        variant: 44732463481069,
-        price: 1999,
-        description: 'Inspired by Bleu de Chanel'
+        variant: '252m',
+        variantSKU: '252m',
+        price: 1999
       });
     }
+    
+    console.log('✓ Final product count:', fcProducts.length);
   }
 
   // ===== EXTRACT KEYWORDS FROM PRODUCT TITLE =====
@@ -1939,7 +1990,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
       });
   }
 
-  // ===== ADD TO CART =====
+  // ===== ADD TO CART - UPDATED TO HANDLE STRING SKUS =====
   window.fcAddToCart = function(variantId) {
     const btn = event.target;
     const originalText = btn.innerText;
@@ -1947,6 +1998,8 @@ function findShopifyProductByMappedProduct(mappedProduct) {
     
     btn.innerText = 'Adding...';
     btn.disabled = true;
+    
+    console.log('Adding to cart with variant:', variantId);
     
     fetch('/cart/add.js', {
       method: 'POST',
@@ -1959,7 +2012,12 @@ function findShopifyProductByMappedProduct(mappedProduct) {
         quantity: 1 
       })
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
       btn.innerText = '✓ Added!';
       btn.style.background = '#2E7D32';
@@ -2004,6 +2062,16 @@ function findShopifyProductByMappedProduct(mappedProduct) {
       displayName = inspiredMatch[1];
     }
     
+    // Properly escape the variant ID for JavaScript
+    const variantId = product.variant;
+    let variantString;
+    
+    if (typeof variantId === 'string') {
+      variantString = `'${variantId.replace(/'/g, "\\'")}'`;
+    } else {
+      variantString = variantId;
+    }
+    
     return `
       <div class="fc-product-card">
         <div class="fc-badge">${badge}</div>
@@ -2011,7 +2079,7 @@ function findShopifyProductByMappedProduct(mappedProduct) {
           <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
           <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
           <div class="fc-product-price">${priceFormatted}</div>
-          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant})">Add to Cart</button>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${variantString})">Add to Cart</button>
           <div>
             <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
           </div>
