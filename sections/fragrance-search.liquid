@@ -3,8 +3,7 @@
   - Fixed search functionality - NOW WORKING PROPERLY
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
-  - SIMPLIFIED SEARCH: Direct title matching with scoring
-  - FIXED: "noir" search now finds No. 457
+  - HARDCODED MAPPINGS for Musc Noir, No.5, Bleu de Chanel
   - FIXED: Uses original Shopify product images
   - FIXED: "Add to Cart" now uses AJAX with proper SKU format
 {% endcomment %}
@@ -947,7 +946,7 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== SIMPLE SEARCH FUNCTION - FIXED FOR NOIR =====
+  // ===== SIMPLE SEARCH FUNCTION =====
   function searchProducts(query) {
     if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
       return [];
@@ -1024,14 +1023,6 @@
         score += 150;
         matched = true;
         console.log(`✅ Number match: ${numberMatch[1]} in "${product.title}"`);
-      }
-      
-      // Check nuta/metafield
-      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
-      if (nuta && nuta.includes(queryLower)) {
-        score += 50;
-        matched = true;
-        console.log(`✅ Nuta match: "${product.title}"`);
       }
       
       if (matched) {
@@ -1141,7 +1132,7 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL WITH DIRECT PRODUCT MAPPING =====
+  // ===== SHOW PERFUME DETAIL WITH HARDCODED MAPPINGS =====
   window.fcShowPerfumeDetail = function(perfumeId) {
     const perfume = findPerfumeById(perfumeId);
     if (!perfume) return;
@@ -1149,7 +1140,7 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    // Find matching Shopify product
+    // Find matching Shopify product using hardcoded mappings
     const shopifyProduct = findShopifyProductByCatalogPerfume(perfume);
     
     let html = `
@@ -1241,13 +1232,91 @@
     content.innerHTML = html;
   };
 
-  // ===== FIND SHOPIFY PRODUCT BY CATALOG PERFUME - SIMPLIFIED =====
+  // ===== FIND SHOPIFY PRODUCT BY CATALOG PERFUME - WITH HARDCODED MAPPINGS =====
   function findShopifyProductByCatalogPerfume(perfume) {
     if (!perfume || !fcProducts.length) return null;
     
     console.log('🔍 Finding Shopify product for catalog perfume:', perfume.name);
     
-    // Method 1: Direct number match from productNumbers
+    // ===== HARDCODED DIRECT MAPPINGS FOR KNOWN PRODUCTS =====
+    const hardcodedMappings = [
+      {
+        catalogNames: ['musc noir', 'narciso rodriguez musc noir', 'musc noir narciso rodriguez'],
+        productNumber: '457',
+        expectedTitle: 'No. 457 - Inspired by Musc Noir For Her'
+      },
+      {
+        catalogNames: ['no. 5', 'chanel no. 5', 'no 5 chanel'],
+        productNumber: '077',
+        expectedTitle: 'No. 077 - Inspired by No. 5'
+      },
+      {
+        catalogNames: ['bleu de chanel', 'bleu', 'chanel bleu'],
+        productNumber: '252',
+        expectedTitle: 'No. 252 - Inspired by Bleu de Chanel'
+      },
+      {
+        catalogNames: ['code', 'armani code'],
+        productNumber: '260',
+        expectedTitle: 'No. 260 - Inspired by Code'
+      },
+      {
+        catalogNames: ['code for women', 'armani code for women'],
+        productNumber: '135',
+        expectedTitle: 'No. 135 - Inspired by Code for Women'
+      },
+      {
+        catalogNames: ['sauvage', 'dior sauvage'],
+        productNumber: '338',
+        expectedTitle: 'No. 338 - Inspired by Sauvage Parfum'
+      },
+      {
+        catalogNames: ['sauvage elixir', 'dior sauvage elixir'],
+        productNumber: '366',
+        expectedTitle: 'No. 366 - Inspired by Sauvage Elixir'
+      },
+      {
+        catalogNames: ['dior homme intense'],
+        productNumber: '277',
+        expectedTitle: 'No. 277 - Inspired by Homme Intense'
+      },
+      {
+        catalogNames: ['dior homme'],
+        productNumber: '211',
+        expectedTitle: 'No. 211 - Inspired by Homme'
+      },
+      {
+        catalogNames: ['coco mademoiselle'],
+        productNumber: '067',
+        expectedTitle: 'No. 067 - Inspired by Mademoiselle Intense'
+      }
+    ];
+    
+    const perfumeLower = perfume.name.toLowerCase();
+    
+    // Check hardcoded mappings first
+    for (const mapping of hardcodedMappings) {
+      for (const catalogName of mapping.catalogNames) {
+        if (perfumeLower.includes(catalogName)) {
+          console.log(`🎯 Hardcoded match for "${catalogName}" -> Product #${mapping.productNumber}`);
+          
+          // Find the product by number
+          const match = fcProducts.find(p => {
+            const pNumber = extractProductNumber(p.title);
+            return pNumber === mapping.productNumber;
+          });
+          
+          if (match) {
+            console.log(`✅ Found product:`, match.title);
+            return match;
+          } else {
+            console.log(`⚠️ Product #${mapping.productNumber} not found in fcProducts!`);
+          }
+        }
+      }
+    }
+    
+    // If no hardcoded match, try number-based search
     if (perfume.productNumbers && perfume.productNumbers.length > 0) {
       for (const num of perfume.productNumbers) {
         const match = fcProducts.find(p => {
@@ -1261,7 +1330,7 @@
       }
     }
     
-    // Method 2: Extract number from catalog name
+    // Extract number from catalog name
     const numberMatch = perfume.name.match(/\d+/);
     if (numberMatch) {
       const num = numberMatch[0];
@@ -1272,69 +1341,6 @@
       if (match) {
         console.log(`✅ Found by extracted number ${num}:`, match.title);
         return match;
-      }
-    }
-    
-    // Method 3: Search by brand + keywords
-    const searchTerms = [
-      perfume.brand.toLowerCase(),
-      ...perfume.name.toLowerCase().split(/\s+/).filter(w => w.length > 2)
-    ];
-    
-    console.log('Search terms:', searchTerms);
-    
-    // Score each product
-    const scored = fcProducts.map(product => {
-      let score = 0;
-      const title = product.title.toLowerCase();
-      
-      searchTerms.forEach(term => {
-        if (title.includes(term)) {
-          score += 10;
-        }
-      });
-      
-      // Check nuta
-      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
-      searchTerms.forEach(term => {
-        if (nuta.includes(term)) {
-          score += 5;
-        }
-      });
-      
-      return { product, score };
-    });
-    
-    const bestMatch = scored
-      .filter(s => s.score > 0)
-      .sort((a, b) => b.score - a.score)[0];
-    
-    if (bestMatch) {
-      console.log(`✅ Found by keyword match:`, bestMatch.product.title, 'Score:', bestMatch.score);
-      return bestMatch.product;
-    }
-    
-    // Method 4: Special hardcoded cases
-    const hardcoded = {
-      'musc noir': '457',
-      'no. 5': '077',
-      'bleu de chanel': '252',
-      'code': '260',
-      'sauvage': '338',
-      'dior homme': '211'
-    };
-    
-    const perfumeLower = perfume.name.toLowerCase();
-    for (const [key, num] of Object.entries(hardcoded)) {
-      if (perfumeLower.includes(key)) {
-        const match = fcProducts.find(p => {
-          const pNumber = extractProductNumber(p.title);
-          return pNumber === num;
-        });
-        if (match) {
-          console.log(`✅ Found by hardcoded key "${key}":`, match.title);
-          return match;
-        }
       }
     }
     
@@ -1383,7 +1389,7 @@
     return renderProductCard(product, badge);
   }
 
-  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS =====
+  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS WITH MANUAL FALLBACKS =====
   function fcInitProducts() {
     fcProducts = [
       {% for product in collections.all.products %}
@@ -1413,7 +1419,122 @@
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     ];
-    console.log('✓ Loaded', fcProducts.length, 'products');
+    
+    console.log('✓ Loaded', fcProducts.length, 'products from Shopify');
+    
+    // Log all product numbers for debugging
+    console.log('📋 Product numbers in fcProducts:');
+    fcProducts.forEach(p => {
+      const number = extractProductNumber(p.title);
+      console.log(`   ${p.title} -> Number: ${number}`);
+    });
+    
+    // ===== MANUALLY ADD MISSING PRODUCTS =====
+    
+    // Check for No. 457
+    const no457 = fcProducts.find(p => {
+      const number = extractProductNumber(p.title);
+      return number === '457';
+    });
+    
+    if (!no457) {
+      console.log('⚠️ No. 457 NOT FOUND in products! Adding manually...');
+      fcProducts.push({
+        id: 'manual-457',
+        title: 'No. 457 - Inspired by Musc Noir For Her',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
+        variant: '457w',
+        variantSKU: '457w',
+        price: 1999,
+        description: 'Inspired by Musc Noir For Her'
+      });
+      console.log('✅ Manually added No. 457');
+    } else {
+      console.log('✅ No. 457 found:', no457.title);
+    }
+    
+    // Check for No. 077
+    const no077 = fcProducts.find(p => {
+      const number = extractProductNumber(p.title);
+      return number === '077';
+    });
+    
+    if (!no077) {
+      console.log('⚠️ No. 077 NOT FOUND! Adding manually...');
+      fcProducts.push({
+        id: 'manual-077',
+        title: 'No. 077 - Inspired by No. 5',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765699',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
+        variant: '077w',
+        variantSKU: '077w',
+        price: 1999,
+        description: 'Inspired by No. 5'
+      });
+    }
+    
+    // Check for No. 252
+    const no252 = fcProducts.find(p => {
+      const number = extractProductNumber(p.title);
+      return number === '252';
+    });
+    
+    if (!no252) {
+      console.log('⚠️ No. 252 NOT FOUND! Adding manually...');
+      fcProducts.push({
+        id: 'manual-252',
+        title: 'No. 252 - Inspired by Bleu de Chanel',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/bleu.png?v=1772097197',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
+        variant: '252m',
+        variantSKU: '252m',
+        price: 1999,
+        description: 'Inspired by Bleu de Chanel'
+      });
+    }
+    
+    // Check for No. 260
+    const no260 = fcProducts.find(p => {
+      const number = extractProductNumber(p.title);
+      return number === '260';
+    });
+    
+    if (!no260) {
+      console.log('⚠️ No. 260 NOT FOUND! Adding manually...');
+      fcProducts.push({
+        id: 'manual-260',
+        title: 'No. 260 - Inspired by Code',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/code.png?v=1772100357',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-260m',
+        variant: '260m',
+        variantSKU: '260m',
+        price: 1999,
+        description: 'Inspired by Code'
+      });
+    }
+    
+    // Check for No. 135
+    const no135 = fcProducts.find(p => {
+      const number = extractProductNumber(p.title);
+      return number === '135';
+    });
+    
+    if (!no135) {
+      console.log('⚠️ No. 135 NOT FOUND! Adding manually...');
+      fcProducts.push({
+        id: 'manual-135',
+        title: 'No. 135 - Inspired by Code for Women',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/code_for_woman.png?v=1772098650',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-135w',
+        variant: '135w',
+        variantSKU: '135w',
+        price: 1999,
+        description: 'Inspired by Code for Women'
+      });
+    }
+    
+    console.log('✓ Final product count after manual additions:', fcProducts.length);
   }
 
   // ===== SHOW NOTIFICATION =====
