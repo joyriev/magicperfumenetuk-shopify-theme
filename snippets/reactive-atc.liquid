@@ -3,7 +3,7 @@
   assign selected_variant = product.selected_or_first_available_variant
 
   for variant in product.variants
-    if variant.title == "50ML"
+    if variant.title == "50ml"
       assign selected_variant = variant
       break
     endif
