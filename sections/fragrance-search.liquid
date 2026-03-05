@@ -4,7 +4,9 @@
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
   - HARDCODED MAPPINGS with correct variant IDs
-  - FIXED: Uses original Shopify product images
+  - FIXED: Uses correct product images (_c.webp format)
+  - FIXED: Cart stays open after adding items
+  - FIXED: Improved UI for offer banner
   - FIXED: "Add to Cart" now uses AJAX with correct numeric variant IDs
 {% endcomment %}
 
@@ -125,13 +127,13 @@
   transform: rotate(90deg);
 }
 
-/* ===== OFFER BANNER - PREMIUM ===== */
+/* ===== OFFER BANNER - PREMIUM - IMPROVED UI ===== */
 .fc-offer-banner {
   background: linear-gradient(135deg, #FFF5EB, #FFE8DA);
   border: 2px solid #C41E3A;
-  border-radius: 20px;
-  padding: 18px 22px;
-  margin: 25px 25px 20px 25px;
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 20px 20px 15px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -142,19 +144,21 @@
 .fc-offer-banner.qualified {
   background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
   border-color: #2E7D32;
+  box-shadow: 0 8px 15px -5px rgba(46, 125, 50, 0.2);
 }
 
 .fc-offer-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
+  flex: 1;
 }
 
 .fc-offer-icon {
-  font-size: 32px;
+  font-size: 28px;
   background: #C41E3A;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -162,20 +166,27 @@
   color: white;
   box-shadow: 0 5px 10px rgba(196, 30, 58, 0.3);
   transition: background 0.3s ease;
+  flex-shrink: 0;
 }
 
 .fc-offer-banner.qualified .fc-offer-icon {
   background: #2E7D32;
+  box-shadow: 0 5px 10px rgba(46, 125, 50, 0.3);
+}
+
+.fc-offer-text {
+  flex: 1;
 }
 
 .fc-offer-text strong {
   display: block;
-  font-size: 16px;
+  font-size: 15px;
   color: #C41E3A;
   font-weight: 800;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   letter-spacing: 0.3px;
   transition: color 0.3s ease;
+  line-height: 1.3;
 }
 
 .fc-offer-banner.qualified .fc-offer-text strong {
@@ -183,9 +194,11 @@
 }
 
 .fc-offer-text span {
-  font-size: 13px;
+  font-size: 12px;
   color: #4A3F39;
   font-weight: 500;
+  display: block;
+  line-height: 1.4;
 }
 
 .fc-offer-status {
@@ -193,12 +206,14 @@
   color: white;
   font-size: 14px;
   font-weight: 700;
-  padding: 8px 18px;
-  border-radius: 40px;
+  padding: 6px 14px;
+  border-radius: 30px;
   box-shadow: 0 4px 8px rgba(196, 30, 58, 0.2);
   transition: all 0.3s ease;
-  min-width: 60px;
+  min-width: 65px;
   text-align: center;
+  white-space: nowrap;
+  margin-left: 10px;
 }
 
 .fc-offer-banner.qualified .fc-offer-status {
@@ -206,16 +221,15 @@
   box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
 }
 
-/* Progress bar */
+/* Progress bar - IMPROVED */
 .fc-offer-progress-container {
-  margin-top: 12px;
-  width: 100%;
+  padding: 0 20px 15px 20px;
 }
 
 .fc-offer-progress-bar {
   height: 6px;
   background: #EDE5DC;
-  border-radius: 3px;
+  border-radius: 10px;
   overflow: hidden;
   width: 100%;
 }
@@ -223,7 +237,7 @@
 .fc-offer-progress-fill {
   height: 100%;
   background: #C41E3A;
-  border-radius: 3px;
+  border-radius: 10px;
   width: 0%;
   transition: width 0.3s ease;
 }
@@ -235,14 +249,15 @@
 .fc-offer-message {
   font-size: 12px;
   color: #4A3F39;
-  margin-top: 6px;
+  margin-top: 8px;
   text-align: right;
   font-weight: 500;
+  padding-right: 5px;
 }
 
 /* ===== INFO SECTION ===== */
 .fc-info-section {
-  padding: 5px 25px 5px 25px;
+  padding: 5px 20px 5px 20px;
 }
 
 .fc-info-label {
@@ -256,7 +271,7 @@
 
 /* ===== LOGO SECTION - CLICKABLE ===== */
 .fc-logo-section {
-  padding: 0 25px 15px 25px;
+  padding: 0 20px 15px 20px;
   display: flex;
   align-items: center;
   gap: 15px;
@@ -296,7 +311,7 @@
 
 /* ===== SEARCH SECTION WITH CLEAR BUTTON ===== */
 .fc-search-section {
-  padding: 0 25px 20px 25px;
+  padding: 0 20px 20px 20px;
   position: relative;
 }
 
@@ -353,14 +368,14 @@
 
 /* ===== STEPS SECTION - PREMIUM BOX ===== */
 .fc-steps-section {
-  padding: 0 25px 25px 25px;
+  padding: 0 20px 25px 20px;
 }
 
 .fc-steps-box {
   background: #FEFCF9;
   border: 1px solid #EDE5DC;
   border-radius: 24px;
-  padding: 28px 25px;
+  padding: 28px 20px;
   box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.08);
 }
 
@@ -410,7 +425,7 @@
   font-size: 16px;
   font-weight: 800;
   color: #C41E3A;
-  margin: 20px 25px 15px 25px;
+  margin: 20px 20px 15px 20px;
   padding-bottom: 8px;
   border-bottom: 2px solid #EDE5DC;
   text-transform: uppercase;
@@ -421,13 +436,13 @@
   font-size: 16px;
   font-weight: 700;
   color: #2C2420;
-  margin: 20px 25px 15px 25px;
+  margin: 20px 20px 15px 20px;
 }
 
 /* ===== REAL PERFUME LIST ===== */
 .fc-real-perfume-item {
   background: #FFFFFF;
-  padding: 15px 25px;
+  padding: 15px 20px;
   margin: 0;
   border-bottom: 1px solid #F0E8E0;
   cursor: pointer;
@@ -479,7 +494,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
-  padding: 0 25px 20px 25px;
+  padding: 0 20px 20px 20px;
 }
 
 .fc-product-card {
@@ -573,15 +588,15 @@
 .fc-detailed-view {
   background: #FEFCF9;
   border-radius: 24px;
-  padding: 25px;
-  margin: 0 25px 25px 25px;
+  padding: 20px;
+  margin: 0 20px 20px 20px;
   border: 1px solid #EDE5DC;
 }
 
 .fc-back-btn {
   background: none;
   border: none;
-  padding: 0 25px 15px 25px;
+  padding: 0 20px 15px 20px;
   font-size: 13px;
   color: #8A7A70;
   cursor: pointer;
@@ -724,12 +739,12 @@
   font-size: 16px;
   font-weight: 700;
   color: #2C2420;
-  margin: 20px 25px 10px 25px;
+  margin: 20px 20px 10px 20px;
 }
 
 .fc-suggestion-item {
   background: #FFFFFF;
-  padding: 15px 25px;
+  padding: 15px 20px;
   margin: 0;
   border-bottom: 1px solid #F0E8E0;
   cursor: pointer;
@@ -798,6 +813,20 @@
   .fc-steps-box {
     padding: 20px 15px;
   }
+  
+  .fc-offer-text strong {
+    font-size: 14px;
+  }
+  
+  .fc-offer-text span {
+    font-size: 11px;
+  }
+  
+  .fc-offer-status {
+    font-size: 13px;
+    padding: 5px 10px;
+    min-width: 55px;
+  }
 }
 </style>
 
@@ -815,7 +844,7 @@
   <div class="fc-search-popup" id="fcSearchPopup">
     <div class="fc-close-btn" onclick="window.fcToggleSearch()">✕</div>
 
-    <!-- OFFER BANNER - BUY 3 GET 1 FREE with progress tracking -->
+    <!-- OFFER BANNER - BUY 3 GET 1 FREE with improved UI -->
     <div class="fc-offer-banner" id="fcOfferBanner">
       <div class="fc-offer-left">
         <span class="fc-offer-icon">🎁</span>
@@ -827,14 +856,12 @@
       <div class="fc-offer-status" id="fcOfferStatus">0/3</div>
     </div>
     
-    <!-- Progress bar -->
-    <div style="padding: 0 25px 15px 25px;">
-      <div class="fc-offer-progress-container">
-        <div class="fc-offer-progress-bar">
-          <div class="fc-offer-progress-fill" id="fcOfferProgress" style="width: 0%;"></div>
-        </div>
-        <div class="fc-offer-message" id="fcOfferMessage">Add 3 items to get a free gift</div>
+    <!-- Progress bar - improved spacing -->
+    <div class="fc-offer-progress-container">
+      <div class="fc-offer-progress-bar">
+        <div class="fc-offer-progress-fill" id="fcOfferProgress" style="width: 0%;"></div>
       </div>
+      <div class="fc-offer-message" id="fcOfferMessage">Add 3 items to get a free gift</div>
     </div>
 
     <!-- INFORMATION PROVIDED BY: Section -->
@@ -1244,19 +1271,28 @@
         catalogNames: ['musc noir', 'narciso rodriguez musc noir', 'musc noir narciso rodriguez'],
         productNumber: '457',
         variantId: 52698256146799, // 30ml variant
-        expectedTitle: 'No. 457 - Inspired by Musc Noir For Her'
+        expectedTitle: 'No. 457 - Inspired by Musc Noir For Her',
+        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
+        price: 999
       },
       {
         catalogNames: ['no. 5', 'chanel no. 5', 'no 5 chanel'],
         productNumber: '077',
         variantId: 52698252493167, // 30ml variant
-        expectedTitle: 'No. 077 - Inspired by No. 5'
+        expectedTitle: 'No. 077 - Inspired by No. 5',
+        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765712&width=1200',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
+        price: 999
       },
       {
         catalogNames: ['bleu de chanel', 'bleu', 'chanel bleu'],
         productNumber: '252',
         variantId: 52698254327919, // 30ml variant
-        expectedTitle: 'No. 252 - Inspired by Bleu de Chanel'
+        expectedTitle: 'No. 252 - Inspired by Bleu de Chanel',
+        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/252M_c.webp?v=1771765712&width=1200',
+        url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
+        price: 999
       }
     ];
     
@@ -1279,21 +1315,17 @@
             return match;
           }
           
-          // If not found, create a temporary product with the correct variant ID
+          // If not found, create a temporary product with the correct data
           console.log(`⚠️ Creating temporary product for #${mapping.productNumber}`);
-          
-          // Determine correct image URL based on gender
-          const isWomen = mapping.productNumber === '457' || mapping.productNumber === '077';
-          const imageUrl = `https://magicperfume.co.uk/cdn/shop/files/${mapping.productNumber}${isWomen ? 'W' : 'M'}_c.webp?v=1771765712`;
           
           return {
             id: `temp-${mapping.productNumber}`,
             title: mapping.expectedTitle,
-            image: imageUrl,
-            url: `https://magicperfume.co.uk/products/magic-perfume-no-${mapping.productNumber}${isWomen ? 'w' : 'm'}`,
+            image: mapping.imageUrl,
+            url: mapping.url,
             variant: mapping.variantId,
-            variantSKU: `${mapping.productNumber}${isWomen ? 'w' : 'm'}03`,
-            price: 999,
+            variantSKU: `${mapping.productNumber}${mapping.productNumber === '252' ? 'm' : 'w'}03`,
+            price: mapping.price,
             description: mapping.expectedTitle
           };
         }
@@ -1359,7 +1391,7 @@
     return renderProductCard(product, badge);
   }
 
-  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS WITH CORRECT VARIANT IDS =====
+  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS WITH CORRECT VARIANT IDS AND IMAGES =====
   function fcInitProducts() {
     fcProducts = [
       {% for product in collections.all.products %}
@@ -1399,7 +1431,7 @@
       console.log(`   ${p.title} -> Number: ${number}, Variant ID: ${p.variant}`);
     });
     
-    // ===== MANUALLY ADD MISSING PRODUCTS WITH CORRECT VARIANT IDS =====
+    // ===== MANUALLY ADD MISSING PRODUCTS WITH CORRECT VARIANT IDS AND IMAGES =====
     
     // Check for No. 457
     const no457 = fcProducts.find(p => {
@@ -1408,11 +1440,11 @@
     });
     
     if (!no457) {
-      console.log('⚠️ No. 457 NOT FOUND in products! Adding manually with correct variant IDs...');
+      console.log('⚠️ No. 457 NOT FOUND in products! Adding manually with correct data...');
       fcProducts.push({
         id: 'manual-457',
         title: 'No. 457 - Inspired by Musc Noir For Her',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/Musc_Noir_For_Her.png?v=1772103601',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200',
         url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
         variant: 52698256146799, // 30ml variant ID
         variantSKU: '457w03',
@@ -1420,7 +1452,7 @@
         comparePrice: 1999,
         description: 'Inspired by Musc Noir For Her'
       });
-      console.log('✅ Manually added No. 457 with variant ID: 52698256146799 (30ml)');
+      console.log('✅ Manually added No. 457 with correct image and variant ID: 52698256146799');
     } else {
       console.log('✅ No. 457 found:', no457.title, 'Variant ID:', no457.variant);
     }
@@ -1436,7 +1468,7 @@
       fcProducts.push({
         id: 'manual-077',
         title: 'No. 077 - Inspired by No. 5',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765699',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765712&width=1200',
         url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
         variant: 52698252493167, // 30ml variant ID for No. 077
         variantSKU: '077w03',
@@ -1458,7 +1490,7 @@
       fcProducts.push({
         id: 'manual-252',
         title: 'No. 252 - Inspired by Bleu de Chanel',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/bleu.png?v=1772097197',
+        image: 'https://magicperfume.co.uk/cdn/shop/files/252M_c.webp?v=1771765712&width=1200',
         url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
         variant: 52698254327919, // 30ml variant ID for No. 252
         variantSKU: '252m03',
@@ -1538,7 +1570,7 @@
       });
   }
 
-  // ===== ADD TO CART =====
+  // ===== ADD TO CART - MODIFIED TO NOT CLOSE POPUP =====
   window.fcAddToCart = function(variantId) {
     const btn = event.target;
     const originalText = btn.innerText;
@@ -1586,6 +1618,10 @@
         btn.disabled = false;
       }, 1500);
     });
+    
+    // IMPORTANT: Prevent event propagation to keep popup open
+    event.stopPropagation();
+    return false;
   };
 
   // ===== VIEW DETAILS =====
