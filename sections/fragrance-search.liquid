@@ -1254,186 +1254,64 @@
     return null;
   }
 
-  // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - ULTRA STRICT VERSION =====
+  // ===== FIND SHOPIFY PRODUCT BY MAPPED PRODUCT - DEBUG VERSION =====
   function findShopifyProductByMappedProduct(mappedProduct) {
     if (!mappedProduct || !mappedProduct.title) return null;
     
     console.log('🔍 Looking for Shopify product matching:', mappedProduct.title);
+    console.log('📦 Total products in fcProducts:', fcProducts.length);
     
-    // SPECIAL CASE HANDLING for known products - COMPREHENSIVE LIST
-    const specialCases = {
-      'No. 457 - Inspired by Musc Noir For Her': {
-        number: '457',
-        expectedTitle: 'No. 457 - Inspired by Musc Noir For Her',
-        searchTerms: ['457', 'musc', 'noir']
-      },
-      'No. 077 - Inspired by No. 5': {
-        number: '077',
-        expectedTitle: 'No. 077 - Inspired by No. 5',
-        searchTerms: ['077', 'chanel', 'no. 5']
-      },
-      'No. 252 - Inspired by Bleu de Chanel': {
-        number: '252',
-        expectedTitle: 'No. 252 - Inspired by Bleu de Chanel',
-        searchTerms: ['252', 'bleu', 'chanel']
-      },
-      'No. 260 - Inspired by Code': {
-        number: '260',
-        expectedTitle: 'No. 260 - Inspired by Code',
-        searchTerms: ['260', 'code', 'armani']
-      },
-      'No. 135 - Inspired by Armani Code for Women': {
-        number: '135',
-        expectedTitle: 'No. 135 - Inspired by Armani Code for Women',
-        searchTerms: ['135', 'code', 'women', 'armani']
-      },
-      'No. 067 - Inspired by Coco Mademoiselle': {
-        number: '067',
-        expectedTitle: 'No. 067 - Inspired by Coco Mademoiselle',
-        searchTerms: ['067', 'coco', 'mademoiselle']
-      },
-      'No. 079 - Inspired by Coco': {
-        number: '079',
-        expectedTitle: 'No. 079 - Inspired by Coco',
-        searchTerms: ['079', 'coco', 'chanel']
-      },
-      'No. 006 - Inspired by Chance': {
-        number: '006',
-        expectedTitle: 'No. 006 - Inspired by Chance',
-        searchTerms: ['006', 'chance', 'chanel']
-      },
-      'No. 222 - Inspired by Allure Homme Sport': {
-        number: '222',
-        expectedTitle: 'No. 222 - Inspired by Allure Homme Sport',
-        searchTerms: ['222', 'allure', 'sport']
-      },
-      'No. 277 - Inspired by Dior Homme Intense': {
-        number: '277',
-        expectedTitle: 'No. 277 - Inspired by Dior Homme Intense',
-        searchTerms: ['277', 'dior', 'homme', 'intense']
-      },
-      'No. 211 - Inspired by Dior Homme': {
-        number: '211',
-        expectedTitle: 'No. 211 - Inspired by Dior Homme',
-        searchTerms: ['211', 'dior', 'homme']
-      },
-      'No. 338 - Inspired by Sauvage Parfum': {
-        number: '338',
-        expectedTitle: 'No. 338 - Inspired by Sauvage Parfum',
-        searchTerms: ['338', 'sauvage', 'parfum']
-      },
-      'No. 366 - Inspired by Sauvage Elixir': {
-        number: '366',
-        expectedTitle: 'No. 366 - Inspired by Sauvage Elixir',
-        searchTerms: ['366', 'sauvage', 'elixir']
-      }
-    };
-    
-    // Check special cases first
-    if (specialCases[mappedProduct.title]) {
-      const specialCase = specialCases[mappedProduct.title];
-      console.log('🎯 Special case match for:', mappedProduct.title, 'with number:', specialCase.number);
-      
-      // Method 1: Try exact title match first
-      let match = fcProducts.find(p => p.title === specialCase.expectedTitle);
-      if (match) {
-        console.log('✅ Found exact title match for special case:', match.title);
-        return match;
-      }
-      
-      // Method 2: Try to find by product number
-      match = fcProducts.find(p => {
-        const pNumber = extractProductNumber(p.title);
-        return pNumber === specialCase.number;
-      });
-      
-      if (match) {
-        console.log('✅ Found special case match by number:', match.title);
-        return match;
-      }
-      
-      // Method 3: Try partial match with the number
-      match = fcProducts.find(p => 
-        p.title.toLowerCase().includes(`no. ${specialCase.number}`) || 
-        p.title.toLowerCase().includes(`no ${specialCase.number}`)
-      );
-      
-      if (match) {
-        console.log('✅ Found special case match by partial number:', match.title);
-        return match;
-      }
-      
-      // Method 4: Try to find by any of the search terms
-      for (const term of specialCase.searchTerms) {
-        match = fcProducts.find(p => p.title.toLowerCase().includes(term));
-        if (match) {
-          console.log(`✅ Found special case match by term "${term}":`, match.title);
-          return match;
-        }
-      }
-      
-      // Method 5: Look for ANY product containing the number
-      match = fcProducts.find(p => p.title.includes(specialCase.number));
-      if (match) {
-        console.log('✅ Found special case match by any number reference:', match.title);
-        return match;
-      }
+    // FIRST: Direct search by exact title (most reliable)
+    console.log('🔎 Searching by exact title...');
+    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
+    if (exactMatch) {
+      console.log('✅ FOUND exact title match:', exactMatch.title);
+      return exactMatch;
     }
     
-    // Method 1: Extract product number from mapped product title
+    // SECOND: Extract product number and search
     const productNumber = extractProductNumber(mappedProduct.title);
+    console.log('🔢 Extracted product number:', productNumber);
     
     if (productNumber) {
-      console.log('🔢 Extracted product number:', productNumber);
-      
-      // Find by product number in title
-      let match = fcProducts.find(p => {
+      // Search by number in title
+      const numberMatch = fcProducts.find(p => {
         const pNumber = extractProductNumber(p.title);
         return pNumber === productNumber;
       });
       
-      if (match) {
-        console.log('✅ Found match by number:', match.title);
-        return match;
+      if (numberMatch) {
+        console.log('✅ FOUND match by number:', numberMatch.title);
+        return numberMatch;
       }
       
-      // Try partial number match
-      match = fcProducts.find(p => 
-        p.title.toLowerCase().includes(`no. ${productNumber}`) || 
-        p.title.toLowerCase().includes(`no ${productNumber}`)
+      // Search for number anywhere in title
+      const anyNumberMatch = fcProducts.find(p => 
+        p.title.includes(productNumber) || 
+        p.title.includes(`No. ${productNumber}`) ||
+        p.title.includes(`No ${productNumber}`)
       );
       
-      if (match) {
-        console.log('✅ Found match by partial number format:', match.title);
-        return match;
-      }
-      
-      // Try to find by just the number anywhere in title
-      match = fcProducts.find(p => p.title.includes(productNumber));
-      if (match) {
-        console.log('✅ Found match by number anywhere:', match.title);
-        return match;
+      if (anyNumberMatch) {
+        console.log('✅ FOUND match by number anywhere:', anyNumberMatch.title);
+        return anyNumberMatch;
       }
     }
     
-    // Method 2: Try exact title match
-    const exactMatch = fcProducts.find(p => p.title === mappedProduct.title);
-    if (exactMatch) {
-      console.log('✅ Found exact title match:', exactMatch.title);
-      return exactMatch;
-    }
-    
-    // Method 3: Try to match by URL
-    if (mappedProduct.url) {
-      const urlSlug = mappedProduct.url.split('/').pop();
-      const match = fcProducts.find(p => p.url.includes(urlSlug));
-      if (match) {
-        console.log('✅ Found match by URL:', match.title);
-        return match;
+    // THIRD: Special case for Musc Noir
+    if (mappedProduct.title.includes('Musc Noir') || mappedProduct.title.includes('457')) {
+      console.log('🎯 Special case: Looking for Musc Noir product');
+      const muscMatch = fcProducts.find(p => 
+        p.title.includes('457') || 
+        p.title.toLowerCase().includes('musc noir')
+      );
+      if (muscMatch) {
+        console.log('✅ FOUND Musc Noir match:', muscMatch.title);
+        return muscMatch;
       }
     }
     
-    // Method 4: Try partial title match
+    // FOURTH: Try partial title match
     const partialMatch = fcProducts.find(p => {
       const pTitle = p.title.toLowerCase();
       const mTitle = mappedProduct.title.toLowerCase();
@@ -1441,82 +1319,22 @@
     });
     
     if (partialMatch) {
-      console.log('✅ Found match by partial title:', partialMatch.title);
+      console.log('✅ FOUND partial title match:', partialMatch.title);
       return partialMatch;
     }
     
-    // ULTIMATE FALLBACK: If we have a product number, search aggressively
-    if (productNumber) {
-      console.log('🆘 ULTIMATE FALLBACK: Searching for number:', productNumber);
-      
-      // Search through ALL products
-      for (let product of fcProducts) {
-        if (product.title.includes(productNumber) || 
-            product.title.includes(`No. ${productNumber}`) ||
-            product.title.includes(`No ${productNumber}`)) {
-          console.log('✅ Found ultimate fallback match:', product.title);
-          return product;
-        }
-      }
-      
-      // If still not found, try to find by any product with similar name
-      // For Musc Noir specifically
-      if (mappedProduct.title.includes('Musc Noir')) {
-        const muscNoirMatch = fcProducts.find(p => 
-          p.title.toLowerCase().includes('musc') || 
-          p.title.toLowerCase().includes('noir')
-        );
-        
-        if (muscNoirMatch) {
-          console.log('✅ Found Musc Noir fallback match:', muscNoirMatch.title);
-          return muscNoirMatch;
-        }
-      }
-      
-      // For Chanel No.5
-      if (mappedProduct.title.includes('No. 5')) {
-        const chanel5Match = fcProducts.find(p => 
-          p.title.toLowerCase().includes('chanel') || 
-          p.title.toLowerCase().includes('no. 5')
-        );
-        
-        if (chanel5Match) {
-          console.log('✅ Found Chanel No.5 fallback match:', chanel5Match.title);
-          return chanel5Match;
-        }
-      }
-      
-      // For Bleu de Chanel
-      if (mappedProduct.title.includes('Bleu')) {
-        const bleuMatch = fcProducts.find(p => 
-          p.title.toLowerCase().includes('bleu') || 
-          p.title.toLowerCase().includes('chanel')
-        );
-        
-        if (bleuMatch) {
-          console.log('✅ Found Bleu fallback match:', bleuMatch.title);
-          return bleuMatch;
-        }
-      }
-    }
-    
-    // ABSOLUTE LAST RESORT - return the first product in the collection
-    if (fcProducts.length > 0) {
-      console.log('⚠️ WARNING: Using first product as absolute last resort:', fcProducts[0].title);
-      return fcProducts[0];
-    }
-    
-    console.log('❌ No match found for:', mappedProduct.title);
+    console.log('❌ NO MATCH FOUND for:', mappedProduct.title);
+    console.log('Available products:', fcProducts.map(p => p.title));
     return null;
   }
 
-  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - ULTRA STRICT VERSION =====
+  // ===== RENDER MAPPED PRODUCT CARD WITH ADD TO CART - FIXED VERSION =====
   function renderMappedProductCard(mappedProduct, badge) {
-    // Find the actual Shopify product that matches this mapped product
+    // Find the actual Shopify product
     const shopifyProduct = findShopifyProductByMappedProduct(mappedProduct);
     
     if (shopifyProduct) {
-      // SUCCESS: Found the Shopify product - use its image and Add to Cart
+      console.log('✅ Rendering product:', shopifyProduct.title);
       const priceFormatted = shopifyProduct.price ? '£' + (shopifyProduct.price / 100).toFixed(2) : '£19.99';
       
       let displayNumber = '';
@@ -1548,60 +1366,74 @@
       `;
     }
     
-    // If we get here, something is seriously wrong - but we MUST show Add to Cart
-    console.error('❌ CRITICAL: Could not find Shopify product for:', mappedProduct.title);
+    // If we can't find it, show error but still try to add to cart
+    console.error('❌ Could not find product for:', mappedProduct.title);
     
-    // Try one last desperate attempt - search through all products by number
-    const productNumber = extractProductNumber(mappedProduct.title);
-    if (productNumber) {
-      for (let product of fcProducts) {
-        if (product.title.includes(productNumber) || 
-            product.title.includes(`No. ${productNumber}`) ||
-            product.title.includes(`No ${productNumber}`)) {
-          console.log('✅ Desperate match found:', product.title);
-          const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£19.99';
-          
-          return `
-            <div class="fc-product-card">
-              <div class="fc-badge">${badge}</div>
-              <div class="fc-product-inner">
-                <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
-                <div class="fc-product-title">${product.title}</div>
-                <div class="fc-product-price">${priceFormatted}</div>
-                <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant})">Add to Cart</button>
-                <div>
-                  <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
-                </div>
+    // Try one more time with hardcoded approach for specific products
+    if (mappedProduct.title.includes('457') || mappedProduct.title.includes('Musc Noir')) {
+      const hardcoded = fcProducts.find(p => p.title.includes('457'));
+      if (hardcoded) {
+        const priceFormatted = hardcoded.price ? '£' + (hardcoded.price / 100).toFixed(2) : '£19.99';
+        return `
+          <div class="fc-product-card">
+            <div class="fc-badge">${badge}</div>
+            <div class="fc-product-inner">
+              <img class="fc-product-image" src="${hardcoded.image}" alt="${hardcoded.title}" loading="lazy">
+              <div class="fc-product-title">${hardcoded.title}</div>
+              <div class="fc-product-price">${priceFormatted}</div>
+              <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${hardcoded.variant})">Add to Cart</button>
+              <div>
+                <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${hardcoded.url}')">View Details</span>
               </div>
             </div>
-          `;
-        }
+          </div>
+        `;
       }
     }
     
-    // Absolute last resort - pick first product as fallback
-    if (fcProducts.length > 0) {
-      const fallback = fcProducts[0];
-      console.log('⚠️ Using first product as fallback:', fallback.title);
-      const priceFormatted = fallback.price ? '£' + (fallback.price / 100).toFixed(2) : '£19.99';
-      
-      return `
-        <div class="fc-product-card">
-          <div class="fc-badge">${badge}</div>
-          <div class="fc-product-inner">
-            <img class="fc-product-image" src="${fallback.image}" alt="${fallback.title}" loading="lazy">
-            <div class="fc-product-title">${fallback.title}</div>
-            <div class="fc-product-price">${priceFormatted}</div>
-            <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${fallback.variant})">Add to Cart</button>
-            <div>
-              <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${fallback.url}')">View Details</span>
+    if (mappedProduct.title.includes('077') || mappedProduct.title.includes('No. 5')) {
+      const hardcoded = fcProducts.find(p => p.title.includes('077'));
+      if (hardcoded) {
+        const priceFormatted = hardcoded.price ? '£' + (hardcoded.price / 100).toFixed(2) : '£19.99';
+        return `
+          <div class="fc-product-card">
+            <div class="fc-badge">${badge}</div>
+            <div class="fc-product-inner">
+              <img class="fc-product-image" src="${hardcoded.image}" alt="${hardcoded.title}" loading="lazy">
+              <div class="fc-product-title">${hardcoded.title}</div>
+              <div class="fc-product-price">${priceFormatted}</div>
+              <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${hardcoded.variant})">Add to Cart</button>
+              <div>
+                <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${hardcoded.url}')">View Details</span>
+              </div>
             </div>
           </div>
-        </div>
-      `;
+        `;
+      }
     }
     
-    // This should never happen, but just in case
+    if (mappedProduct.title.includes('252') || mappedProduct.title.includes('Bleu')) {
+      const hardcoded = fcProducts.find(p => p.title.includes('252'));
+      if (hardcoded) {
+        const priceFormatted = hardcoded.price ? '£' + (hardcoded.price / 100).toFixed(2) : '£19.99';
+        return `
+          <div class="fc-product-card">
+            <div class="fc-badge">${badge}</div>
+            <div class="fc-product-inner">
+              <img class="fc-product-image" src="${hardcoded.image}" alt="${hardcoded.title}" loading="lazy">
+              <div class="fc-product-title">${hardcoded.title}</div>
+              <div class="fc-product-price">${priceFormatted}</div>
+              <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${hardcoded.variant})">Add to Cart</button>
+              <div>
+                <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${hardcoded.url}')">View Details</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // Absolute last resort
     return `
       <div class="fc-product-card">
         <div class="fc-badge">${badge}</div>
@@ -1796,7 +1628,7 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS =====
+  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS - WITH DEBUGGING =====
   function fcInitProducts() {
     fcProducts = [
       {% for product in collections.all.products %}
@@ -1827,11 +1659,37 @@
     ];
     console.log('✓ Loaded', fcProducts.length, 'products');
     
-    // Log all product numbers for debugging
-    console.log('Product numbers:', fcProducts.map(p => ({
-      title: p.title,
-      number: extractProductNumber(p.title)
-    })));
+    // VERIFY No. 457 is loaded
+    const no457 = fcProducts.find(p => p.title === 'No. 457 - Inspired by Musc Noir For Her');
+    if (no457) {
+      console.log('✅ No. 457 successfully loaded:', no457.title);
+      console.log('   URL:', no457.url);
+      console.log('   Image:', no457.image);
+      console.log('   Variant:', no457.variant);
+    } else {
+      console.log('❌ No. 457 NOT FOUND in loaded products!');
+      // List all products to see what's actually loaded
+      console.log('All loaded products:');
+      fcProducts.forEach((p, i) => {
+        console.log(`${i + 1}. ${p.title}`);
+      });
+    }
+    
+    // Also verify No. 077
+    const no077 = fcProducts.find(p => p.title === 'No. 077 - Inspired by No. 5');
+    if (no077) {
+      console.log('✅ No. 077 successfully loaded:', no077.title);
+    } else {
+      console.log('❌ No. 077 NOT FOUND in loaded products!');
+    }
+    
+    // Verify No. 252
+    const no252 = fcProducts.find(p => p.title === 'No. 252 - Inspired by Bleu de Chanel');
+    if (no252) {
+      console.log('✅ No. 252 successfully loaded:', no252.title);
+    } else {
+      console.log('❌ No. 252 NOT FOUND in loaded products!');
+    }
   }
 
   // ===== SHOW NOTIFICATION =====
