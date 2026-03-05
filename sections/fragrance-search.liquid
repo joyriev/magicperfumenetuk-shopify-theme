@@ -3,12 +3,10 @@
   - Fixed search functionality - NOW WORKING PROPERLY
   - Shows products for ANY search term
   - Special handling for "code" shows both No. 260 and No. 135
-  - SHOPIFY-LIKE SEARCH: Uses weighted scoring system
+  - SIMPLIFIED SEARCH: Direct title matching with scoring
+  - FIXED: "noir" search now finds No. 457
   - FIXED: Uses original Shopify product images
   - FIXED: "Add to Cart" now uses AJAX with proper SKU format
-  - FIXED: Chanel No.5 correctly shows No. 077 with working Add to Cart
-  - FIXED: Musc Noir correctly shows No. 457 with working Add to Cart
-  - FIXED: Bleu de Chanel correctly shows No. 252 with working Add to Cart
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -900,9 +898,6 @@
   let currentView = 'search';
   let currentSearchQuery = '';
   
-  // Cache for search results (like Shopify's cachedResults)
-  const searchCache = {};
-  
   // Debounce timer
   let searchTimer = null;
 
@@ -952,123 +947,121 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== SHOPIFY-LIKE SEARCH FUNCTION =====
+  // ===== SIMPLE SEARCH FUNCTION - FIXED FOR NOIR =====
   function searchProducts(query) {
-  if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
-    return [];
-  }
-  
-  // Check cache first (like Shopify's cachedResults)
-  const cacheKey = query.toLowerCase().trim();
-  if (searchCache[cacheKey]) {
-    console.log('📦 Using cached results for:', query);
-    return searchCache[cacheKey];
-  }
-  
-  const queryLower = query.toLowerCase().trim();
-  const queryTerms = queryLower.split(/\s+/).filter(term => term.length > 1);
-  
-  console.log('🔍 Searching for:', queryLower);
-  console.log('Terms:', queryTerms);
-  
-  // Score each product
-  const scoredResults = fcProducts.map(product => {
-    let score = 0;
-    const matchDetails = [];
+    if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
+      return [];
+    }
     
-    // Create a combined searchable text from all relevant fields
-    const searchableText = [
-      product.title?.toLowerCase() || '',
-      product.type?.toLowerCase() || '',
-      product.vendor?.toLowerCase() || '',
-      product.metafields?.custom?.nuta?.toLowerCase() || '',
-      // Add product number separately for exact matching
-      extractProductNumber(product.title) || ''
-    ].join(' ');
+    const queryLower = query.toLowerCase().trim();
+    const results = [];
+    const addedIds = new Set();
     
-    // Check each search term
-    queryTerms.forEach(term => {
-      // Exact match in title (highest priority)
-      if (product.title?.toLowerCase().includes(term)) {
-        // Check if it's a word boundary match
-        const wordBoundary = new RegExp(`\\b${term}\\b`, 'i');
-        if (wordBoundary.test(product.title)) {
-          score += 50;
-          matchDetails.push(`title:exact:${term}`);
-        } else {
-          score += 25;
-          matchDetails.push(`title:partial:${term}`);
-        }
+    console.log('🔍 Searching for:', queryLower);
+    
+    // FIRST: Special handling for "code"
+    if (queryLower.includes('code')) {
+      // Find No. 260 (men's)
+      const no260 = fcProducts.find(p => 
+        p.title.toLowerCase().includes('no. 260') || 
+        p.title.toLowerCase().includes('no 260')
+      );
+      
+      if (no260) {
+        results.push({ product: no260, score: 1000 });
+        addedIds.add(no260.id);
+        console.log('✅ Found No. 260 for "code"');
       }
       
-      // Check in nuta/metafields (second priority)
-      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
-      if (nuta.includes(term)) {
-        if (nuta.split(/\s+/).includes(term)) {
-          score += 30;
-          matchDetails.push(`nuta:exact:${term}`);
-        } else {
-          score += 15;
-          matchDetails.push(`nuta:partial:${term}`);
-        }
-      }
+      // Find No. 135 (women's)
+      const no135 = fcProducts.find(p => 
+        p.title.toLowerCase().includes('no. 135') || 
+        p.title.toLowerCase().includes('no 135')
+      );
       
-      // Check in type/vendor (lower priority)
-      if (product.type?.toLowerCase().includes(term)) {
-        score += 10;
-        matchDetails.push(`type:${term}`);
+      if (no135 && !addedIds.has(no135.id)) {
+        results.push({ product: no135, score: 900 });
+        addedIds.add(no135.id);
+        console.log('✅ Found No. 135 for "code"');
       }
-      if (product.vendor?.toLowerCase().includes(term)) {
-        score += 10;
-        matchDetails.push(`vendor:${term}`);
-      }
+    }
+    
+    // SECOND: Check ALL products for matches
+    fcProducts.forEach(product => {
+      if (addedIds.has(product.id)) return;
       
-      // Special boost for product numbers
-      const productNumber = extractProductNumber(product.title);
-      if (productNumber && term === productNumber) {
+      const title = product.title.toLowerCase();
+      let score = 0;
+      let matched = false;
+      
+      // Direct title contains match (most important)
+      if (title.includes(queryLower)) {
         score += 100;
-        matchDetails.push(`number_match:${productNumber}`);
+        matched = true;
+        console.log(`✅ Title match: ${product.title}`);
+      }
+      
+      // Check individual words
+      const titleWords = title.split(/\s+/);
+      const queryWords = queryLower.split(/\s+/);
+      
+      for (const qWord of queryWords) {
+        if (qWord.length < 2) continue;
+        
+        for (const tWord of titleWords) {
+          if (tWord.includes(qWord)) {
+            score += 30;
+            matched = true;
+            console.log(`✅ Word match: "${qWord}" in "${product.title}"`);
+            break;
+          }
+        }
+      }
+      
+      // Check for number matches
+      const numberMatch = product.title.match(/No\.?\s*(\d+)/i);
+      if (numberMatch && queryLower.includes(numberMatch[1])) {
+        score += 150;
+        matched = true;
+        console.log(`✅ Number match: ${numberMatch[1]} in "${product.title}"`);
+      }
+      
+      // Check nuta/metafield
+      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
+      if (nuta && nuta.includes(queryLower)) {
+        score += 50;
+        matched = true;
+        console.log(`✅ Nuta match: "${product.title}"`);
+      }
+      
+      if (matched) {
+        results.push({ product, score });
+        addedIds.add(product.id);
       }
     });
     
-    // Special handling for "code"
-    if (queryLower.includes('code')) {
-      if (product.title.toLowerCase().includes('260')) {
-        score += 200;
-        matchDetails.push('code_260_boost');
-      }
-      if (product.title.toLowerCase().includes('135')) {
-        score += 180;
-        matchDetails.push('code_135_boost');
-      }
+    // If no matches at all, show some products as fallback
+    if (results.length === 0) {
+      console.log('⚠️ No matches found, showing random products');
+      fcProducts.slice(0, 10).forEach(product => {
+        if (!addedIds.has(product.id)) {
+          results.push({ product, score: 1 });
+          addedIds.add(product.id);
+        }
+      });
     }
     
-    // Boost for products that have "Noir" in title when searching for "noir"
-    if (queryLower === 'noir' && product.title.toLowerCase().includes('noir')) {
-      score += 50;
-      matchDetails.push('noir_special_boost');
+    // Sort by score (highest first)
+    results.sort((a, b) => b.score - a.score);
+    
+    console.log(`📊 Found ${results.length} results for "${query}"`);
+    if (results.length > 0) {
+      console.log('🏆 Top result:', results[0].product.title, 'Score:', results[0].score);
     }
     
-    return { product, score, matchDetails };
-  });
-  
-  // Filter out zero scores and sort
-  const results = scoredResults
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .map(item => ({ product: item.product, score: item.score }));
-  
-  console.log(`Found ${results.length} results for "${query}"`);
-  if (results.length > 0) {
-    console.log('Top result:', results[0].product.title, 'Score:', results[0].score);
-    console.log('Match details:', scoredResults.find(r => r.product.id === results[0].product.id)?.matchDetails);
+    return results;
   }
-  
-  // Cache results (like Shopify)
-  searchCache[cacheKey] = results;
-  
-  return results;
-}
+
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
   function getPopularSuggestions() {
     if (!fcProducts || fcProducts.length === 0) return [];
@@ -1148,7 +1141,7 @@
     return html;
   }
 
-  // ===== SHOW PERFUME DETAIL WITH SHOPIFY-LIKE SEARCH =====
+  // ===== SHOW PERFUME DETAIL WITH DIRECT PRODUCT MAPPING =====
   window.fcShowPerfumeDetail = function(perfumeId) {
     const perfume = findPerfumeById(perfumeId);
     if (!perfume) return;
@@ -1156,7 +1149,7 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    // Find the Shopify product using Shopify-like search
+    // Find matching Shopify product
     const shopifyProduct = findShopifyProductByCatalogPerfume(perfume);
     
     let html = `
@@ -1248,164 +1241,98 @@
     content.innerHTML = html;
   };
 
-  // ===== FIND SHOPIFY PRODUCT BY CATALOG PERFUME - SHOPIFY-LIKE LOGIC =====
+  // ===== FIND SHOPIFY PRODUCT BY CATALOG PERFUME - SIMPLIFIED =====
   function findShopifyProductByCatalogPerfume(perfume) {
     if (!perfume || !fcProducts.length) return null;
     
-    console.log('🔍 Searching for Shopify product matching catalog perfume:', perfume.name);
+    console.log('🔍 Finding Shopify product for catalog perfume:', perfume.name);
     
-    // Build search terms from catalog perfume
-    const searchTerms = [];
-    const termWeights = {};
-    
-    // Product numbers (highest priority)
-    if (perfume.productNumbers) {
-      perfume.productNumbers.forEach(num => {
-        searchTerms.push(num);
-        termWeights[num] = 50;
-      });
+    // Method 1: Direct number match from productNumbers
+    if (perfume.productNumbers && perfume.productNumbers.length > 0) {
+      for (const num of perfume.productNumbers) {
+        const match = fcProducts.find(p => {
+          const pNumber = extractProductNumber(p.title);
+          return pNumber === num;
+        });
+        if (match) {
+          console.log(`✅ Found by product number ${num}:`, match.title);
+          return match;
+        }
+      }
     }
     
-    // Numbers in name
-    const numberMatches = perfume.name.match(/\d+/g);
-    if (numberMatches) {
-      numberMatches.forEach(num => {
-        if (!termWeights[num]) {
-          searchTerms.push(num);
-          termWeights[num] = 40;
+    // Method 2: Extract number from catalog name
+    const numberMatch = perfume.name.match(/\d+/);
+    if (numberMatch) {
+      const num = numberMatch[0];
+      const match = fcProducts.find(p => {
+        const pNumber = extractProductNumber(p.title);
+        return pNumber === num;
+      });
+      if (match) {
+        console.log(`✅ Found by extracted number ${num}:`, match.title);
+        return match;
+      }
+    }
+    
+    // Method 3: Search by brand + keywords
+    const searchTerms = [
+      perfume.brand.toLowerCase(),
+      ...perfume.name.toLowerCase().split(/\s+/).filter(w => w.length > 2)
+    ];
+    
+    console.log('Search terms:', searchTerms);
+    
+    // Score each product
+    const scored = fcProducts.map(product => {
+      let score = 0;
+      const title = product.title.toLowerCase();
+      
+      searchTerms.forEach(term => {
+        if (title.includes(term)) {
+          score += 10;
         }
       });
-    }
-    
-    // Brand name
-    perfume.brand.split(/\s+/).forEach(word => {
-      if (word.length > 2) {
-        const term = word.toLowerCase();
-        searchTerms.push(term);
-        termWeights[term] = 15;
-      }
-    });
-    
-    // Perfume name words
-    perfume.name.split(/\s+/).forEach(word => {
-      if (word.length > 2 && !word.match(/\d+/)) {
-        const term = word.toLowerCase();
-        searchTerms.push(term);
-        termWeights[term] = 20;
-      }
-    });
-    
-    // Gender
-    if (perfume.gender) {
-      const term = perfume.gender.toLowerCase();
-      searchTerms.push(term);
-      termWeights[term] = 5;
-    }
-    
-    // Notes (like Shopify's tags)
-    const addNotes = (notes, weight) => {
-      if (notes) {
-        notes.forEach(note => {
-          const term = note.toLowerCase();
-          searchTerms.push(term);
-          termWeights[term] = weight;
-        });
-      }
-    };
-    
-    addNotes(perfume.top_notes, 8);
-    addNotes(perfume.heart_notes, 8);
-    addNotes(perfume.base_notes, 8);
-    
-    // Remove duplicates
-    const uniqueTerms = [...new Set(searchTerms)];
-    console.log('Search terms with weights:', uniqueTerms.map(t => `${t}(${termWeights[t]})`));
-    
-    // Score each product like Shopify's backend
-    const scoredProducts = fcProducts.map(product => {
-      let score = 0;
-      const matchedFields = [];
       
-      const searchableFields = [
-        { field: product.title.toLowerCase(), weight: 10, name: 'title' },
-        { field: product.type?.toLowerCase() || '', weight: 5, name: 'type' },
-        { field: product.vendor?.toLowerCase() || '', weight: 4, name: 'vendor' },
-        { field: product.metafields?.custom?.nuta?.toLowerCase() || '', weight: 8, name: 'nuta' }
-      ];
-      
-      uniqueTerms.forEach(term => {
-        const termWeight = termWeights[term] || 10;
-        
-        searchableFields.forEach(field => {
-          if (field.field.includes(term)) {
-            // Exact word match gets higher score
-            const wordBoundary = new RegExp(`\\b${term}\\b`, 'i');
-            if (wordBoundary.test(field.field)) {
-              const matchScore = field.weight * termWeight * 2;
-              score += matchScore;
-              matchedFields.push(`${field.name}:exact:${term}(${matchScore})`);
-            } else {
-              const matchScore = field.weight * termWeight;
-              score += matchScore;
-              matchedFields.push(`${field.name}:partial:${term}(${matchScore})`);
-            }
-          }
-        });
+      // Check nuta
+      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
+      searchTerms.forEach(term => {
+        if (nuta.includes(term)) {
+          score += 5;
+        }
       });
       
-      // Special boost for product number match
-      const productNumber = extractProductNumber(product.title);
-      if (productNumber && perfume.productNumbers && perfume.productNumbers.includes(productNumber)) {
-        score += 200;
-        matchedFields.push(`number_match:${productNumber}(200)`);
-      }
-      
-      return { product, score, matchedFields };
+      return { product, score };
     });
     
-    // Sort by score and return best match
-    const matches = scoredProducts
-      .filter(item => item.score > 0)
-      .sort((a, b) => b.score - a.score);
+    const bestMatch = scored
+      .filter(s => s.score > 0)
+      .sort((a, b) => b.score - a.score)[0];
     
-    if (matches.length > 0) {
-      console.log(`✅ Found ${matches.length} matches`);
-      console.log('Top match:', matches[0].product.title);
-      console.log('Score:', matches[0].score);
-      console.log('Top matched fields:', matches[0].matchedFields.slice(0, 3));
-      return matches[0].product;
+    if (bestMatch) {
+      console.log(`✅ Found by keyword match:`, bestMatch.product.title, 'Score:', bestMatch.score);
+      return bestMatch.product;
     }
     
-    // Hardcoded fallbacks as last resort
-    const hardcodedMappings = {
+    // Method 4: Special hardcoded cases
+    const hardcoded = {
       'musc noir': '457',
       'no. 5': '077',
       'bleu de chanel': '252',
       'code': '260',
       'sauvage': '338',
-      'dior homme': '211',
-      'coco mademoiselle': '067',
-      'coco': '079',
-      'chance': '006',
-      'allure homme sport': '222',
-      'fahrenheit': '206',
-      'jadore': '159',
-      'hypnotic poison': '145',
-      'la belle': '412',
-      'ultra male': '349',
-      'le male': '247',
-      'classique': '442'
+      'dior homme': '211'
     };
     
     const perfumeLower = perfume.name.toLowerCase();
-    for (const [key, num] of Object.entries(hardcodedMappings)) {
+    for (const [key, num] of Object.entries(hardcoded)) {
       if (perfumeLower.includes(key)) {
         const match = fcProducts.find(p => {
           const pNumber = extractProductNumber(p.title);
           return pNumber === num;
         });
         if (match) {
-          console.log(`✅ Hardcoded match for "${key}":`, match.title);
+          console.log(`✅ Found by hardcoded key "${key}":`, match.title);
           return match;
         }
       }
@@ -1451,6 +1378,11 @@
     `;
   }
 
+  // ===== RENDER YOUR PRODUCT CARD (ALIAS) =====
+  function renderYourProductCard(product, badge) {
+    return renderProductCard(product, badge);
+  }
+
   // ===== INITIALIZE YOUR SHOPIFY PRODUCTS =====
   function fcInitProducts() {
     fcProducts = [
@@ -1460,8 +1392,6 @@
           title: {{ product.title | json }},
           image: {{ product.featured_image | img_url: '400x' | json }},
           url: {{ product.url | json }},
-          type: {{ product.type | json }},
-          vendor: {{ product.vendor | json }},
           variant: {{ product.variants.first.id | json }},
           variantSKU: {{ product.variants.first.sku | json }},
           price: {{ product.price | json }},
@@ -1483,15 +1413,7 @@
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     ];
-    
     console.log('✓ Loaded', fcProducts.length, 'products');
-    
-    // Log all products for debugging
-    console.log('=== SHOPIFY PRODUCTS ===');
-    fcProducts.forEach((p, i) => {
-      const number = extractProductNumber(p.title);
-      console.log(`${i + 1}. ${p.title} (Number: ${number}, SKU: ${p.variantSKU})`);
-    });
   }
 
   // ===== SHOW NOTIFICATION =====
@@ -1582,12 +1504,7 @@
         quantity: 1 
       })
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       btn.innerText = '✓ Added!';
       btn.style.background = '#2E7D32';
@@ -1615,11 +1532,6 @@
     });
   };
 
-  // ===== RENDER YOUR PRODUCT CARD (ALIAS FOR renderProductCard) =====
-  function renderYourProductCard(product, badge) {
-    return renderProductCard(product, badge);
-  }
-
   // ===== VIEW DETAILS =====
   window.fcViewDetails = function(url) {
     window.location.href = url;
@@ -1645,7 +1557,7 @@
       // Search in catalog
       const catalogResults = simpleCatalogSearch(query);
       
-      // Search in your products using Shopify-like search
+      // Search in your products
       const yourResults = searchProducts(query);
       
       let html = '';
