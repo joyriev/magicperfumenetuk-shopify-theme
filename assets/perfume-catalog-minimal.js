@@ -296,9 +296,9 @@ window.PerfumeCatalog = {
     }
   ],
 
-  // ===== TOM FORD — 7 products (COMPLETELY CORRECTED) =====
-Tom Ford: [
-  {
+  // ===== TOM FORD — 7 products =====
+  tomFord: [
+{
   id: "hardcoded-tomford-oud-wood-287",
   title: "No. 287 - Inspired by Oud Wood",
   image: "https://magicperfume.co.uk/cdn/shop/files/287M_c.webp?v=1771765712&width=1200",
@@ -329,12 +329,9 @@ Tom Ford: [
 {
   id: "hardcoded-tomford-tobacco-vanille-193",
   title: "No. 193 - Inspired by Tobacco Vanille",
-  // FIXED: Correct product image (W for female/unisex)
   image: "https://magicperfume.co.uk/cdn/shop/files/193W_c.webp?v=1771765853&width=1200",
   catalogImage: "https://magicperfume.co.uk/cdn/shop/files/tobacco_vanille.png?v=1772097038",
-  // FIXED: Correct URL with variant
   url: "https://magicperfume.co.uk/products/magic-perfume-no-193w?variant=52698261619055",
-  // FIXED: Correct variant ID from your link
   variant: 52698261619055,
   price: 1999,
   brand: "Tom Ford",
@@ -346,12 +343,9 @@ Tom Ford: [
 {
   id: "hardcoded-tomford-lost-cherry-438",
   title: "No. 438 - Inspired by Lost Cherry",
-  // FIXED: Correct product image (W for female/unisex)
   image: "https://magicperfume.co.uk/cdn/shop/files/438W_c.webp?v=1771765721&width=1200",
   catalogImage: "https://magicperfume.co.uk/cdn/shop/files/lost_cherry.png?v=1772103231",
-  // FIXED: Correct URL with variant
   url: "https://magicperfume.co.uk/products/magic-perfume-no-438w?variant=52698256507247",
-  // FIXED: Correct variant ID from your link
   variant: 52698256507247,
   price: 1999,
   brand: "Tom Ford",
@@ -363,10 +357,8 @@ Tom Ford: [
 {
   id: "hardcoded-tomford-vanille-fatale-053",
   title: "No. 053 - Inspired by Vanille Fatale",
-  // Correct product image
   image: "https://magicperfume.co.uk/cdn/shop/files/053W_c.webp?v=1771765712&width=1200",
   catalogImage: "https://magicperfume.co.uk/cdn/shop/files/vanille_fatale.png?v=1772096768",
-  // Correct URL with variant
   url: "https://magicperfume.co.uk/products/magic-perfume-no-053w-m?variant=52698261946735",
   variant: 52698261946735,
   price: 1999,
@@ -379,10 +371,8 @@ Tom Ford: [
 {
   id: "hardcoded-tomford-cherry-smoke-434",
   title: "No. 434 - Inspired by Cherry Smoke",
-  // Correct product image
   image: "https://magicperfume.co.uk/cdn/shop/files/434W_c.webp?v=1771765750&width=1200",
   catalogImage: "https://magicperfume.co.uk/cdn/shop/files/cherry_smoke.png?v=1772102310",
-  // Correct URL with variant
   url: "https://magicperfume.co.uk/products/magic-perfume-no-434w?variant=52698257588591",
   variant: 52698257588591,
   price: 1999,
@@ -393,21 +383,25 @@ Tom Ford: [
   searchTerms: ["cherry smoke", "tom ford", "unisex", "434"]
 },
 {
-  id: "hardcoded-tomford-noir-pour-femme-197",
-  title: "No. 197 - Inspired by Noir Pour Femme",
-  // Verify this image and variant - you may need to provide the correct link
+  id: "hardcoded-ysl-nuit-blanche-197",
+  title: "No. 197 - Inspired by Nuit Blanche",
+  // FIXED: Correct product image
   image: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
+  // You may want to add a catalog image for Nuit Blanche if available
   catalogImage: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
-  url: "https://magicperfume.co.uk/products/magic-perfume-no-197w",
-  variant: 52698253672560, // Please verify this variant ID
+  // FIXED: Correct URL with variant
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-197w?variant=52698257686895",
+  // FIXED: Correct variant ID from your link
+  variant: 52698257686895,
   price: 1999,
-  brand: "Tom Ford",
-  brandKey: "tomFord",
+  // IMPORTANT: This is actually an YSL product, not Tom Ford!
+  brand: "Yves Saint Laurent",
+  brandKey: "ysl",
   number: "197",
   gender: "female",
-  searchTerms: ["noir pour femme", "tom ford", "female", "197"]
+  searchTerms: ["nuit blanche", "black opium nuit blanche", "ysl", "female", "197"]
 }
-],
+  ],
 
   // ===== GIORGIO ARMANI — 10 products =====
   armani: [
