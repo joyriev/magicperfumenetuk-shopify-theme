@@ -296,142 +296,118 @@ window.PerfumeCatalog = {
     }
   ],
 
-  // ===== TOM FORD — 7 products =====
-  tomFord: [
-    {
-      id: "tomford_oud_wood_287",
-      name: "Oud Wood Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/287M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Rosewood", "Cardamom", "Chinese Pepper"],
-      heart_notes: ["Sandalwood", "Vetiver", "Oud"],
-      base_notes: ["Tonka", "Amber", "Vanilla"],
-      description: "A mysterious and exotic blend of rare oud wood with smoky notes.",
-      year: "2007",
-      gender: "Male",
-      productNumbers: ["287"],
-      shopifyProduct: {
-        title: "No. 287 - Inspired by Oud Wood",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-287m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/287M_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_fucking_fabulous_232",
-      name: "Fucking Fabulous Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/232M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Sage", "Lavender"],
-      heart_notes: ["Leather", "Almond", "Vanilla"],
-      base_notes: ["Tonka", "Amber", "Woody Notes"],
-      description: "A bold, provocative fragrance with leather and almond notes.",
-      year: "2017",
-      gender: "Male",
-      productNumbers: ["232"],
-      shopifyProduct: {
-        title: "No. 232 - Inspired by Fucking Fabulous",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-232m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/232M_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_tobacco_vanille_193",
-      name: "Tobacco Vanille Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/193M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Tobacco Leaf", "Spicy Notes"],
-      heart_notes: ["Vanilla", "Cocoa", "Tonka", "Tobacco Blossom"],
-      base_notes: ["Dried Fruits", "Woody Notes"],
-      description: "A warm and spicy fragrance with tobacco and vanilla notes.",
-      year: "2007",
-      gender: "Male",
-      productNumbers: ["193"],
-      shopifyProduct: {
-        title: "No. 193 - Inspired by Tobacco Vanille",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-193m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/193M_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_lost_cherry_438",
-      name: "Lost Cherry Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/438M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Cherry", "Almond", "Liqueur"],
-      heart_notes: ["Cherry", "Rose", "Jasmine"],
-      base_notes: ["Peru Balsam", "Benzoin", "Vanilla", "Cedar"],
-      description: "A seductive and playful fragrance that captures the essence of a forbidden fruit.",
-      year: "2018",
-      gender: "Male",
-      productNumbers: ["438"],
-      shopifyProduct: {
-        title: "No. 438 - Inspired by Lost Cherry",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-438m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/438M_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_vanille_fatale_053",
-      name: "Vanille Fatale Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/053W_c.webp?v=1771765712&width=1200",
-      top_notes: ["Saffron", "Neroli", "Bergamot"],
-      heart_notes: ["Vanilla", "Coffee", "Leather"],
-      base_notes: ["Amber", "Myrrh", "Benzoin"],
-      description: "A dark and intoxicating vanilla fragrance.",
-      year: "2017",
-      gender: "Female",
-      productNumbers: ["053"],
-      shopifyProduct: {
-        title: "No. 053 - Inspired by Vanille Fatale",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-053w",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/053W_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_cherry_smoke_434",
-      name: "Cherry Smoke Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/434M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Cherry", "Saffron", "Pink Pepper"],
-      heart_notes: ["Rose", "Jasmine", "Smoke"],
-      base_notes: ["Vanilla", "Amber", "Musk", "Sandalwood"],
-      description: "A seductive and mysterious blend of sweet cherry and smoky notes.",
-      year: "2020",
-      gender: "Female",
-      productNumbers: ["434"],
-      shopifyProduct: {
-        title: "No. 434 - Inspired by Cherry Smoke",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-434m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/434M_c.webp?v=1771765712&width=1200"
-      }
-    },
-    {
-      id: "tomford_noir_pour_femme_197",
-      name: "Noir Pour Femme Tom Ford",
-      brand: "Tom Ford",
-      image: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
-      top_notes: ["Mandarin", "Orange Blossom", "Ginger"],
-      heart_notes: ["Rose", "Jasmine", "Ylang-Ylang"],
-      base_notes: ["Vanilla", "Amber", "Musk", "Sandalwood"],
-      description: "A seductive and mysterious floral oriental fragrance.",
-      year: "2015",
-      gender: "Female",
-      productNumbers: ["197"],
-      shopifyProduct: {
-        title: "No. 197 - Inspired by Noir Pour Femme",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-197w",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200"
-      }
-    }
-  ],
+  // ===== TOM FORD — 7 products (COMPLETELY CORRECTED) =====
+Tom Ford: [
+  {
+  id: "hardcoded-tomford-oud-wood-287",
+  title: "No. 287 - Inspired by Oud Wood",
+  image: "https://magicperfume.co.uk/cdn/shop/files/287M_c.webp?v=1771765712&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/oud_wood.png?v=1772095484",
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-287m",
+  variant: 52698254524527,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "287",
+  gender: "male",
+  searchTerms: ["oud wood", "tom ford", "male", "287"]
+},
+{
+  id: "hardcoded-tomford-fucking-fabulous-232",
+  title: "No. 232 - Inspired by Fucking Fabulous",
+  image: "https://magicperfume.co.uk/cdn/shop/files/232M_c.webp?v=1771765712&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Fucking_Fabulous.webp?v=1772035146",
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-232m",
+  variant: 52698254098543,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "232",
+  gender: "male",
+  searchTerms: ["fucking fabulous", "tom ford", "male", "232"]
+},
+{
+  id: "hardcoded-tomford-tobacco-vanille-193",
+  title: "No. 193 - Inspired by Tobacco Vanille",
+  // FIXED: Correct product image (W for female/unisex)
+  image: "https://magicperfume.co.uk/cdn/shop/files/193W_c.webp?v=1771765853&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/tobacco_vanille.png?v=1772097038",
+  // FIXED: Correct URL with variant
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-193w?variant=52698261619055",
+  // FIXED: Correct variant ID from your link
+  variant: 52698261619055,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "193",
+  gender: "unisex",
+  searchTerms: ["tobacco vanille", "tom ford", "unisex", "193"]
+},
+{
+  id: "hardcoded-tomford-lost-cherry-438",
+  title: "No. 438 - Inspired by Lost Cherry",
+  // FIXED: Correct product image (W for female/unisex)
+  image: "https://magicperfume.co.uk/cdn/shop/files/438W_c.webp?v=1771765721&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/lost_cherry.png?v=1772103231",
+  // FIXED: Correct URL with variant
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-438w?variant=52698256507247",
+  // FIXED: Correct variant ID from your link
+  variant: 52698256507247,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "438",
+  gender: "unisex",
+  searchTerms: ["lost cherry", "tom ford", "unisex", "438"]
+},
+{
+  id: "hardcoded-tomford-vanille-fatale-053",
+  title: "No. 053 - Inspired by Vanille Fatale",
+  // Correct product image
+  image: "https://magicperfume.co.uk/cdn/shop/files/053W_c.webp?v=1771765712&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/vanille_fatale.png?v=1772096768",
+  // Correct URL with variant
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-053w-m?variant=52698261946735",
+  variant: 52698261946735,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "053",
+  gender: "unisex",
+  searchTerms: ["vanille fatale", "tom ford", "unisex", "053"]
+},
+{
+  id: "hardcoded-tomford-cherry-smoke-434",
+  title: "No. 434 - Inspired by Cherry Smoke",
+  // Correct product image
+  image: "https://magicperfume.co.uk/cdn/shop/files/434W_c.webp?v=1771765750&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/cherry_smoke.png?v=1772102310",
+  // Correct URL with variant
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-434w?variant=52698257588591",
+  variant: 52698257588591,
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "434",
+  gender: "unisex",
+  searchTerms: ["cherry smoke", "tom ford", "unisex", "434"]
+},
+{
+  id: "hardcoded-tomford-noir-pour-femme-197",
+  title: "No. 197 - Inspired by Noir Pour Femme",
+  // Verify this image and variant - you may need to provide the correct link
+  image: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
+  catalogImage: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-197w",
+  variant: 52698253672560, // Please verify this variant ID
+  price: 1999,
+  brand: "Tom Ford",
+  brandKey: "tomFord",
+  number: "197",
+  gender: "female",
+  searchTerms: ["noir pour femme", "tom ford", "female", "197"]
+}
+],
 
   // ===== GIORGIO ARMANI — 10 products =====
   armani: [
