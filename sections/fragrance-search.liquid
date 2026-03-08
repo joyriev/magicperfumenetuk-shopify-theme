@@ -969,8 +969,7 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== COMPLETE HARDCODED PRODUCT DATABASE - 91 PRODUCTS TOTAL =====
-   // ===== COMPLETE HARDCODED PRODUCT DATABASE - 92 PRODUCTS TOTAL =====
+  // ===== COMPLETE HARDCODED PRODUCT DATABASE =====
   const hardcodedProducts = [
     // ===== DIOR — 9 products =====
     {
@@ -1171,7 +1170,7 @@
       searchTerms: ["no 5", "chanel", "female", "077"]
     },
 
-    // ===== TOM FORD — 7 products =====
+    // ===== TOM FORD — 6 products =====
     {
       id: "hardcoded-tomford-oud-wood-287",
       title: "No. 287 - Inspired by Oud Wood",
@@ -1250,18 +1249,98 @@
       gender: "female",
       searchTerms: ["cherry smoke", "tom ford", "female", "434"]
     },
+
+    // ===== YSL — 7 products =====
     {
-      id: "hardcoded-tomford-noir-pour-femme-197",
-      title: "No. 197 - Inspired by Noir Pour Femme",
+      id: "hardcoded-ysl-homme-intense-277",
+      title: "No. 277 - Inspired by Homme Intense",
+      image: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-277m",
+      variant: 52698254393455,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "277",
+      gender: "male",
+      searchTerms: ["homme intense", "ysl", "male", "277"]
+    },
+    {
+      id: "hardcoded-ysl-libre-034",
+      title: "No. 034 - Inspired by Libre",
+      image: "https://magicperfume.co.uk/cdn/shop/files/034W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-034w",
+      variant: 52698252231023,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "034",
+      gender: "female",
+      searchTerms: ["libre", "ysl", "female", "034"]
+    },
+    {
+      id: "hardcoded-ysl-black-opium-132",
+      title: "No. 132 - Inspired by Black Opium",
+      image: "https://magicperfume.co.uk/cdn/shop/files/132W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-132w",
+      variant: 52698253181103,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "132",
+      gender: "female",
+      searchTerms: ["black opium", "ysl", "female", "132"]
+    },
+    {
+      id: "hardcoded-ysl-opium-083",
+      title: "No. 083 - Inspired by Opium",
+      image: "https://magicperfume.co.uk/cdn/shop/files/083W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-083w",
+      variant: 52698252591423,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "083",
+      gender: "female",
+      searchTerms: ["opium", "ysl", "female", "083"]
+    },
+    {
+      id: "hardcoded-ysl-manifesto-134",
+      title: "No. 134 - Inspired by Manifesto",
+      image: "https://magicperfume.co.uk/cdn/shop/files/134W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-134w",
+      variant: 52698253148335,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "134",
+      gender: "female",
+      searchTerms: ["manifesto", "ysl", "female", "134"]
+    },
+    {
+      id: "hardcoded-ysl-deep-red-022",
+      title: "No. 022 - Inspired by Deep Red",
+      image: "https://magicperfume.co.uk/cdn/shop/files/022W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-022w",
+      variant: 52698252132719,
+      price: 1999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "022",
+      gender: "female",
+      searchTerms: ["deep red", "ysl", "female", "022"]
+    },
+    {
+      id: "hardcoded-ysl-nuit-blanche-197",
+      title: "No. 197 - Inspired by Nuit Blanche",
       image: "https://magicperfume.co.uk/cdn/shop/files/197W_c.webp?v=1771765712&width=1200",
       url: "https://magicperfume.co.uk/products/magic-perfume-no-197w",
-      variant: 52698253672560,
+      variant: 52698257686895,
       price: 1999,
-      brand: "Tom Ford",
-      brandKey: "tomFord",
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
       number: "197",
       gender: "female",
-      searchTerms: ["noir pour femme", "tom ford", "female", "197"]
+      searchTerms: ["nuit blanche", "black opium", "ysl", "female", "197"]
     },
 
     // ===== GIORGIO ARMANI — 10 products =====
@@ -1396,7 +1475,7 @@
       searchTerms: ["si passione", "armani", "female", "058"]
     },
 
-    // ===== HUGO BOSS — 11 products =====
+    // ===== HUGO BOSS — 10 products =====
     {
       id: "hardcoded-boss-bottled-234",
       title: "No. 234 - Inspired by Boss Bottled",
@@ -1502,19 +1581,6 @@
       searchTerms: ["the scent", "hugo boss", "female", "270"]
     },
     {
-      id: "hardcoded-boss-musc-noir-457",
-      title: "No. 457 - Inspired by Musc Noir for Her",
-      image: "https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-457w",
-      variant: 52698255655215,
-      price: 1999,
-      brand: "Hugo Boss",
-      brandKey: "hugoBoss",
-      number: "457",
-      gender: "female",
-      searchTerms: ["musc noir", "hugo boss", "female", "457"]
-    },
-    {
       id: "hardcoded-boss-emporio-she-150",
       title: "No. 150 - Inspired by Emporio She",
       image: "https://magicperfume.co.uk/cdn/shop/files/150W_c.webp?v=1771765712&width=1200",
@@ -1539,86 +1605,6 @@
       number: "148",
       gender: "female",
       searchTerms: ["boss orange", "hugo boss", "female", "148"]
-    },
-
-    // ===== YSL — 6 products =====
-    {
-      id: "hardcoded-ysl-homme-intense-277",
-      title: "No. 277 - Inspired by Homme Intense",
-      image: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-277m",
-      variant: 52698254393455,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "277",
-      gender: "male",
-      searchTerms: ["homme intense", "ysl", "male", "277"]
-    },
-    {
-      id: "hardcoded-ysl-libre-034",
-      title: "No. 034 - Inspired by Libre",
-      image: "https://magicperfume.co.uk/cdn/shop/files/034W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-034w",
-      variant: 52698252231023,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "034",
-      gender: "female",
-      searchTerms: ["libre", "ysl", "female", "034"]
-    },
-    {
-      id: "hardcoded-ysl-black-opium-132",
-      title: "No. 132 - Inspired by Black Opium",
-      image: "https://magicperfume.co.uk/cdn/shop/files/132W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-132w",
-      variant: 52698253181103,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "132",
-      gender: "female",
-      searchTerms: ["black opium", "ysl", "female", "132"]
-    },
-    {
-      id: "hardcoded-ysl-opium-083",
-      title: "No. 083 - Inspired by Opium",
-      image: "https://magicperfume.co.uk/cdn/shop/files/083W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-083w",
-      variant: 52698252591423,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "083",
-      gender: "female",
-      searchTerms: ["opium", "ysl", "female", "083"]
-    },
-    {
-      id: "hardcoded-ysl-manifesto-134",
-      title: "No. 134 - Inspired by Manifesto",
-      image: "https://magicperfume.co.uk/cdn/shop/files/134W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-134w",
-      variant: 52698253148335,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "134",
-      gender: "female",
-      searchTerms: ["manifesto", "ysl", "female", "134"]
-    },
-    {
-      id: "hardcoded-ysl-deep-red-022",
-      title: "No. 022 - Inspired by Deep Red",
-      image: "https://magicperfume.co.uk/cdn/shop/files/022W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-022w",
-      variant: 52698252132719,
-      price: 1999,
-      brand: "Yves Saint Laurent",
-      brandKey: "ysl",
-      number: "022",
-      gender: "female",
-      searchTerms: ["deep red", "ysl", "female", "022"]
     },
 
     // ===== PACO RABANNE — 6 products =====
@@ -2059,6 +2045,21 @@
       searchTerms: ["fame", "prada", "female", "498"]
     },
 
+    // ===== NARCISO RODRIGUEZ — 1 product =====
+    {
+      id: "hardcoded-narciso-musc-noir-457",
+      title: "No. 457 - Inspired by Musc Noir For Her",
+      image: "https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-457w",
+      variant: 52698255655215,
+      price: 1999,
+      brand: "Narciso Rodriguez",
+      brandKey: "narciso",
+      number: "457",
+      gender: "female",
+      searchTerms: ["musc noir", "narciso rodriguez", "female", "457"]
+    },
+
     // ===== HERMÈS — 1 product =====
     {
       id: "hardcoded-hermes-terre-227",
@@ -2102,21 +2103,6 @@
       number: "466",
       gender: "female",
       searchTerms: ["baccarat rouge", "mfk", "female", "466"]
-    },
-
-    // ===== NARCISO RODRIGUEZ — 1 product =====
-    {
-      id: "hardcoded-narciso-for-her-040",
-      title: "No. 040 - Inspired by For Her",
-      image: "https://magicperfume.co.uk/cdn/shop/files/040W_c.webp?v=1771765712&width=1200",
-      url: "https://magicperfume.co.uk/products/magic-perfume-no-040w",
-      variant: 52698252263791,
-      price: 1999,
-      brand: "Narciso Rodriguez",
-      brandKey: "narciso",
-      number: "040",
-      gender: "female",
-      searchTerms: ["for her", "narciso rodriguez", "female", "040"]
     },
 
     // ===== BVLGARI — 1 product =====
@@ -2324,12 +2310,11 @@
       );
       
       if (sameBrandGenderProducts.length > 0) {
-        // Pick the first one (or you could randomize)
+        // Pick the first one
         const similarProduct = sameBrandGenderProducts[0];
         html += renderHardcodedProductCard(similarProduct, 'You might like it');
       } else {
-        // NO FALLBACK - show nothing if no same brand/gender products
-        // This ensures strict matching
+        // Show nothing if no same brand/gender products
         html += `<div class="fc-product-card" style="visibility: hidden;"></div>`;
       }
       
@@ -2582,8 +2567,13 @@
   }
 
   // ===== ADD TO CART - MODIFIED TO NOT CLOSE POPUP =====
-  window.fcAddToCart = function(variantId) {
-    const btn = event.target;
+  window.fcAddToCart = function(variantId, event) {
+    // If event is passed, stop propagation
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    const btn = event?.target || document.activeElement;
     const originalText = btn.innerText;
     const originalBackground = btn.style.background;
     
@@ -2631,7 +2621,6 @@
     });
     
     // IMPORTANT: Prevent event propagation to keep popup open
-    event.stopPropagation();
     return false;
   };
 
