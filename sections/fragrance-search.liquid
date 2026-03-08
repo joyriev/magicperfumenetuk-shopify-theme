@@ -1,12 +1,9 @@
 {% comment %}
   FRAGRANCE CODE SEARCH POPUP - PREMIUM DESIGN
-  - Fixed search functionality - NOW WORKING PROPERLY
-  - ADVANCED FUZZY SEARCH: Catches severe spelling mistakes
-  - Special handling for "code" shows both No. 260 and No. 135
-  - HARDCODED MAPPINGS with correct variant IDs
-  - FIXED: Uses correct product images (_c.webp format)
-  - FIXED: Cart stays open after adding items
-  - FIXED: "amani" now finds "armani" products
+  - COMPLETELY HARDCODED - Every product has exact mappings
+  - Strict brand and gender matching
+  - Shows same brand products in "You might like it"
+  - Gender-specific recommendations
 {% endcomment %}
 
 <!-- Load our curated catalog -->
@@ -972,313 +969,1395 @@
     return allPerfumes.find(p => p.id === id);
   }
 
-  // ===== ADVANCED LEVENSHTEIN DISTANCE FOR FUZZY MATCHING =====
-  function levenshteinDistance(a, b) {
-    if (a.length === 0) return b.length;
-    if (b.length === 0) return a.length;
-    
-    const matrix = [];
-    
-    // Initialize matrix
-    for (let i = 0; i <= b.length; i++) {
-      matrix[i] = [i];
-    }
-    
-    for (let j = 0; j <= a.length; j++) {
-      matrix[0][j] = j;
-    }
-    
-    // Fill matrix
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        if (b.charAt(i - 1) === a.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1, // substitution
-            matrix[i][j - 1] + 1,     // insertion
-            matrix[i - 1][j] + 1      // deletion
-          );
-        }
-      }
-    }
-    
-    return matrix[b.length][a.length];
-  }
+  // ===== COMPLETE HARDCODED PRODUCT DATABASE =====
+  const hardcodedProducts = [
+    // JEAN PAUL GAULTIER
+    {
+      id: "hardcoded-le-male-247",
+      title: "No. 247 - Inspired by Le Male",
+      image: "https://magicperfume.co.uk/cdn/shop/files/247M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-247m",
+      variant: 52698254065775,
+      price: 999,
+      brand: "Jean Paul Gaultier",
+      brandKey: "jpg",
+      number: "247",
+      gender: "male",
+      searchTerms: ["le male", "jean paul gaultier", "male", "247"]
+    },
+    {
+      id: "hardcoded-ultra-male-349",
+      title: "No. 349 - Inspired by Ultra Male",
+      image: "https://magicperfume.co.uk/cdn/shop/files/349M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-349m",
+      variant: 52698255130991,
+      price: 999,
+      brand: "Jean Paul Gaultier",
+      brandKey: "jpg",
+      number: "349",
+      gender: "male",
+      searchTerms: ["ultra male", "jean paul gaultier", "male", "349"]
+    },
+    {
+      id: "hardcoded-scandal-192",
+      title: "No. 192 - Inspired by SCANDAL",
+      image: "https://magicperfume.co.uk/cdn/shop/files/192W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-192w",
+      variant: 52698253541487,
+      price: 999,
+      brand: "Jean Paul Gaultier",
+      brandKey: "jpg",
+      number: "192",
+      gender: "female",
+      searchTerms: ["scandal", "jean paul gaultier", "female", "192"]
+    },
+    {
+      id: "hardcoded-la-belle-412",
+      title: "No. 412 - Inspired by La Belle",
+      image: "https://magicperfume.co.uk/cdn/shop/files/412W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-412w",
+      variant: 52698255425855,
+      price: 999,
+      brand: "Jean Paul Gaultier",
+      brandKey: "jpg",
+      number: "412",
+      gender: "female",
+      searchTerms: ["la belle", "jean paul gaultier", "female", "412"]
+    },
+    {
+      id: "hardcoded-classique-442",
+      title: "No. 442 - Inspired by Classique Essence de Parfum",
+      image: "https://magicperfume.co.uk/cdn/shop/files/442W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-442w",
+      variant: 52698255622463,
+      price: 999,
+      brand: "Jean Paul Gaultier",
+      brandKey: "jpg",
+      number: "442",
+      gender: "female",
+      searchTerms: ["classique", "jean paul gaultier", "female", "442"]
+    },
 
-  // ===== NORMALIZE STRING FOR BETTER COMPARISON =====
-  function normalizeString(str) {
-    if (!str) return '';
-    return str.toLowerCase()
-              .replace(/[^\w\s]/g, '') // Remove punctuation
-              .replace(/\s+/g, ' ')     // Normalize spaces
-              .trim();
-  }
+    // DIOR
+    {
+      id: "hardcoded-sauvage-parfum-338",
+      title: "No. 338 - Inspired by Sauvage Parfum",
+      image: "https://magicperfume.co.uk/cdn/shop/files/338M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-338m",
+      variant: 52698255032687,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "338",
+      gender: "male",
+      searchTerms: ["sauvage parfum", "dior", "male", "338"]
+    },
+    {
+      id: "hardcoded-sauvage-elixir-366",
+      title: "No. 366 - Inspired by Sauvage Elixir",
+      image: "https://magicperfume.co.uk/cdn/shop/files/366M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-366m",
+      variant: 52698255229295,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "366",
+      gender: "male",
+      searchTerms: ["sauvage elixir", "dior", "male", "366"]
+    },
+    {
+      id: "hardcoded-hypnotic-poison-145",
+      title: "No. 145 - Inspired by Hypnotic Poison",
+      image: "https://magicperfume.co.uk/cdn/shop/files/145W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-145w",
+      variant: 52698253279407,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "145",
+      gender: "female",
+      searchTerms: ["hypnotic poison", "dior", "female", "145"]
+    },
+    {
+      id: "hardcoded-jadore-159",
+      title: "No. 159 - Inspired by J'Adore",
+      image: "https://magicperfume.co.uk/cdn/shop/files/159W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-159w",
+      variant: 52698253377711,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "159",
+      gender: "female",
+      searchTerms: ["jadore", "j'adore", "dior", "female", "159"]
+    },
+    {
+      id: "hardcoded-miss-dior-196",
+      title: "No. 196 - Inspired by Miss Dior Le Parfum",
+      image: "https://magicperfume.co.uk/cdn/shop/files/196W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-196w",
+      variant: 52698253639791,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "196",
+      gender: "female",
+      searchTerms: ["miss dior", "dior", "female", "196"]
+    },
+    {
+      id: "hardcoded-fahrenheit-206",
+      title: "No. 206 - Inspired by Fahrenheit",
+      image: "https://magicperfume.co.uk/cdn/shop/files/206M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-206m",
+      variant: 52698253738095,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "206",
+      gender: "male",
+      searchTerms: ["fahrenheit", "dior", "male", "206"]
+    },
+    {
+      id: "hardcoded-fahrenheit-le-parfum-350",
+      title: "No. 350 - Inspired by Fahrenheit Le Parfum",
+      image: "https://magicperfume.co.uk/cdn/shop/files/350M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-350m",
+      variant: 52698255163761,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "350",
+      gender: "male",
+      searchTerms: ["fahrenheit le parfum", "dior", "male", "350"]
+    },
+    {
+      id: "hardcoded-homme-intense-277",
+      title: "No. 277 - Inspired by Homme Intense",
+      image: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-277m",
+      variant: 52698254393455,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "277",
+      gender: "male",
+      searchTerms: ["homme intense", "dior", "male", "277"]
+    },
+    {
+      id: "hardcoded-miss-cherie-082",
+      title: "No. 082 - Inspired by Miss Cherie",
+      image: "https://magicperfume.co.uk/cdn/shop/files/082W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-082w",
+      variant: 52698252558655,
+      price: 999,
+      brand: "Dior",
+      brandKey: "dior",
+      number: "082",
+      gender: "female",
+      searchTerms: ["miss cherie", "dior", "female", "082"]
+    },
 
-  // ===== ADVANCED SIMILARITY SCORE WITH KEYWORD EXTRACTION =====
-  function calculateAdvancedSimilarity(query, target) {
-    if (!query || !target) return 0;
-    
-    const normalizedQuery = normalizeString(query);
-    const normalizedTarget = normalizeString(target);
-    
-    // Exact match after normalization
-    if (normalizedQuery === normalizedTarget) return 100;
-    
-    // One contains the other
-    if (normalizedTarget.includes(normalizedQuery) || normalizedQuery.includes(normalizedTarget)) {
-      return 80;
-    }
-    
-    // Split into words
-    const queryWords = normalizedQuery.split(' ');
-    const targetWords = normalizedTarget.split(' ');
-    
-    let totalScore = 0;
-    let matchedWords = 0;
-    
-    for (const qWord of queryWords) {
-      if (qWord.length < 2) continue;
-      
-      let bestWordScore = 0;
-      let bestWord = '';
-      
-      for (const tWord of targetWords) {
-        if (tWord.length < 2) continue;
-        
-        // Check if one word contains the other
-        if (tWord.includes(qWord) || qWord.includes(tWord)) {
-          const lengthRatio = Math.min(qWord.length, tWord.length) / Math.max(qWord.length, tWord.length);
-          const score = 60 * lengthRatio;
-          if (score > bestWordScore) {
-            bestWordScore = score;
-            bestWord = tWord;
-          }
-          continue;
-        }
-        
-        // Calculate Levenshtein distance for fuzzy matching
-        const distance = levenshteinDistance(qWord, tWord);
-        const maxLength = Math.max(qWord.length, tWord.length);
-        
-        if (maxLength > 0) {
-          // Convert distance to similarity (0-100)
-          // More forgiving for shorter words
-          const threshold = qWord.length < 4 ? 0.4 : 0.3;
-          const similarity = ((maxLength - distance) / maxLength) * 100;
-          
-          if (similarity > (100 * threshold)) {
-            if (similarity > bestWordScore) {
-              bestWordScore = similarity;
-              bestWord = tWord;
-            }
-          }
-        }
-      }
-      
-      if (bestWordScore > 0) {
-        totalScore += bestWordScore;
-        matchedWords++;
-      }
-    }
-    
-    // Calculate average score
-    if (matchedWords > 0) {
-      return totalScore / matchedWords;
-    }
-    
-    return 0;
-  }
+    // CHANEL
+    {
+      id: "hardcoded-bleu-252",
+      title: "No. 252 - Inspired by Bleu de Chanel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/252M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-252m",
+      variant: 52698254327919,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "252",
+      gender: "male",
+      searchTerms: ["bleu", "bleu de chanel", "chanel", "male", "252"]
+    },
+    {
+      id: "hardcoded-coco-079",
+      title: "No. 079 - Inspired by Coco",
+      image: "https://magicperfume.co.uk/cdn/shop/files/079W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-079w",
+      variant: 52698252525887,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "079",
+      gender: "female",
+      searchTerms: ["coco", "chanel", "female", "079"]
+    },
+    {
+      id: "hardcoded-mademoiselle-intense-067",
+      title: "No. 067 - Inspired by Mademoiselle Intense",
+      image: "https://magicperfume.co.uk/cdn/shop/files/067W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-067w",
+      variant: 52698252427631,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "067",
+      gender: "female",
+      searchTerms: ["mademoiselle intense", "chanel", "female", "067"]
+    },
+    {
+      id: "hardcoded-mademoiselle-139",
+      title: "No. 139 - Inspired by Mademoiselle",
+      image: "https://magicperfume.co.uk/cdn/shop/files/139W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-139w",
+      variant: 52698253213871,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "139",
+      gender: "female",
+      searchTerms: ["mademoiselle", "chanel", "female", "139"]
+    },
+    {
+      id: "hardcoded-chance-006",
+      title: "No. 006 - Inspired by Chance",
+      image: "https://magicperfume.co.uk/cdn/shop/files/006W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-006w",
+      variant: 52698252067183,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "006",
+      gender: "female",
+      searchTerms: ["chance", "chanel", "female", "006"]
+    },
+    {
+      id: "hardcoded-no5-077",
+      title: "No. 077 - Inspired by No. 5",
+      image: "https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-077w",
+      variant: 52698252493167,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "077",
+      gender: "female",
+      searchTerms: ["no 5", "no5", "chanel", "female", "077"]
+    },
+    {
+      id: "hardcoded-allure-homme-240",
+      title: "No. 240 - Inspired by Allure Homme",
+      image: "https://magicperfume.co.uk/cdn/shop/files/240M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-240m",
+      variant: 52698254131311,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "240",
+      gender: "male",
+      searchTerms: ["allure homme", "chanel", "male", "240"]
+    },
+    {
+      id: "hardcoded-allure-homme-sport-222",
+      title: "No. 222 - Inspired by Allure Homme Sport",
+      image: "https://magicperfume.co.uk/cdn/shop/files/222M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-222m",
+      variant: 52698253967471,
+      price: 999,
+      brand: "Chanel",
+      brandKey: "chanel",
+      number: "222",
+      gender: "male",
+      searchTerms: ["allure homme sport", "chanel", "male", "222"]
+    },
 
-  // ===== GENERATE QUERY VARIATIONS FOR BETTER MATCHING =====
-  function generateQueryVariations(query) {
-    const variations = [query];
-    const queryLower = query.toLowerCase();
-    
-    // Common brand name misspellings and variations
-    const brandMappings = {
-      'armani': ['armani', 'amani', 'arani', 'armany', 'armoni', 'armani'],
-      'chanel': ['chanel', 'channel', 'chanell', 'shanell', 'chanel'],
-      'dior': ['dior', 'diorr', 'diore', 'dior'],
-      'sauvage': ['sauvage', 'savages', 'sauvage', 'savage'],
-      'bleu': ['bleu', 'blue', 'blu', 'bleue'],
-      'noir': ['noir', 'noire', 'nior', 'noir'],
-      'musc': ['musc', 'musk', 'musck', 'musc']
-    };
-    
-    // Check each brand mapping
-    for (const [correct, misspellings] of Object.entries(brandMappings)) {
-      for (const misspelling of misspellings) {
-        if (queryLower.includes(misspelling) && misspelling !== correct) {
-          variations.push(queryLower.replace(misspelling, correct));
-        }
-      }
-    }
-    
-    // Handle "chanel blue" vs "bleu de chanel"
-    if (queryLower.includes('chanel') && (queryLower.includes('blue') || queryLower.includes('bleu'))) {
-      variations.push('bleu de chanel');
-      variations.push('bleu chanel');
-    }
-    
-    if (queryLower.includes('bleu') && queryLower.includes('chanel')) {
-      variations.push('chanel blue');
-      variations.push('blue chanel');
-    }
-    
-    // Remove numbers from query for broader matching
-    const withoutNumbers = query.replace(/\d+/g, '').trim();
-    if (withoutNumbers && withoutNumbers !== query) {
-      variations.push(withoutNumbers);
-    }
-    
-    // Remove spaces for matching concatenated words
-    const withoutSpaces = query.replace(/\s+/g, '');
-    if (withoutSpaces !== query) {
-      variations.push(withoutSpaces);
-    }
-    
-    // Add common phonetic variations
-    const phoneticMap = {
-      'ph': 'f',
-      'f': 'ph',
-      'c': 'k',
-      'k': 'c',
-      's': 'z',
-      'z': 's',
-      'th': 't',
-      't': 'th'
-    };
-    
-    return [...new Set(variations)]; // Remove duplicates
-  }
+    // GIORGIO ARMANI
+    {
+      id: "hardcoded-armani-code-260",
+      title: "No. 260 - Inspired by Armani Code",
+      image: "https://magicperfume.co.uk/cdn/shop/files/260M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-260m",
+      variant: 52698254360687,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "260",
+      gender: "male",
+      searchTerms: ["armani code", "code", "armani", "male", "260"]
+    },
+    {
+      id: "hardcoded-code-for-woman-135",
+      title: "No. 135 - Inspired by Code for Women",
+      image: "https://magicperfume.co.uk/cdn/shop/files/135W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-135w",
+      variant: 52698253148335,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "135",
+      gender: "female",
+      searchTerms: ["code for women", "armani code", "female", "135"]
+    },
+    {
+      id: "hardcoded-acqua-di-gio-221",
+      title: "No. 221 - Inspired by Acqua Di Gio",
+      image: "https://magicperfume.co.uk/cdn/shop/files/221M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-221m",
+      variant: 52698253934703,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "221",
+      gender: "male",
+      searchTerms: ["acqua di gio", "armani", "male", "221"]
+    },
+    {
+      id: "hardcoded-si-129",
+      title: "No. 129 - Inspired by Si",
+      image: "https://magicperfume.co.uk/cdn/shop/files/129W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-129w",
+      variant: 52698253115567,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "129",
+      gender: "female",
+      searchTerms: ["si", "armani", "female", "129"]
+    },
+    {
+      id: "hardcoded-my-way-140",
+      title: "No. 140 - Inspired by MY WAY",
+      image: "https://magicperfume.co.uk/cdn/shop/files/140W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-140w",
+      variant: 52698253246639,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "140",
+      gender: "female",
+      searchTerms: ["my way", "armani", "female", "140"]
+    },
+    {
+      id: "hardcoded-emporio-she-150",
+      title: "No. 150 - Inspired by Emporio She",
+      image: "https://magicperfume.co.uk/cdn/shop/files/150W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-150w",
+      variant: 52698253312175,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "150",
+      gender: "female",
+      searchTerms: ["emporio she", "armani", "female", "150"]
+    },
+    {
+      id: "hardcoded-emporio-he-242",
+      title: "No. 242 - Inspired by Emporio He",
+      image: "https://magicperfume.co.uk/cdn/shop/files/242M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-242m",
+      variant: 52698254164079,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "242",
+      gender: "male",
+      searchTerms: ["emporio he", "armani", "male", "242"]
+    },
+    {
+      id: "hardcoded-stronger-with-you-318",
+      title: "No. 318 - Inspired by Stronger With You Intensely",
+      image: "https://magicperfume.co.uk/cdn/shop/files/318M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-318m",
+      variant: 52698254901615,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "318",
+      gender: "male",
+      searchTerms: ["stronger with you", "armani", "male", "318"]
+    },
+    {
+      id: "hardcoded-armani-diamonds-040",
+      title: "No. 040 - Inspired by Armani Diamonds",
+      image: "https://magicperfume.co.uk/cdn/shop/files/040W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-040w",
+      variant: 52698252263791,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "040",
+      gender: "female",
+      searchTerms: ["armani diamonds", "diamonds", "armani", "female", "040"]
+    },
+    {
+      id: "hardcoded-acqua-di-gioia-146",
+      title: "No. 146 - Inspired by Acqua di Gioia",
+      image: "https://magicperfume.co.uk/cdn/shop/files/146W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-146w",
+      variant: 52698253246639,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "146",
+      gender: "female",
+      searchTerms: ["acqua di gioia", "armani", "female", "146"]
+    },
 
-  // ===== ADVANCED SEARCH FUNCTION WITH FUZZY MATCHING =====
-  function searchProducts(query) {
-    if (!query || query.length < 1 || !fcProducts || fcProducts.length === 0) {
-      return [];
+    // PACO RABANNE
+    {
+      id: "hardcoded-one-million-275",
+      title: "No. 275 - Inspired by One Million",
+      image: "https://magicperfume.co.uk/cdn/shop/files/275M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-275m",
+      variant: 52698254426223,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "275",
+      gender: "male",
+      searchTerms: ["one million", "1 million", "paco rabanne", "male", "275"]
+    },
+    {
+      id: "hardcoded-one-million-elixir-334",
+      title: "No. 334 - Inspired by One Million Elixir",
+      image: "https://magicperfume.co.uk/cdn/shop/files/334M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-334m",
+      variant: 52698254967151,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "334",
+      gender: "male",
+      searchTerms: ["one million elixir", "million elixir", "paco rabanne", "male", "334"]
+    },
+    {
+      id: "hardcoded-lady-million-023",
+      title: "No. 023 - Inspired by Lady Million",
+      image: "https://magicperfume.co.uk/cdn/shop/files/023W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-023w",
+      variant: 52698252165487,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "023",
+      gender: "female",
+      searchTerms: ["lady million", "paco rabanne", "female", "023"]
+    },
+    {
+      id: "hardcoded-fame-498",
+      title: "No. 498 - Inspired by Fame",
+      image: "https://magicperfume.co.uk/cdn/shop/files/498W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-498w",
+      variant: 52698255851887,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "498",
+      gender: "female",
+      searchTerms: ["fame", "paco rabanne", "female", "498"]
+    },
+    {
+      id: "hardcoded-invictus-228",
+      title: "No. 228 - Inspired by Invictus",
+      image: "https://magicperfume.co.uk/cdn/shop/files/228M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-228m",
+      variant: 52698254033007,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "228",
+      gender: "male",
+      searchTerms: ["invictus", "paco rabanne", "male", "228"]
+    },
+    {
+      id: "hardcoded-phantom-399",
+      title: "No. 399 - Inspired by Phantom",
+      image: "https://magicperfume.co.uk/cdn/shop/files/399M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-399m",
+      variant: 52698255327599,
+      price: 999,
+      brand: "Paco Rabanne",
+      brandKey: "pacoRabanne",
+      number: "399",
+      gender: "male",
+      searchTerms: ["phantom", "paco rabanne", "male", "399"]
+    },
+
+    // TOM FORD
+    {
+      id: "hardcoded-oud-wood-287",
+      title: "No. 287 - Inspired by Oud Wood",
+      image: "https://magicperfume.co.uk/cdn/shop/files/287M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-287m",
+      variant: 52698254524527,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "287",
+      gender: "male",
+      searchTerms: ["oud wood", "tom ford", "male", "287"]
+    },
+    {
+      id: "hardcoded-fucking-fabulous-232",
+      title: "No. 232 - Inspired by Fucking Fabulous",
+      image: "https://magicperfume.co.uk/cdn/shop/files/232M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-232m",
+      variant: 52698254098543,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "232",
+      gender: "male",
+      searchTerms: ["fucking fabulous", "tom ford", "male", "232"]
+    },
+    {
+      id: "hardcoded-tobacco-vanille-193",
+      title: "No. 193 - Inspired by Tobacco Vanille",
+      image: "https://magicperfume.co.uk/cdn/shop/files/193M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-193m",
+      variant: 52698253574255,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "193",
+      gender: "male",
+      searchTerms: ["tobacco vanille", "tom ford", "male", "193"]
+    },
+    {
+      id: "hardcoded-vanille-fatale-053",
+      title: "No. 053 - Inspired by Vanille Fatale",
+      image: "https://magicperfume.co.uk/cdn/shop/files/053W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-053w",
+      variant: 52698252362095,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "053",
+      gender: "female",
+      searchTerms: ["vanille fatale", "tom ford", "female", "053"]
+    },
+    {
+      id: "hardcoded-lost-cherry-438",
+      title: "No. 438 - Inspired by Lost Cherry",
+      image: "https://magicperfume.co.uk/cdn/shop/files/438W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-438w",
+      variant: 52698255524143,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "438",
+      gender: "female",
+      searchTerms: ["lost cherry", "tom ford", "female", "438"]
+    },
+    {
+      id: "hardcoded-cherry-smoke-434",
+      title: "No. 434 - Inspired by Cherry Smoke",
+      image: "https://magicperfume.co.uk/cdn/shop/files/434M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-434m",
+      variant: 52698255491391,
+      price: 999,
+      brand: "Tom Ford",
+      brandKey: "tomFord",
+      number: "434",
+      gender: "male",
+      searchTerms: ["cherry smoke", "tom ford", "male", "434"]
+    },
+
+    // YVES SAINT LAURENT
+    {
+      id: "hardcoded-black-opium-132",
+      title: "No. 132 - Inspired by Black Opium",
+      image: "https://magicperfume.co.uk/cdn/shop/files/132W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-132w",
+      variant: 52698253181103,
+      price: 999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "132",
+      gender: "female",
+      searchTerms: ["black opium", "ysl", "female", "132"]
+    },
+    {
+      id: "hardcoded-opium-083",
+      title: "No. 083 - Inspired by Opium",
+      image: "https://magicperfume.co.uk/cdn/shop/files/083W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-083w",
+      variant: 52698252591423,
+      price: 1199,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "083",
+      gender: "female",
+      searchTerms: ["opium", "ysl", "female", "083"]
+    },
+    {
+      id: "hardcoded-y-283",
+      title: "No. 283 - Inspired by Y",
+      image: "https://magicperfume.co.uk/cdn/shop/files/283M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-283m",
+      variant: 52698254458991,
+      price: 999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "283",
+      gender: "male",
+      searchTerms: ["y", "ysl", "male", "283"]
+    },
+    {
+      id: "hardcoded-libre-034",
+      title: "No. 034 - Inspired by Libre",
+      image: "https://magicperfume.co.uk/cdn/shop/files/034W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-034w",
+      variant: 52698252231023,
+      price: 999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "034",
+      gender: "female",
+      searchTerms: ["libre", "ysl", "female", "034"]
+    },
+
+    // HUGO BOSS
+    {
+      id: "hardcoded-boss-bottled-234",
+      title: "No. 234 - Inspired by Boss Bottled",
+      image: "https://magicperfume.co.uk/cdn/shop/files/234M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-234m",
+      variant: 52698254131311,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "234",
+      gender: "male",
+      searchTerms: ["boss bottled", "hugo boss", "male", "234"]
+    },
+    {
+      id: "hardcoded-boss-woman-60",
+      title: "No. 60 - Inspired by Boss Woman",
+      image: "https://magicperfume.co.uk/cdn/shop/files/060W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-060w",
+      variant: 52698252394863,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "60",
+      gender: "female",
+      searchTerms: ["boss woman", "hugo boss", "female", "60", "060"]
+    },
+    {
+      id: "hardcoded-boss-orange-148",
+      title: "No. 148 - Inspired by Boss Orange",
+      image: "https://magicperfume.co.uk/cdn/shop/files/148W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-148w",
+      variant: 52698253279407,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "148",
+      gender: "female",
+      searchTerms: ["boss orange", "hugo boss", "female", "148"]
+    },
+    {
+      id: "hardcoded-boss-hugo-223",
+      title: "No. 223 - Inspired by Hugo",
+      image: "https://magicperfume.co.uk/cdn/shop/files/223M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-223m",
+      variant: 52698253967471,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "223",
+      gender: "male",
+      searchTerms: ["hugo", "hugo boss", "male", "223"]
+    },
+    {
+      id: "hardcoded-boss-alive-098",
+      title: "No. 098 - Inspired by ALIVE",
+      image: "https://magicperfume.co.uk/cdn/shop/files/098W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-098w",
+      variant: 52698252722511,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "098",
+      gender: "female",
+      searchTerms: ["alive", "hugo boss", "female", "098"]
+    },
+    {
+      id: "hardcoded-boss-the-scent-270",
+      title: "No. 270 - Inspired by The Scent",
+      image: "https://magicperfume.co.uk/cdn/shop/files/270M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-270m",
+      variant: 52698254393455,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "270",
+      gender: "male",
+      searchTerms: ["the scent", "hugo boss", "male", "270"]
+    },
+    {
+      id: "hardcoded-boss-bottled-night-274",
+      title: "No. 274 - Inspired by Bottled Night",
+      image: "https://magicperfume.co.uk/cdn/shop/files/274M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-274m",
+      variant: 52698254426223,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "274",
+      gender: "male",
+      searchTerms: ["bottled night", "hugo boss", "male", "274"]
+    },
+
+    // CALVIN KLEIN
+    {
+      id: "hardcoded-ck-one-209",
+      title: "No. 209 - Inspired by CK One",
+      image: "https://magicperfume.co.uk/cdn/shop/files/209M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-209m",
+      variant: 52698253803631,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "209",
+      gender: "male",
+      searchTerms: ["ck one", "calvin klein", "male", "209"]
+    },
+    {
+      id: "hardcoded-eternity-106",
+      title: "No. 106 - Inspired by Eternity",
+      image: "https://magicperfume.co.uk/cdn/shop/files/106W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-106w",
+      variant: 52698252951919,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "106",
+      gender: "female",
+      searchTerms: ["eternity", "calvin klein", "female", "106"]
+    },
+    {
+      id: "hardcoded-eternity-moment-414",
+      title: "No. 414 - Inspired by Eternity Moment",
+      image: "https://magicperfume.co.uk/cdn/shop/files/414W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-414w",
+      variant: 52698255458639,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "414",
+      gender: "female",
+      searchTerms: ["eternity moment", "calvin klein", "female", "414"]
+    },
+    {
+      id: "hardcoded-euphoria-087",
+      title: "No. 087 - Inspired by Euphoria Blossom",
+      image: "https://magicperfume.co.uk/cdn/shop/files/087W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-087w",
+      variant: 52698252656959,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "087",
+      gender: "female",
+      searchTerms: ["euphoria", "calvin klein", "female", "087"]
+    },
+    {
+      id: "hardcoded-ck-be-477",
+      title: "No. 477 - Inspired by CK Be",
+      image: "https://magicperfume.co.uk/cdn/shop/files/477M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-477m",
+      variant: 52698255720815,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "477",
+      gender: "male",
+      searchTerms: ["ck be", "calvin klein", "male", "477"]
+    },
+    {
+      id: "hardcoded-ck-women-031",
+      title: "No. 031 - Inspired by CK Women",
+      image: "https://magicperfume.co.uk/cdn/shop/files/031W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-031w",
+      variant: 52698252198255,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "031",
+      gender: "female",
+      searchTerms: ["ck women", "calvin klein", "female", "031"]
+    },
+    {
+      id: "hardcoded-euphoria-men-204",
+      title: "No. 204 - Inspired by Euphoria Men",
+      image: "https://magicperfume.co.uk/cdn/shop/files/204M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-204m",
+      variant: 52698253770863,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "204",
+      gender: "male",
+      searchTerms: ["euphoria men", "calvin klein", "male", "204"]
+    },
+
+    // NARCISO RODRIGUEZ
+    {
+      id: "hardcoded-musc-noir-457",
+      title: "No. 457 - Inspired by Musc Noir For Her",
+      image: "https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-457w",
+      variant: 52698255655215,
+      price: 999,
+      brand: "Narciso Rodriguez",
+      brandKey: "narciso",
+      number: "457",
+      gender: "female",
+      searchTerms: ["musc noir", "narciso rodriguez", "female", "457"]
+    },
+
+    // MUGLER
+    {
+      id: "hardcoded-angel-113",
+      title: "No. 113 - Inspired by Angel",
+      image: "https://magicperfume.co.uk/cdn/shop/files/113W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-113w",
+      variant: 52698253017455,
+      price: 999,
+      brand: "Mugler",
+      brandKey: "mugler",
+      number: "113",
+      gender: "female",
+      searchTerms: ["angel", "mugler", "female", "113"]
+    },
+    {
+      id: "hardcoded-angel-nova-166",
+      title: "No. 166 - Inspired by Angel Nova",
+      image: "https://magicperfume.co.uk/cdn/shop/files/166W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-166w",
+      variant: 52698253410479,
+      price: 999,
+      brand: "Mugler",
+      brandKey: "mugler",
+      number: "166",
+      gender: "female",
+      searchTerms: ["angel nova", "mugler", "female", "166"]
+    },
+    {
+      id: "hardcoded-amen-255",
+      title: "No. 255 - Inspired by A*Men",
+      image: "https://magicperfume.co.uk/cdn/shop/files/255M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-255m",
+      variant: 52698254256495,
+      price: 999,
+      brand: "Mugler",
+      brandKey: "mugler",
+      number: "255",
+      gender: "male",
+      searchTerms: ["amen", "a*men", "mugler", "male", "255"]
+    },
+
+    // DOLCE & GABBANA
+    {
+      id: "hardcoded-light-blue-017",
+      title: "No. 017 - Inspired by Light Blue",
+      image: "https://magicperfume.co.uk/cdn/shop/files/017W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-017w",
+      variant: 52698252132719,
+      price: 999,
+      brand: "Dolce & Gabbana",
+      brandKey: "dolce",
+      number: "017",
+      gender: "female",
+      searchTerms: ["light blue", "dolce gabbana", "female", "017"]
+    },
+    {
+      id: "hardcoded-the-one-094",
+      title: "No. 094 - Inspired by The One",
+      image: "https://magicperfume.co.uk/cdn/shop/files/094W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-094w",
+      variant: 52698252755247,
+      price: 999,
+      brand: "Dolce & Gabbana",
+      brandKey: "dolce",
+      number: "094",
+      gender: "female",
+      searchTerms: ["the one", "dolce gabbana", "female", "094"]
+    },
+
+    // CAROLINA HERRERA
+    {
+      id: "hardcoded-good-girl-461",
+      title: "No. 461 - Inspired by Good Girl Velvet Fatale",
+      image: "https://magicperfume.co.uk/cdn/shop/files/461W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-461w",
+      variant: 52698255687983,
+      price: 999,
+      brand: "Carolina Herrera",
+      brandKey: "carolinaHerrera",
+      number: "461",
+      gender: "female",
+      searchTerms: ["good girl", "carolina herrera", "female", "461"]
+    },
+    {
+      id: "hardcoded-very-good-girl-404",
+      title: "No. 404 - Inspired by Very Good Girl",
+      image: "https://magicperfume.co.uk/cdn/shop/files/404W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-404w",
+      variant: 52698255360367,
+      price: 999,
+      brand: "Carolina Herrera",
+      brandKey: "carolinaHerrera",
+      number: "404",
+      gender: "female",
+      searchTerms: ["very good girl", "carolina herrera", "female", "404"]
+    },
+
+    // VALENTINO
+    {
+      id: "hardcoded-born-in-roma-469",
+      title: "No. 469 - Inspired by Born in Roma",
+      image: "https://magicperfume.co.uk/cdn/shop/files/469W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-469w",
+      variant: 52698255753583,
+      price: 999,
+      brand: "Valentino",
+      brandKey: "valentino",
+      number: "469",
+      gender: "female",
+      searchTerms: ["born in roma", "valentino", "female", "469"]
+    },
+    {
+      id: "hardcoded-uomo-born-in-roma-360",
+      title: "No. 360 - Inspired by Uomo Born in Roma",
+      image: "https://magicperfume.co.uk/cdn/shop/files/360M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-360m",
+      variant: 52698255163761,
+      price: 999,
+      brand: "Valentino",
+      brandKey: "valentino",
+      number: "360",
+      gender: "male",
+      searchTerms: ["uomo born in roma", "valentino", "male", "360"]
+    },
+
+    // PRADA
+    {
+      id: "hardcoded-paradoxe-437",
+      title: "No. 437 - Inspired by Paradoxe",
+      image: "https://magicperfume.co.uk/cdn/shop/files/437W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-437w",
+      variant: 52698255524143,
+      price: 999,
+      brand: "Prada",
+      brandKey: "prada",
+      number: "437",
+      gender: "female",
+      searchTerms: ["paradoxe", "prada", "female", "437"]
+    },
+    {
+      id: "hardcoded-candy-182",
+      title: "No. 182 - Inspired by Candy",
+      image: "https://magicperfume.co.uk/cdn/shop/files/182W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-182w",
+      variant: 52698253476015,
+      price: 999,
+      brand: "Prada",
+      brandKey: "prada",
+      number: "182",
+      gender: "female",
+      searchTerms: ["candy", "prada", "female", "182"]
+    },
+
+    // LANCOME
+    {
+      id: "hardcoded-la-vie-est-belle-101",
+      title: "No. 101 - Inspired by La Vie Est Belle",
+      image: "https://magicperfume.co.uk/cdn/shop/files/101W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-101w",
+      variant: 52698252820783,
+      price: 999,
+      brand: "Lancôme",
+      brandKey: "lancome",
+      number: "101",
+      gender: "female",
+      searchTerms: ["la vie est belle", "lancome", "female", "101"]
+    },
+    {
+      id: "hardcoded-tresor-141",
+      title: "No. 141 - Inspired by Tresor",
+      image: "https://magicperfume.co.uk/cdn/shop/files/141W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-141w",
+      variant: 52698253213871,
+      price: 999,
+      brand: "Lancôme",
+      brandKey: "lancome",
+      number: "141",
+      gender: "female",
+      searchTerms: ["tresor", "lancome", "female", "141"]
+    },
+    {
+      id: "hardcoded-idole-55",
+      title: "No. 55 - Inspired by Idole",
+      image: "https://magicperfume.co.uk/cdn/shop/files/055W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-055w",
+      variant: 52698252329327,
+      price: 999,
+      brand: "Lancôme",
+      brandKey: "lancome",
+      number: "55",
+      gender: "female",
+      searchTerms: ["idole", "lancome", "female", "55", "055"]
+    },
+    {
+      id: "hardcoded-la-vie-est-belle-intense-109",
+      title: "No. 109 - Inspired by La Vie Est Belle Intensement",
+      image: "https://magicperfume.co.uk/cdn/shop/files/109W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-109w",
+      variant: 52698252984687,
+      price: 999,
+      brand: "Lancôme",
+      brandKey: "lancome",
+      number: "109",
+      gender: "female",
+      searchTerms: ["la vie est belle intense", "lancome", "female", "109"]
+    },
+
+    // KENZO
+    {
+      id: "hardcoded-flower-074",
+      title: "No. 074 - Inspired by Flower",
+      image: "https://magicperfume.co.uk/cdn/shop/files/074W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-074w",
+      variant: 52698252460463,
+      price: 999,
+      brand: "Kenzo",
+      brandKey: "kenzo",
+      number: "074",
+      gender: "female",
+      searchTerms: ["flower", "kenzo", "female", "074"]
+    },
+
+    // CHLOE
+    {
+      id: "hardcoded-chloe-024",
+      title: "No. 024 - Inspired by Chloe",
+      image: "https://magicperfume.co.uk/cdn/shop/files/024W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-024w",
+      variant: 52698252165519,
+      price: 999,
+      brand: "Chloé",
+      brandKey: "chloe",
+      number: "024",
+      gender: "female",
+      searchTerms: ["chloe", "female", "024"]
+    },
+    {
+      id: "hardcoded-nomade-049",
+      title: "No. 049 - Inspired by Nomade",
+      image: "https://magicperfume.co.uk/cdn/shop/files/049W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-049w",
+      variant: 52698252329327,
+      price: 999,
+      brand: "Chloé",
+      brandKey: "chloe",
+      number: "049",
+      gender: "female",
+      searchTerms: ["nomade", "chloe", "female", "049"]
+    },
+
+    // HERMES
+    {
+      id: "hardcoded-terre-227",
+      title: "No. 227 - Inspired by Terre",
+      image: "https://magicperfume.co.uk/cdn/shop/files/227M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-227m",
+      variant: 52698254033007,
+      price: 999,
+      brand: "Hermès",
+      brandKey: "hermes",
+      number: "227",
+      gender: "male",
+      searchTerms: ["terre", "hermes", "male", "227"]
+    },
+
+    // GUCCI
+    {
+      id: "hardcoded-rush-163",
+      title: "No. 163 - Inspired by Rush 2",
+      image: "https://magicperfume.co.uk/cdn/shop/files/163W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-163w",
+      variant: 52698253410479,
+      price: 999,
+      brand: "Gucci",
+      brandKey: "gucci",
+      number: "163",
+      gender: "female",
+      searchTerms: ["rush", "gucci", "female", "163"]
+    },
+
+    // DAVIDOFF
+    {
+      id: "hardcoded-cool-water-200",
+      title: "No. 200 - Inspired by Cool Water",
+      image: "https://magicperfume.co.uk/cdn/shop/files/200M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-200m",
+      variant: 52698253705327,
+      price: 999,
+      brand: "Davidoff",
+      brandKey: "davidoff",
+      number: "200",
+      gender: "male",
+      searchTerms: ["cool water", "davidoff", "male", "200"]
+    },
+
+    // JOOP
+    {
+      id: "hardcoded-joop-211",
+      title: "No. 211 - Inspired by Joop Homme",
+      image: "https://magicperfume.co.uk/cdn/shop/files/211M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-211m",
+      variant: 52698253836399,
+      price: 999,
+      brand: "Joop!",
+      brandKey: "joop",
+      number: "211",
+      gender: "male",
+      searchTerms: ["joop", "joop homme", "male", "211"]
+    },
+
+    // BACCARAT / AVENTUS
+    {
+      id: "hardcoded-baccarat-466",
+      title: "No. 466 - Inspired by Baccarat Rouge 540",
+      image: "https://magicperfume.co.uk/cdn/shop/files/466W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-466w",
+      variant: 52698255720815,
+      price: 999,
+      brand: "Baccarat",
+      brandKey: "baccarat",
+      number: "466",
+      gender: "female",
+      searchTerms: ["baccarat", "rouge", "540", "466"]
+    },
+    {
+      id: "hardcoded-aventus-him-288",
+      title: "No. 288 - Inspired by Aventus for Him",
+      image: "https://magicperfume.co.uk/cdn/shop/files/288M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-288m",
+      variant: 52698254557295,
+      price: 999,
+      brand: "Creed",
+      brandKey: "creed",
+      number: "288",
+      gender: "male",
+      searchTerms: ["aventus", "creed", "male", "288"]
+    },
+    {
+      id: "hardcoded-aventus-her-488",
+      title: "No. 488 - Inspired by Aventus for Her",
+      image: "https://magicperfume.co.uk/cdn/shop/files/488W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-488w",
+      variant: 52698255786351,
+      price: 999,
+      brand: "Creed",
+      brandKey: "creed",
+      number: "488",
+      gender: "female",
+      searchTerms: ["aventus", "creed", "female", "488"]
+    },
+
+    // OTHERS
+    {
+      id: "hardcoded-ange-ou-demon-142",
+      title: "No. 142 - Inspired by Ange Ou Demon",
+      image: "https://magicperfume.co.uk/cdn/shop/files/142W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-142w",
+      variant: 52698253213871,
+      price: 999,
+      brand: "Givenchy",
+      brandKey: "givenchy",
+      number: "142",
+      gender: "female",
+      searchTerms: ["ange ou demon", "givenchy", "female", "142"]
+    },
+    {
+      id: "hardcoded-manifesto-134",
+      title: "No. 134 - Inspired by Manifesto",
+      image: "https://magicperfume.co.uk/cdn/shop/files/134W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-134w",
+      variant: 52698253148335,
+      price: 999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "134",
+      gender: "female",
+      searchTerms: ["manifesto", "ysl", "female", "134"]
+    },
+    {
+      id: "hardcoded-stronger-with-you-291",
+      title: "No. 291 - Inspired by Stronger with You",
+      image: "https://magicperfume.co.uk/cdn/shop/files/291M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-291m",
+      variant: 52698254590063,
+      price: 999,
+      brand: "Giorgio Armani",
+      brandKey: "armani",
+      number: "291",
+      gender: "male",
+      searchTerms: ["stronger with you", "armani", "male", "291"]
+    },
+    {
+      id: "hardcoded-eternity-215",
+      title: "No. 215 - Inspired by Eternity",
+      image: "https://magicperfume.co.uk/cdn/shop/files/215M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-215m",
+      variant: 52698253869167,
+      price: 999,
+      brand: "Calvin Klein",
+      brandKey: "calvinKlein",
+      number: "215",
+      gender: "male",
+      searchTerms: ["eternity", "calvin klein", "male", "215"]
+    },
+    {
+      id: "hardcoded-deep-red-022",
+      title: "No. 022 - Inspired by Deep Red",
+      image: "https://magicperfume.co.uk/cdn/shop/files/022W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-022w",
+      variant: 52698252132719,
+      price: 999,
+      brand: "Salvatore Ferragamo",
+      brandKey: "ferragamo",
+      number: "022",
+      gender: "female",
+      searchTerms: ["deep red", "ferragamo", "female", "022"]
+    },
+    {
+      id: "hardcoded-ma-vie-058",
+      title: "No. 058 - Inspired by Ma Vie",
+      image: "https://magicperfume.co.uk/cdn/shop/files/058W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-058w",
+      variant: 52698252362095,
+      price: 999,
+      brand: "Hugo Boss",
+      brandKey: "hugoBoss",
+      number: "058",
+      gender: "female",
+      searchTerms: ["ma vie", "hugo boss", "female", "058"]
+    },
+    {
+      id: "hardcoded-extreme-286",
+      title: "No. 286 - Inspired by Extreme",
+      image: "https://magicperfume.co.uk/cdn/shop/files/286M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-286m",
+      variant: 52698254524527,
+      price: 999,
+      brand: "Bvlgari",
+      brandKey: "bvlgari",
+      number: "286",
+      gender: "male",
+      searchTerms: ["extreme", "bvlgari", "male", "286"]
+    },
+    {
+      id: "hardcoded-nuit-blanche-197",
+      title: "No. 197 - Inspired by Nuit Blanche",
+      image: "https://magicperfume.co.uk/cdn/shop/files/197M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-197m",
+      variant: 52698253672560,
+      price: 999,
+      brand: "Yves Saint Laurent",
+      brandKey: "ysl",
+      number: "197",
+      gender: "male",
+      searchTerms: ["nuit blanche", "ysl", "male", "197"]
+    },
+    {
+      id: "hardcoded-aqva-305",
+      title: "No. 305 - Inspired by Aqva Pour Homme",
+      image: "https://magicperfume.co.uk/cdn/shop/files/305M_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-305m",
+      variant: 52698254870583,
+      price: 999,
+      brand: "Bvlgari",
+      brandKey: "bvlgari",
+      number: "305",
+      gender: "male",
+      searchTerms: ["aqva", "bvlgari", "male", "305"]
+    },
+    {
+      id: "hardcoded-flora-162",
+      title: "No. 162 - Inspired by Flora",
+      image: "https://magicperfume.co.uk/cdn/shop/files/162W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-162w",
+      variant: 52698253377711,
+      price: 999,
+      brand: "Gucci",
+      brandKey: "gucci",
+      number: "162",
+      gender: "female",
+      searchTerms: ["flora", "gucci", "female", "162"]
+    },
+    {
+      id: "hardcoded-rush-167",
+      title: "No. 167 - Inspired by Rush",
+      image: "https://magicperfume.co.uk/cdn/shop/files/167W_c.webp?v=1771765712&width=1200",
+      url: "https://magicperfume.co.uk/products/magic-perfume-no-167w",
+      variant: 52698253443247,
+      price: 999,
+      brand: "Gucci",
+      brandKey: "gucci",
+      number: "167",
+      gender: "female",
+      searchTerms: ["rush", "gucci", "female", "167"]
     }
+  ];
+
+  // ===== SEARCH IN HARDCODED PRODUCTS =====
+  function searchHardcodedProducts(query) {
+    if (!query || query.length < 1) return [];
     
     const queryLower = query.toLowerCase().trim();
     const results = [];
     const addedIds = new Set();
     
-    console.log('🔍 Advanced search for:', queryLower);
+    console.log('🔍 Searching hardcoded products for:', queryLower);
     
-    // FIRST: Special handling for "code"
-    if (queryLower.includes('code')) {
-      // Find No. 260 (men's)
-      const no260 = fcProducts.find(p => 
-        p.title.toLowerCase().includes('no. 260') || 
-        p.title.toLowerCase().includes('no 260')
-      );
-      
-      if (no260) {
-        results.push({ product: no260, score: 1000 });
-        addedIds.add(no260.id);
-        console.log('✅ Found No. 260 for "code"');
-      }
-      
-      // Find No. 135 (women's)
-      const no135 = fcProducts.find(p => 
-        p.title.toLowerCase().includes('no. 135') || 
-        p.title.toLowerCase().includes('no 135')
-      );
-      
-      if (no135 && !addedIds.has(no135.id)) {
-        results.push({ product: no135, score: 900 });
-        addedIds.add(no135.id);
-        console.log('✅ Found No. 135 for "code"');
-      }
-    }
-    
-    // Create variations of the search query for better matching
-    const queryVariations = generateQueryVariations(queryLower);
-    console.log('Query variations:', queryVariations);
-    
-    // SECOND: Check ALL products with advanced fuzzy matching
-    fcProducts.forEach(product => {
-      if (addedIds.has(product.id)) return;
-      
-      const title = product.title;
-      const titleLower = title.toLowerCase();
-      let bestScore = 0;
-      let matchReasons = [];
-      
-      // Check each variation against the title
-      for (const variation of queryVariations) {
-        // Direct contains match (highest score)
-        if (titleLower.includes(variation)) {
-          bestScore = Math.max(bestScore, 100);
-          matchReasons.push(`direct:${variation}`);
-        }
-      }
-      
-      // If no direct match, try advanced similarity
-      if (bestScore < 50) {
-        const similarityScore = calculateAdvancedSimilarity(queryLower, titleLower);
-        if (similarityScore > 40) { // 40% similarity threshold
-          bestScore = Math.max(bestScore, similarityScore);
-          matchReasons.push(`fuzzy:${Math.round(similarityScore)}%`);
-        }
-      }
-      
-      // Check for number matches (always exact)
-      const numberMatch = product.title.match(/No\.?\s*(\d+)/i);
-      if (numberMatch && queryLower.includes(numberMatch[1])) {
-        bestScore = Math.max(bestScore, 150);
-        matchReasons.push(`number:${numberMatch[1]}`);
-      }
-      
-      // Check brand name in metafields
-      const nuta = product.metafields?.custom?.nuta?.toLowerCase() || '';
-      if (nuta) {
-        const brandScore = calculateAdvancedSimilarity(queryLower, nuta);
-        if (brandScore > 50) {
-          bestScore = Math.max(bestScore, brandScore * 0.8);
-          matchReasons.push(`brand:${Math.round(brandScore)}%`);
-        }
-      }
-      
-      if (bestScore > 30) {
-        results.push({ 
-          product, 
-          score: Math.round(bestScore),
-          matchReasons 
-        });
+    hardcodedProducts.forEach(product => {
+      // Check title
+      if (product.title.toLowerCase().includes(queryLower)) {
+        results.push({ product, score: 100, matchReasons: ['title'] });
         addedIds.add(product.id);
-        console.log(`✅ Match: ${product.title} (Score: ${Math.round(bestScore)})`, matchReasons);
+        return;
+      }
+      
+      // Check search terms
+      if (product.searchTerms) {
+        for (const term of product.searchTerms) {
+          if (term.includes(queryLower) || queryLower.includes(term)) {
+            results.push({ product, score: 90, matchReasons: ['search term'] });
+            addedIds.add(product.id);
+            return;
+          }
+        }
+      }
+      
+      // Check number
+      if (product.number && queryLower.includes(product.number)) {
+        results.push({ product, score: 95, matchReasons: ['number'] });
+        addedIds.add(product.id);
+        return;
+      }
+      
+      // Check brand
+      if (product.brand.toLowerCase().includes(queryLower)) {
+        results.push({ product, score: 85, matchReasons: ['brand'] });
+        addedIds.add(product.id);
+        return;
       }
     });
-    
-    // If no matches at all, show some products as fallback
-    if (results.length === 0) {
-      console.log('⚠️ No matches found, showing random products');
-      fcProducts.slice(0, 10).forEach(product => {
-        if (!addedIds.has(product.id)) {
-          results.push({ product, score: 1, matchReasons: ['fallback'] });
-          addedIds.add(product.id);
-        }
-      });
-    }
-    
-    // Sort by score (highest first)
-    results.sort((a, b) => b.score - a.score);
-    
-    console.log(`📊 Found ${results.length} results for "${query}"`);
-    if (results.length > 0) {
-      console.log('🏆 Top result:', results[0].product.title, 'Score:', results[0].score);
-    }
     
     return results;
   }
 
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
   function getPopularSuggestions() {
-    if (!fcProducts || fcProducts.length === 0) return [];
-    
-    // Return top products as suggestions
-    return fcProducts.slice(0, 8);
+    // Return top products as suggestions from hardcoded list
+    return hardcodedProducts.slice(0, 8);
   }
 
   // ===== RENDER SUGGESTIONS =====
@@ -1290,7 +2369,7 @@
     let html = `<div class="fc-suggestions-title">✨ Popular Fragrances</div>`;
     
     suggestions.forEach(product => {
-      const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£9.99';
+      const priceFormatted = '£' + (product.price / 100).toFixed(2);
       
       html += `
         <div class="fc-suggestion-item" onclick="window.fcViewDetails('${product.url}')">
@@ -1304,25 +2383,6 @@
     });
     
     return html;
-  }
-
-  // ===== SIMPLE SEARCH FOR CATALOG =====
-  function simpleCatalogSearch(query) {
-    if (!query || query.length < 1) return [];
-    
-    const queryLower = query.toLowerCase().trim();
-    const results = [];
-    
-    allPerfumes.forEach(perfume => {
-      const searchableName = (perfume.name || '').toLowerCase();
-      const searchableBrand = (perfume.brand || '').toLowerCase();
-      
-      if (searchableName.includes(queryLower) || searchableBrand.includes(queryLower)) {
-        results.push(perfume);
-      }
-    });
-    
-    return results.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   // ===== RENDER CATALOG PERFUME LIST =====
@@ -1360,39 +2420,53 @@
     currentView = 'detail';
     steps.style.display = 'none';
     
-    // Find matching Shopify product using hardcoded mappings
-    const shopifyProduct = findShopifyProductByCatalogPerfume(perfume);
+    // Find matching hardcoded product
+    const hardcodedProduct = findHardcodedProductByPerfume(perfume);
     
     let html = `
       <button class="fc-back-btn" onclick="window.fcGoBack()">Back</button>
     `;
     
-    if (shopifyProduct) {
+    if (hardcodedProduct) {
       html += `<div class="fc-subsection-title">Our Inspired Version</div>`;
       html += '<div class="fc-grid-2col">';
       
-      // RECOMMENDED: The found Shopify product
-      html += renderProductCard(shopifyProduct, 'Recommended');
+      // RECOMMENDED: The found product
+      html += renderHardcodedProductCard(hardcodedProduct, 'Recommended');
       
-      // YOU MIGHT LIKE IT: Random product from your collection
-      const otherProducts = fcProducts.filter(p => p.id !== shopifyProduct.id);
-      if (otherProducts.length > 0) {
-        const randomProduct = otherProducts[Math.floor(Math.random() * otherProducts.length)];
-        html += renderProductCard(randomProduct, 'You might like it');
+      // YOU MIGHT LIKE IT: Find another product from same brand and gender
+      const similarProduct = findSimilarHardcodedProduct(hardcodedProduct);
+      if (similarProduct) {
+        html += renderHardcodedProductCard(similarProduct, 'You might like it');
+      } else {
+        // Fallback to any product from same brand
+        const sameBrandProduct = hardcodedProducts.find(p => 
+          p.id !== hardcodedProduct.id && 
+          p.brandKey === hardcodedProduct.brandKey
+        );
+        if (sameBrandProduct) {
+          html += renderHardcodedProductCard(sameBrandProduct, 'You might like it');
+        } else {
+          // Absolute fallback - show first available product
+          const fallbackProduct = hardcodedProducts.find(p => p.id !== hardcodedProduct.id);
+          if (fallbackProduct) {
+            html += renderHardcodedProductCard(fallbackProduct, 'You might like it');
+          }
+        }
       }
       
       html += '</div>';
     } else {
-      // Fallback - show random products
+      // Fallback - show two random products
       html += `<div class="fc-subsection-title">You Might Like</div>`;
       html += '<div class="fc-grid-2col">';
       
-      const randomProducts = [...fcProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
+      const randomProducts = [...hardcodedProducts].sort(() => 0.5 - Math.random()).slice(0, 2);
       if (randomProducts.length >= 1) {
-        html += renderProductCard(randomProducts[0], 'Recommended');
+        html += renderHardcodedProductCard(randomProducts[0], 'Recommended');
       }
       if (randomProducts.length >= 2) {
-        html += renderProductCard(randomProducts[1], 'You might like it');
+        html += renderHardcodedProductCard(randomProducts[1], 'You might like it');
       }
       
       html += '</div>';
@@ -1452,116 +2526,109 @@
     content.innerHTML = html;
   };
 
-  // ===== FIND SHOPIFY PRODUCT BY CATALOG PERFUME - WITH HARDCODED MAPPINGS =====
-  function findShopifyProductByCatalogPerfume(perfume) {
-    if (!perfume || !fcProducts.length) return null;
+  // ===== FIND HARDCODED PRODUCT BY CATALOG PERFUME =====
+  function findHardcodedProductByPerfume(perfume) {
+    if (!perfume) return null;
     
-    console.log('🔍 Finding Shopify product for catalog perfume:', perfume.name);
-    
-    // ===== HARDCODED DIRECT MAPPINGS FOR KNOWN PRODUCTS =====
-    const hardcodedMappings = [
-      {
-        catalogNames: ['musc noir', 'narciso rodriguez musc noir', 'musc noir narciso rodriguez'],
-        productNumber: '457',
-        variantId: 52698256146799, // 30ml variant
-        expectedTitle: 'No. 457 - Inspired by Musc Noir For Her',
-        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
-        price: 999
-      },
-      {
-        catalogNames: ['no. 5', 'chanel no. 5', 'no 5 chanel'],
-        productNumber: '077',
-        variantId: 52698252493167, // 30ml variant
-        expectedTitle: 'No. 077 - Inspired by No. 5',
-        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
-        price: 999
-      },
-      {
-        catalogNames: ['bleu de chanel', 'bleu', 'chanel bleu', 'blue chanel'],
-        productNumber: '252',
-        variantId: 52698254327919, // 30ml variant
-        expectedTitle: 'No. 252 - Inspired by Bleu de Chanel',
-        imageUrl: 'https://magicperfume.co.uk/cdn/shop/files/252M_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
-        price: 999
-      }
-    ];
+    console.log('🔍 Finding hardcoded product for:', perfume.name);
     
     const perfumeLower = perfume.name.toLowerCase();
+    const perfumeBrandLower = perfume.brand.toLowerCase();
     
-    // Check hardcoded mappings first
-    for (const mapping of hardcodedMappings) {
-      for (const catalogName of mapping.catalogNames) {
-        if (perfumeLower.includes(catalogName)) {
-          console.log(`🎯 Hardcoded match for "${catalogName}" -> Product #${mapping.productNumber}`);
-          
-          // First try to find existing product
-          let match = fcProducts.find(p => {
-            const pNumber = extractProductNumber(p.title);
-            return pNumber === mapping.productNumber;
-          });
-          
-          if (match) {
-            console.log(`✅ Found existing product:`, match.title);
-            return match;
-          }
-          
-          // If not found, create a temporary product with the correct data
-          console.log(`⚠️ Creating temporary product for #${mapping.productNumber}`);
-          
-          return {
-            id: `temp-${mapping.productNumber}`,
-            title: mapping.expectedTitle,
-            image: mapping.imageUrl,
-            url: mapping.url,
-            variant: mapping.variantId,
-            variantSKU: `${mapping.productNumber}${mapping.productNumber === '252' ? 'm' : 'w'}03`,
-            price: mapping.price,
-            description: mapping.expectedTitle
-          };
-        }
-      }
-    }
-    
-    // If no hardcoded match, try number-based search
+    // Try to find by product number first
     if (perfume.productNumbers && perfume.productNumbers.length > 0) {
       for (const num of perfume.productNumbers) {
-        const match = fcProducts.find(p => {
-          const pNumber = extractProductNumber(p.title);
-          return pNumber === num;
-        });
+        const match = hardcodedProducts.find(p => 
+          p.number === num || p.number === num.padStart(3, '0')
+        );
         if (match) {
-          console.log(`✅ Found by product number ${num}:`, match.title);
+          console.log(`✅ Found by number ${num}:`, match.title);
           return match;
         }
       }
     }
     
-    console.log('❌ No match found for:', perfume.name);
+    // Try to find by brand + name keywords
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    hardcodedProducts.forEach(product => {
+      let score = 0;
+      
+      // Brand match (highest weight)
+      if (perfumeBrandLower.includes(product.brand.toLowerCase()) || 
+          product.brand.toLowerCase().includes(perfumeBrandLower)) {
+        score += 50;
+      }
+      
+      // Name keywords match
+      const nameWords = perfume.name.toLowerCase().split(' ');
+      for (const word of nameWords) {
+        if (word.length > 2 && product.title.toLowerCase().includes(word)) {
+          score += 20;
+        }
+      }
+      
+      // Gender match
+      if (perfume.gender && product.gender) {
+        if (perfume.gender.toLowerCase() === product.gender.toLowerCase()) {
+          score += 15;
+        }
+      }
+      
+      if (score > bestScore && score > 30) {
+        bestScore = score;
+        bestMatch = product;
+      }
+    });
+    
+    if (bestMatch) {
+      console.log(`✅ Found by keyword match (score ${bestScore}):`, bestMatch.title);
+      return bestMatch;
+    }
+    
+    console.log('❌ No hardcoded product found');
     return null;
   }
 
-  // ===== RENDER PRODUCT CARD WITH NUMERIC VARIANT ID =====
-  function renderProductCard(product, badge) {
-    const priceFormatted = product.price ? '£' + (product.price / 100).toFixed(2) : '£19.99';
+  // ===== FIND SIMILAR HARDCODED PRODUCT (same brand and gender) =====
+  function findSimilarHardcodedProduct(product) {
+    if (!product) return null;
     
-    let displayNumber = '';
+    // Try to find same brand and same gender
+    const sameBrandGender = hardcodedProducts.find(p => 
+      p.id !== product.id && 
+      p.brandKey === product.brandKey && 
+      p.gender === product.gender
+    );
+    
+    if (sameBrandGender) return sameBrandGender;
+    
+    // Try same brand only
+    const sameBrand = hardcodedProducts.find(p => 
+      p.id !== product.id && 
+      p.brandKey === product.brandKey
+    );
+    
+    if (sameBrand) return sameBrand;
+    
+    // Try same gender from any brand
+    const sameGender = hardcodedProducts.find(p => 
+      p.id !== product.id && 
+      p.gender === product.gender
+    );
+    
+    if (sameGender) return sameGender;
+    
+    return null;
+  }
+
+  // ===== RENDER HARDCODED PRODUCT CARD =====
+  function renderHardcodedProductCard(product, badge) {
+    const priceFormatted = '£' + (product.price / 100).toFixed(2);
+    
+    let displayNumber = product.number ? `No. ${product.number}` : '';
     let displayName = product.title;
-    
-    const numberMatch = product.title.match(/No\.?\s*(\d+)/i);
-    if (numberMatch) {
-      displayNumber = numberMatch[0];
-    }
-    
-    const inspiredMatch = product.title.match(/Inspired by (.*)/i);
-    if (inspiredMatch) {
-      displayName = inspiredMatch[1];
-    }
-    
-    // Use the numeric variant ID (NOT the SKU)
-    const variantId = product.variant;
     
     return `
       <div class="fc-product-card">
@@ -1570,7 +2637,7 @@
           <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
           <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
           <div class="fc-product-price">${priceFormatted}</div>
-          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${variantId})">Add to Cart</button>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant})">Add to Cart</button>
           <div>
             <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
           </div>
@@ -1579,122 +2646,38 @@
     `;
   }
 
-  // ===== RENDER YOUR PRODUCT CARD (ALIAS) =====
-  function renderYourProductCard(product, badge) {
-    return renderProductCard(product, badge);
+  // ===== SIMPLE SEARCH FOR CATALOG =====
+  function simpleCatalogSearch(query) {
+    if (!query || query.length < 1) return [];
+    
+    const queryLower = query.toLowerCase().trim();
+    const results = [];
+    
+    allPerfumes.forEach(perfume => {
+      const searchableName = (perfume.name || '').toLowerCase();
+      const searchableBrand = (perfume.brand || '').toLowerCase();
+      
+      if (searchableName.includes(queryLower) || searchableBrand.includes(queryLower)) {
+        results.push(perfume);
+      }
+    });
+    
+    return results.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS WITH CORRECT VARIANT IDS AND IMAGES =====
+  // ===== INITIALIZE YOUR SHOPIFY PRODUCTS =====
   function fcInitProducts() {
-    fcProducts = [
-      {% for product in collections.all.products %}
-        {
-          id: {{ product.id | json }},
-          title: {{ product.title | json }},
-          image: {{ product.featured_image | img_url: '400x' | json }},
-          url: {{ product.url | json }},
-          variant: {{ product.variants.first.id | json }},
-          variantSKU: {{ product.variants.first.sku | json }},
-          price: {{ product.price | json }},
-          comparePrice: {{ product.compare_at_price | json }},
-          description: {{ product.description | strip_html | json }},
-          metafields: {
-            perfume: {
-              top_notes: {{ product.metafields.perfume.top_notes | default: '' | json }},
-              middle_notes: {{ product.metafields.perfume.middle_notes | default: '' | json }},
-              base_notes: {{ product.metafields.perfume.base_notes | default: '' | json }}
-            },
-            custom: {
-              top_notes: {{ product.metafields.custom.top_notes | default: '' | json }},
-              middle_notes: {{ product.metafields.custom.middle_notes | default: '' | json }},
-              base_notes: {{ product.metafields.custom.base_notes | default: '' | json }},
-              nuta: {{ product.metafields.custom.nuta | default: '' | json }}
-            }
-          }
-        }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    ];
+    // We're using hardcodedProducts exclusively, so this is just for compatibility
+    fcProducts = hardcodedProducts.map(p => ({
+      id: p.id,
+      title: p.title,
+      image: p.image,
+      url: p.url,
+      variant: p.variant,
+      price: p.price
+    }));
     
-    console.log('✓ Loaded', fcProducts.length, 'products from Shopify');
-    
-    // Log all product numbers for debugging
-    console.log('📋 Product numbers in fcProducts:');
-    fcProducts.forEach(p => {
-      const number = extractProductNumber(p.title);
-      console.log(`   ${p.title} -> Number: ${number}, Variant ID: ${p.variant}`);
-    });
-    
-    // ===== MANUALLY ADD MISSING PRODUCTS WITH CORRECT VARIANT IDS AND IMAGES =====
-    
-    // Check for No. 457
-    const no457 = fcProducts.find(p => {
-      const number = extractProductNumber(p.title);
-      return number === '457';
-    });
-    
-    if (!no457) {
-      console.log('⚠️ No. 457 NOT FOUND in products! Adding manually with correct data...');
-      fcProducts.push({
-        id: 'manual-457',
-        title: 'No. 457 - Inspired by Musc Noir For Her',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/457W_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-457w',
-        variant: 52698256146799, // 30ml variant ID
-        variantSKU: '457w03',
-        price: 999,
-        comparePrice: 1999,
-        description: 'Inspired by Musc Noir For Her'
-      });
-      console.log('✅ Manually added No. 457 with correct image and variant ID: 52698256146799');
-    } else {
-      console.log('✅ No. 457 found:', no457.title, 'Variant ID:', no457.variant);
-    }
-    
-    // Check for No. 077
-    const no077 = fcProducts.find(p => {
-      const number = extractProductNumber(p.title);
-      return number === '077';
-    });
-    
-    if (!no077) {
-      console.log('⚠️ No. 077 NOT FOUND! Adding manually...');
-      fcProducts.push({
-        id: 'manual-077',
-        title: 'No. 077 - Inspired by No. 5',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/077W_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-077w',
-        variant: 52698252493167, // 30ml variant ID for No. 077
-        variantSKU: '077w03',
-        price: 999,
-        comparePrice: 1999,
-        description: 'Inspired by No. 5'
-      });
-      console.log('✅ Manually added No. 077 with variant ID: 52698252493167');
-    }
-    
-    // Check for No. 252
-    const no252 = fcProducts.find(p => {
-      const number = extractProductNumber(p.title);
-      return number === '252';
-    });
-    
-    if (!no252) {
-      console.log('⚠️ No. 252 NOT FOUND! Adding manually...');
-      fcProducts.push({
-        id: 'manual-252',
-        title: 'No. 252 - Inspired by Bleu de Chanel',
-        image: 'https://magicperfume.co.uk/cdn/shop/files/252M_c.webp?v=1771765712&width=1200',
-        url: 'https://magicperfume.co.uk/products/magic-perfume-no-252m',
-        variant: 52698254327919, // 30ml variant ID for No. 252
-        variantSKU: '252m03',
-        price: 999,
-        comparePrice: 1999,
-        description: 'Inspired by Bleu de Chanel'
-      });
-      console.log('✅ Manually added No. 252 with variant ID: 52698254327919');
-    }
-    
-    console.log('✓ Final product count after manual additions:', fcProducts.length);
+    console.log('✓ Loaded', fcProducts.length, 'hardcoded products');
   }
 
   // ===== SHOW NOTIFICATION =====
@@ -1842,8 +2825,8 @@
       // Search in catalog
       const catalogResults = simpleCatalogSearch(query);
       
-      // Search in your products with advanced fuzzy matching
-      const yourResults = searchProducts(query);
+      // Search in hardcoded products
+      const hardcodedResults = searchHardcodedProducts(query);
       
       let html = '';
       
@@ -1852,13 +2835,13 @@
         html += renderCatalogPerfumes(catalogResults, query);
       }
       
-      // Show your products
-      if (yourResults.length > 0) {
-        html += `<div class="fc-section-title">Our Products (${yourResults.length})</div>`;
+      // Show hardcoded products
+      if (hardcodedResults.length > 0) {
+        html += `<div class="fc-section-title">Our Products (${hardcodedResults.length})</div>`;
         
-        yourResults.slice(0, 6).forEach(match => {
+        hardcodedResults.slice(0, 6).forEach(match => {
           const p = match.product;
-          const priceFormatted = p.price ? '£' + (p.price / 100).toFixed(2) : '£9.99';
+          const priceFormatted = '£' + (p.price / 100).toFixed(2);
           
           html += `
             <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
@@ -1873,7 +2856,7 @@
       }
       
       // If no results, show suggestions
-      if (catalogResults.length === 0 && yourResults.length === 0) {
+      if (catalogResults.length === 0 && hardcodedResults.length === 0) {
         html = '<div class="fc-no-results">No products found for "' + query + '"</div>';
         html += renderSuggestions();
       }
