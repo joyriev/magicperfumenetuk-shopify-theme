@@ -1220,7 +1220,7 @@ window.PerfumeCatalog = {
     {
       id: "lancome_la_vie_est_belle_101",
       name: "La Vie Est Belle Lancôme",
-      brand: "Lancôme",
+      brand: "Lancome",
       image: "https://magicperfume.co.uk/cdn/shop/files/101W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/101W_c.webp?v=1771765712&width=1200",
       top_notes: ["Black Currant", "Pear", "Orange Blossom"],
@@ -1240,7 +1240,7 @@ window.PerfumeCatalog = {
     {
       id: "lancome_la_vie_est_belle_intense_109",
       name: "La Vie Est Belle Intensément Lancôme",
-      brand: "Lancôme",
+      brand: "Lancome",
       image: "https://magicperfume.co.uk/cdn/shop/files/109W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/109W_c.webp?v=1771765712&width=1200",
       top_notes: ["Mandarin", "Black Currant", "Bergamot"],
@@ -1259,8 +1259,8 @@ window.PerfumeCatalog = {
     },
     {
       id: "lancome_tresor_141",
-      name: "Trésor Lancôme",
-      brand: "Lancôme",
+      name: "Tresor Lancome",
+      brand: "Lancome",
       image: "https://magicperfume.co.uk/cdn/shop/files/141W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/tresor.png?v=1772097891",
       top_notes: ["Peach", "Apricot", "Rose"],
@@ -1279,8 +1279,8 @@ window.PerfumeCatalog = {
     },
     {
       id: "lancome_nomade_049",
-      name: "Nomade Lancôme",
-      brand: "Lancôme",
+      name: "Nomade Lancome",
+      brand: "Lancome",
       image: "https://magicperfume.co.uk/cdn/shop/files/049W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/nomade.webp?v=1772101560",
       top_notes: ["Mirabelle", "Freesia", "Bergamot"],
