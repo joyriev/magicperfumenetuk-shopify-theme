@@ -1725,7 +1725,7 @@ window.PerfumeCatalog = {
       id: "givenchy_ange_ou_demon_142",
       name: "Ange ou Démon Givenchy",
       brand: "Givenchy",
-      image: "https://magicperfume.co.uk/cdn/shop/files/142W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Ange_Ou_Demon.png?v=1772102015",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Ange_Ou_Demon.png?v=1772102015",
       top_notes: ["Saffron", "Thyme", "Italian Mandarin"],
       heart_notes: ["Lily", "Ylang-Ylang", "Orchid"],
