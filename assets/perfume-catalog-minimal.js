@@ -348,7 +348,7 @@ window.PerfumeCatalog = {
       productNumbers: ["232"],
       shopifyProduct: {
         title: "No. 232 - Inspired by Fucking Fabulous",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-232m",
+        url: "https://magicperfume.co.uk/products/232m-tom-ford-fucking-fabulous-unisex-ersatz?variant=52698263421295",
         price: "£19.99",
         image: "https://magicperfume.co.uk/cdn/shop/files/232M_c.webp?v=1771765712&width=1200"
       }
