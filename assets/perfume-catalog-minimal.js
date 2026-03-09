@@ -1700,7 +1700,7 @@ window.PerfumeCatalog = {
     {
       id: "hermes_terre_227",
       name: "Terre d'Hermès",
-      brand: "Hermès",
+      brand: "Hermes",
       image: "https://magicperfume.co.uk/cdn/shop/files/227M_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/terre.png?v=1772098416",
       top_notes: ["Orange", "Grapefruit", "Flint"],
