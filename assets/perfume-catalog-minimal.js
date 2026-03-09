@@ -1413,7 +1413,7 @@ window.PerfumeCatalog = {
       id: "dolce_light_blue_017",
       name: "Light Blue Dolce & Gabbana",
       brand: "Dolce & Gabbana",
-      image: "https://magicperfume.co.uk/cdn/shop/files/017W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Dolce_Gabbana.jpg?v=1772018419",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Dolce_Gabbana.jpg?v=1772018419",
       top_notes: ["Sicilian Lemon", "Apple", "Cedar"],
       heart_notes: ["Jasmine", "White Rose", "Bamboo"],
