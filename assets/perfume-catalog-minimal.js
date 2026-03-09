@@ -1187,26 +1187,7 @@ window.PerfumeCatalog = {
         image: "https://magicperfume.co.uk/cdn/shop/files/442W_c.webp?v=1771765712&width=1200"
       }
     },
-    {
-      id: "jpg_miss_cherie_082",
-      name: "Miss Cherie Jean Paul Gaultier",
-      brand: "Jean Paul Gaultier",
-      image: "https://magicperfume.co.uk/cdn/shop/files/miss_cherie_edp.png?v=1772104486",
-      catalogImage: "https://magicperfume.co.uk/cdn/shop/files/miss_cherie_edp.png?v=1772104486",
-      top_notes: ["Strawberry", "Mandarin", "Pink Pepper"],
-      heart_notes: ["Jasmine", "Rose", "Caramel", "Popcorn"],
-      base_notes: ["Patchouli", "Musk", "Cedar"],
-      description: "A playful and romantic fragrance that captures the spirit of a young woman in love.",
-      year: "2005",
-      gender: "Female",
-      productNumbers: ["082"],
-      shopifyProduct: {
-        title: "No. 082 - Inspired by Miss Cherie",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-082w",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/082W_c.webp?v=1771765712&width=1200"
-      }
-    }
+    
   ],
 
   // ===== LANCÔME — 4 products =====
