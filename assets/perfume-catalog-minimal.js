@@ -1565,7 +1565,7 @@ window.PerfumeCatalog = {
       id: "mugler_angel_nova_166",
       name: "Angel Nova Mugler",
       brand: "Thierry Mugler",
-      image: "https://magicperfume.co.uk/cdn/shop/files/166W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/angel_nova.png?v=1772102893",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/angel_nova.png?v=1772102893",
       top_notes: ["Raspberry", "Lychee", "Bergamot"],
       heart_notes: ["Rose", "Damascus Rose", "Jasmine"],
