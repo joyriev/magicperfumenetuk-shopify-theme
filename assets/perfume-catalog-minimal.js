@@ -1117,7 +1117,7 @@ window.PerfumeCatalog = {
       id: "jpg_le_male_247",
       name: "Le Male Jean Paul Gaultier",
       brand: "Jean Paul Gaultier",
-      image: "https://magicperfume.co.uk/cdn/shop/files/247M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Le_Male.jpg?v=1772038546",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Le_Male.jpg?v=1772038546",
       top_notes: ["Mint", "Lavender", "Bergamot", "Cardamom"],
       heart_notes: ["Cinnamon", "Orange Blossom", "Caraway"],
