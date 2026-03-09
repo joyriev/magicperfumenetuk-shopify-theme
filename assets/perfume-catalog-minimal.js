@@ -448,7 +448,7 @@ window.PerfumeCatalog = {
     }
   ],
 
-  // ===== YSL — 7 products =====
+  // ===== YSL — 6 products =====
   ysl: [
    
     {
