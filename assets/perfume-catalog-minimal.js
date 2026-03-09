@@ -1544,7 +1544,7 @@ window.PerfumeCatalog = {
     {
       id: "mugler_angel_113",
       name: "Angel Mugler",
-      brand: " Thierry Mugler",
+      brand: "Thierry Mugler",
       image: "https://magicperfume.co.uk/cdn/shop/files/113W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/angel_edp.png?v=1772100649",
       top_notes: ["Cotton Candy", "Bergamot", "Pineapple", "Coconut"],
@@ -1564,7 +1564,7 @@ window.PerfumeCatalog = {
     {
       id: "mugler_angel_nova_166",
       name: "Angel Nova Mugler",
-      brand: "Mugler",
+      brand: "Thierry Mugler",
       image: "https://magicperfume.co.uk/cdn/shop/files/166W_c.webp?v=1771765712&width=1200",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/angel_nova.png?v=1772102893",
       top_notes: ["Raspberry", "Lychee", "Bergamot"],
