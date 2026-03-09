@@ -3411,7 +3411,12 @@ function renderHardcodedProductCard(product, badge) {
       
       let html = '';
       
-      // Show Our Products first
+      // Show Real Perfumes catalog FIRST (NOW with fuzzy matching!)
+      if (catalogResults.length > 0) {
+        html += renderCatalogPerfumes(catalogResults, query);
+      }
+      
+      // Show Our Products AFTER catalog
       if (results.length > 0) {
         html += `<div class="fc-section-title">Our Products (${results.length})</div>`;
         
@@ -3429,11 +3434,6 @@ function renderHardcodedProductCard(product, badge) {
             </div>
           `;
         });
-      }
-      
-      // Show Real Perfumes catalog AFTER our products (NOW with fuzzy matching!)
-      if (catalogResults.length > 0) {
-        html += renderCatalogPerfumes(catalogResults, query);
       }
       
       // If NO RESULTS AT ALL, show suggestions
