@@ -2454,7 +2454,7 @@ function renderHardcodedProductCard(product, badge) {
           <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x150?text=Tom+Ford'">
           <div class="fc-product-title">${product.title}</div>
           <div class="fc-product-price">${priceFormatted}</div>
-          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant}, event)">Add to Cart</button>
+          <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart('${product.url}', event)">Add to Cart</button>
           <div>
             <span class="fc-view-link" onclick="event.stopPropagation(); window.fcViewDetails('${product.url}')">View Details</span>
           </div>
