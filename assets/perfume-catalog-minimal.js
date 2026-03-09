@@ -1433,7 +1433,7 @@ window.PerfumeCatalog = {
       id: "dolce_the_one_094",
       name: "The One Dolce & Gabbana",
       brand: "Dolce & Gabbana",
-      image: "https://magicperfume.co.uk/cdn/shop/files/094W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/the_one.png?v=1772103424",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/the_one.png?v=1772103424",
       top_notes: ["Peach", "Lychee", "Mandarin"],
       heart_notes: ["Rose", "Jasmine", "Lily"],
