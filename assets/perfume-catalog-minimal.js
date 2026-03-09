@@ -455,7 +455,7 @@ window.PerfumeCatalog = {
       id: "ysl_libre_034",
       name: "Libre Yves Saint Laurent",
       brand: "Yves Saint Laurent",
-      image: "https://magicperfume.co.uk/cdn/shop/files/034W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Libre.png?v=1772103069",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Libre.png?v=1772103069",
       top_notes: ["Lavender", "Mandarin", "Black Currant"],
       heart_notes: ["Orange Blossom", "Jasmine", "Rose"],
