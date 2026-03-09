@@ -993,7 +993,7 @@ window.PerfumeCatalog = {
       id: "paco_one_million_275",
       name: "1 Million Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/275M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/One_Million.webp?v=1772037456",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/One_Million.webp?v=1772037456",
       top_notes: ["Grapefruit", "Mint", "Mandarin"],
       heart_notes: ["Cinnamon", "Rose", "Spices"],
