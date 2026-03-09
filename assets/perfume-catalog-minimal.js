@@ -3,8 +3,21 @@
 // TOTAL: 92 PRODUCTS - MATCHING YOUR EXACT LIST
 
 window.PerfumeCatalog = {
-  // ===== DIOR — 9 products =====
+  // ===== DIOR — 10 products =====
   dior: [
+  {
+  id: "dior-homme-intense-277",
+  name: "Dior Homme Intense",
+  brand: "Dior",
+  year: "2011",
+  gender: "male",
+  image: "https://magicperfume.co.uk/cdn/shop/files/dior_homme_intense.png", // You'll need the correct image URL
+  description: "A refined and powerful interpretation of the Dior Homme line. An oriental woody fragrance that combines the elegance of iris with the sensuality of leather and the depth of cedar.",
+  top_notes: ["Lavender", "Sage"],
+  heart_notes: ["Iris", "Amber", "Cocoa"],
+  base_notes: ["Leather", "Cedar", "Vetiver"],
+  productNumbers: ["277"]
+},
     {
       id: "dior_fahrenheit_206",
       name: "Fahrenheit Dior",
