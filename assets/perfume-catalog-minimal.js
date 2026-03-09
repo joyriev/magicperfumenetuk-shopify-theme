@@ -18,6 +18,19 @@ window.PerfumeCatalog = {
   base_notes: ["Leather", "Cedar", "Vetiver"],
   productNumbers: ["277"]
 },
+{
+  id: "dior-miss-cherie-082",
+  name: "Miss Cherie (Miss Dior Chérie)",
+  brand: "Dior",
+  year: "2005",
+  gender: "female",
+  image: "https://magicperfume.co.uk/cdn/shop/files/miss_cherie.png", // You'll need the correct image URL
+  description: "A playful and gourmand fragrance that captures the spirit of a young, carefree woman with its unique blend of strawberry, caramel popcorn, and patchouli.",
+  top_notes: ["Strawberry", "Cherry", "Mandarin", "Pineapple"],
+  heart_notes: ["Caramel Popcorn", "Jasmine", "Rose", "Violet"],
+  base_notes: ["Patchouli", "Musk", "Amber"],
+  productNumbers: ["082"]
+},
     {
       id: "dior_fahrenheit_206",
       name: "Fahrenheit Dior",
