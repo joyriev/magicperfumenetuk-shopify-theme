@@ -1325,7 +1325,7 @@ window.PerfumeCatalog = {
       id: "gucci_rush_2_163",
       name: "Rush 2 Gucci",
       brand: "Gucci",
-      image: "https://magicperfume.co.uk/cdn/shop/files/163W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/rush_2.png?v=1772098494",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/rush_2.png?v=1772098494",
       top_notes: ["Freesia", "Water Lily", "Coriander"],
       heart_notes: ["Rose", "Jasmine", "Lily of the Valley"],
