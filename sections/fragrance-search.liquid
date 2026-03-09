@@ -2145,6 +2145,425 @@
     }
   ];
 
+  // ===== ULTIMATE TEXT NORMALIZATION WITH FULL PUNCTUATION HANDLING =====
+
+  // ===== 1. COMPREHENSIVE CHARACTER MAPPING =====
+  const charMap = {
+    // Apostrophes and quotes
+    "'": ["'", "´", "`", "'", "'", "′", "‵", "՚", "ꞌ", "Ꞌ", "'"],
+    '"': ['"', """, """, "„", "‟"],
+    
+    // Accented characters - a
+    'a': ['à', 'á', 'â', 'ã', 'ä', 'å', 'ā', 'ă', 'ą', 'ǎ', 'ǟ', 'ǡ', 'ǻ', 'ȁ', 'ȃ', 'ḁ', 'ẚ'],
+    'ae': ['æ', 'ǽ'],
+    
+    // Accented characters - c
+    'c': ['ç', 'ć', 'ĉ', 'ċ', 'č', 'ƈ', 'ȼ'],
+    
+    // Accented characters - e
+    'e': ['è', 'é', 'ê', 'ë', 'ē', 'ĕ', 'ė', 'ę', 'ě', 'ȅ', 'ȇ', 'ḕ', 'ḗ', 'ḙ', 'ḛ', 'ḝ'],
+    
+    // Accented characters - i
+    'i': ['ì', 'í', 'î', 'ï', 'ĩ', 'ī', 'ĭ', 'į', 'ǐ', 'ȉ', 'ȋ', 'ḭ', 'ḯ'],
+    
+    // Accented characters - n
+    'n': ['ñ', 'ń', 'ņ', 'ň', 'ƞ', 'ǹ'],
+    
+    // Accented characters - o
+    'o': ['ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ō', 'ŏ', 'ő', 'ǒ', 'ǫ', 'ǭ', 'ǿ', 'ȍ', 'ȏ', 'ȫ', 'ȭ', 'ȯ', 'ȱ', 'ṍ', 'ṏ', 'ṑ', 'ṓ'],
+    'oe': ['œ'],
+    
+    // Accented characters - u
+    'u': ['ù', 'ú', 'û', 'ü', 'ũ', 'ū', 'ŭ', 'ů', 'ű', 'ų', 'ǔ', 'ǖ', 'ǘ', 'ǚ', 'ǜ', 'ȕ', 'ȗ', 'ṳ', 'ṵ', 'ṷ', 'ṹ', 'ṻ'],
+    
+    // Other special characters
+    's': ['ß', 'ś', 'ŝ', 'ş', 'š', 'ș'],
+    'z': ['ź', 'ż', 'ž', 'ƶ', 'ȥ'],
+    'y': ['ý', 'ÿ', 'ŷ', 'ȳ', 'ẏ', 'ỳ', 'ỵ', 'ỷ', 'ỹ'],
+    'l': ['ł'],
+    't': ['ţ', 'ť', 'ŧ', 'ț'],
+    'd': ['đ', 'ď', 'ð'],
+    'r': ['ŕ', 'ŗ', 'ř'],
+    'th': ['þ'],
+    
+    // Numbers (optional - convert to words if needed)
+    '0': ['0', 'zero'],
+    '1': ['1', 'one'],
+    '2': ['2', 'two'],
+    '3': ['3', 'three'],
+    '4': ['4', 'four'],
+    '5': ['5', 'five'],
+    '6': ['6', 'six'],
+    '7': ['7', 'seven'],
+    '8': ['8', 'eight'],
+    '9': ['9', 'nine'],
+    
+    // Common symbols to spaces
+    ' ': ['-', '_', '.', ',', ';', ':', '!', '?', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '@', '#', '$', '%', '^', '&', '*', '+', '=', '~', '`']
+  };
+
+  // ===== 2. SPECIAL FRAGRANCE NAME MAPPINGS (for exact matches) =====
+  const exactFragranceMatches = {
+    // J'adore and variations
+    'jadore': ['j\'adore', 'j ador', 'j adores', 'jadore', 'ja dore', 'j\'adores'],
+    "j'adore": ['jadore', 'j ador', 'j adores', 'ja dore', 'j\'adores'],
+    
+    // L'Homme and variations
+    'lhomme': ['l\'homme', 'l homme', 'lomme', 'l\'hommes'],
+    "l'homme": ['lhomme', 'l homme', 'lomme', 'l\'hommes'],
+    
+    // D'Issey and variations
+    'dissey': ['d\'issey', 'd issey', 'dissey'],
+    "d'issey": ['dissey', 'd issey'],
+    
+    // Eau de variations
+    'eau de': ['eau de', 'eaud', 'eau d'],
+    'eaud': ['eau de', 'eau d'],
+    
+    // Parfum variations
+    'parfum': ['parfum', 'perfume', 'parfyme'],
+    
+    // Toilette variations
+    'toilette': ['toilette', 'toilet', 'toilete'],
+    
+    // Extreme variations
+    'extreme': ['extreme', 'xtreme', 'extrem'],
+    
+    // Intense variations
+    'intense': ['intense', 'intence', 'intens'],
+    
+    // Noir variations
+    'noir': ['noir', 'noire', 'nwar'],
+    
+    // Bleu/Blue variations
+    'bleu': ['bleu', 'blue', 'blu'],
+    
+    // Rouge/Red variations
+    'rouge': ['rouge', 'red', 'rooj'],
+    
+    // Rose variations
+    'rose': ['rose', 'roz', 'rosé'],
+    
+    // Vanille variations
+    'vanille': ['vanille', 'vanilla', 'vanile', 'vanil'],
+    
+    // Tobacco variations
+    'tobacco': ['tobacco', 'tabac', 'tobac', 'tabacco'],
+    
+    // Cherry variations
+    'cherry': ['cherry', 'cheri', 'cherie', 'chery'],
+    
+    // Oud variations
+    'oud': ['oud', 'ud', 'ood', 'aude'],
+    
+    // Wood variations
+    'wood': ['wood', 'wod', 'woode'],
+    
+    // Black variations
+    'black': ['black', 'blak', 'blck'],
+    
+    // White variations
+    'white': ['white', 'wite', 'whit'],
+    
+    // Gold variations
+    'gold': ['gold', 'guld', 'golde'],
+    
+    // Silver variations
+    'silver': ['silver', 'silvr', 'sylver'],
+    
+    // Platinum variations
+    'platinum': ['platinum', 'platin', 'platine'],
+    
+    // Sport variations
+    'sport': ['sport', 'sporte', 'sports'],
+    
+    // Homme variations
+    'homme': ['homme', 'omme', 'home'],
+    
+    // Femme variations
+    'femme': ['femme', 'feme', 'femm'],
+    
+    // Pour variations
+    'pour': ['pour', 'por', 'pore']
+  };
+
+  // ===== 3. ULTIMATE TEXT NORMALIZATION =====
+  function normalizeTextUltimate(text) {
+    if (!text) return '';
+    
+    let normalized = text.toLowerCase();
+    
+    // Step 1: Replace all accented characters with their base
+    for (const [base, variations] of Object.entries(charMap)) {
+      for (const variant of variations) {
+        // Skip if it's the space mapping (handled separately)
+        if (base === ' ') continue;
+        
+        // Use regex to replace all occurrences
+        const regex = new RegExp(variant, 'g');
+        normalized = normalized.replace(regex, base);
+      }
+    }
+    
+    // Step 2: Replace all special characters and punctuation with spaces
+    // This handles commas, periods, dashes, etc.
+    normalized = normalized
+      // Replace apostrophes and quotes with a special marker first
+      .replace(/[''´`''′‵՚ꞌꞋ]/g, "'")
+      // Replace other punctuation with spaces
+      .replace(/[,".!?;:\-()\[\]{}<>@#$%^&*+=|\\~`]/g, ' ')
+      // Replace multiple spaces with single space
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    return normalized;
+  }
+
+  // ===== 4. LEVENSHTEIN DISTANCE FOR FUZZY MATCHING =====
+  function levenshteinDistance(s1, s2) {
+    const len1 = s1.length;
+    const len2 = s2.length;
+    const matrix = Array(len2 + 1).fill(null).map(() => Array(len1 + 1).fill(0));
+    
+    for (let i = 0; i <= len1; i++) matrix[0][i] = i;
+    for (let j = 0; j <= len2; j++) matrix[j][0] = j;
+    
+    for (let j = 1; j <= len2; j++) {
+      for (let i = 1; i <= len1; i++) {
+        const indicator = s1[i - 1] === s2[j - 1] ? 0 : 1;
+        matrix[j][i] = Math.min(
+          matrix[j][i - 1] + 1,
+          matrix[j - 1][i] + 1,
+          matrix[j - 1][i - 1] + indicator
+        );
+      }
+    }
+    
+    return matrix[len2][len1];
+  }
+
+  // ===== 5. HANDLE APOSTROPHES SPECIFICALLY =====
+  function handleApostrophes(text) {
+    // Create multiple versions with and without apostrophes
+    const versions = new Set();
+    
+    // Original
+    versions.add(text);
+    
+    // Without apostrophes
+    versions.add(text.replace(/'/g, ''));
+    
+    // With space instead of apostrophe
+    versions.add(text.replace(/'/g, ' '));
+    
+    // Without any punctuation
+    versions.add(text.replace(/[^a-z0-9]/gi, ''));
+    
+    return Array.from(versions);
+  }
+
+  // ===== 6. CREATE SEARCH VARIANTS FOR A QUERY =====
+  function createSearchVariants(query) {
+    const variants = new Set();
+    const original = query.toLowerCase().trim();
+    
+    // Add original
+    variants.add(original);
+    
+    // Add normalized version
+    const normalized = normalizeTextUltimate(original);
+    variants.add(normalized);
+    
+    // Split into words and add combinations
+    const words = normalized.split(' ').filter(w => w.length > 0);
+    
+    // Add individual words
+    words.forEach(word => variants.add(word));
+    
+    // Add words combined (no spaces)
+    if (words.length > 1) {
+      variants.add(words.join(''));
+      variants.add(words.join('').replace(/[0-9]/g, '')); // Remove numbers
+      
+      // Add reversed order
+      variants.add([...words].reverse().join(''));
+      variants.add([...words].reverse().join(' '));
+    }
+    
+    // Add with and without apostrophes for each word
+    words.forEach(word => {
+      if (word.includes("'")) {
+        handleApostrophes(word).forEach(v => variants.add(v));
+      }
+    });
+    
+    // Handle special fragrance names
+    for (const [standard, alternatives] of Object.entries(exactFragranceMatches)) {
+      for (const alt of alternatives) {
+        const altNorm = normalizeTextUltimate(alt);
+        const origNorm = normalizeTextUltimate(original);
+        
+        if (altNorm === origNorm || altNorm.includes(origNorm) || origNorm.includes(altNorm)) {
+          variants.add(standard);
+          variants.add(alt);
+        }
+      }
+    }
+    
+    // Handle numbers
+    if (/\d+/.test(original)) {
+      const numbers = original.match(/\d+/g);
+      numbers.forEach(num => {
+        variants.add(num);
+        
+        // Add number words for 1-9
+        if (num.length === 1) {
+          const numWord = charMap[num] ? charMap[num][1] : null;
+          if (numWord) variants.add(numWord);
+        }
+      });
+    }
+    
+    // Remove very short variants
+    return Array.from(variants).filter(v => v.length >= 1);
+  }
+
+  // ===== 7. CREATE PRODUCT SEARCH TEXT =====
+  function createProductSearchText(product) {
+    const texts = [];
+    
+    // Title (with and without special characters)
+    texts.push(normalizeTextUltimate(product.title));
+    texts.push(product.title.toLowerCase().replace(/[^a-z0-9]/gi, ''));
+    
+    // Brand
+    texts.push(normalizeTextUltimate(product.brand));
+    texts.push(product.brand.toLowerCase().replace(/[^a-z0-9]/gi, ''));
+    
+    // Number
+    if (product.number) {
+      texts.push(product.number);
+      texts.push(product.number.replace(/^0+/, '')); // Remove leading zeros
+    }
+    
+    // Search terms
+    if (product.searchTerms) {
+      product.searchTerms.forEach(term => {
+        texts.push(normalizeTextUltimate(term));
+        texts.push(term.toLowerCase().replace(/[^a-z0-9]/gi, ''));
+      });
+    }
+    
+    // Create normalized versions
+    return texts.map(t => normalizeTextUltimate(t)).filter(t => t.length > 0);
+  }
+
+  // ===== 8. ENHANCED FUZZY SEARCH WITH APOSTROPHE HANDLING =====
+  function enhancedFuzzySearch(query) {
+    if (!query || query.length < 1) return [];
+    
+    console.log('🔍 Searching for:', query);
+    
+    // Create all possible search variants
+    const searchVariants = createSearchVariants(query);
+    console.log('📋 Search variants:', searchVariants);
+    
+    const results = [];
+    const addedIds = new Set();
+    
+    hardcodedProducts.forEach(product => {
+      // Create all possible search texts for this product
+      const productTexts = createProductSearchText(product);
+      let bestScore = 0;
+      const matchReasons = [];
+      
+      // Check each variant against each product text
+      for (const variant of searchVariants) {
+        if (variant.length < 1) continue;
+        
+        for (const productText of productTexts) {
+          if (!productText) continue;
+          
+          // Exact match (highest score)
+          if (productText === variant) {
+            bestScore = Math.max(bestScore, 100);
+            matchReasons.push('exact');
+          }
+          
+          // Contains match
+          else if (productText.includes(variant)) {
+            bestScore = Math.max(bestScore, 90);
+            matchReasons.push('contains');
+          }
+          
+          // Variant contains product text (for short queries)
+          else if (variant.includes(productText) && productText.length >= 3) {
+            bestScore = Math.max(bestScore, 80);
+            matchReasons.push('partial');
+          }
+          
+          // Word boundary match
+          else {
+            const productWords = productText.split(' ');
+            for (const word of productWords) {
+              if (word.length >= 3) {
+                if (word.includes(variant) || variant.includes(word)) {
+                  bestScore = Math.max(bestScore, 70);
+                  matchReasons.push('word');
+                  break;
+                }
+                
+                // Fuzzy match for short words
+                if (variant.length >= 3 && word.length >= 3) {
+                  const distance = levenshteinDistance(variant, word);
+                  const maxLen = Math.max(variant.length, word.length);
+                  const similarity = (maxLen - distance) / maxLen * 100;
+                  
+                  if (similarity > 65) {
+                    bestScore = Math.max(bestScore, similarity);
+                    matchReasons.push(`fuzzy ${Math.round(similarity)}%`);
+                  }
+                }
+              }
+            }
+          }
+          
+          // Number match
+          if (product.number && (variant === product.number || variant === product.number.replace(/^0+/, ''))) {
+            bestScore = Math.max(bestScore, 95);
+            matchReasons.push('number');
+          }
+          
+          // Brand match
+          const brandNorm = normalizeTextUltimate(product.brand);
+          if (brandNorm.includes(variant) || variant.includes(brandNorm)) {
+            bestScore = Math.max(bestScore, 85);
+            matchReasons.push('brand');
+          }
+        }
+      }
+      
+      // Special handling for J'adore type queries
+      if (query.toLowerCase().includes("j'ador") || query.toLowerCase().includes("jadore")) {
+        if (product.title.toLowerCase().includes("j'adore") || product.title.toLowerCase().includes("jadore")) {
+          bestScore = Math.max(bestScore, 100);
+          matchReasons.push('apostrophe');
+        }
+      }
+      
+      if (bestScore > 30 && !addedIds.has(product.id)) {
+        results.push({
+          product,
+          score: bestScore,
+          reasons: [...new Set(matchReasons)].join(', ')
+        });
+        addedIds.add(product.id);
+      }
+    });
+    
+    return results.sort((a, b) => b.score - a.score);
+  }
+
   // ===== GET BRAND PRODUCTS FOR RECOMMENDATIONS =====
   function getBrandProducts(brandKey, gender, excludeId) {
     return hardcodedProducts.filter(p => 
@@ -2152,53 +2571,6 @@
       p.gender === gender && 
       p.id !== excludeId
     );
-  }
-
-  // ===== SEARCH IN HARDCODED PRODUCTS =====
-  function searchHardcodedProducts(query) {
-    if (!query || query.length < 1) return [];
-    
-    const queryLower = query.toLowerCase().trim();
-    const results = [];
-    const addedIds = new Set();
-    
-    console.log('🔍 Searching hardcoded products for:', queryLower);
-    
-    hardcodedProducts.forEach(product => {
-      // Check title
-      if (product.title.toLowerCase().includes(queryLower)) {
-        results.push({ product, score: 100, matchReasons: ['title'] });
-        addedIds.add(product.id);
-        return;
-      }
-      
-      // Check search terms
-      if (product.searchTerms) {
-        for (const term of product.searchTerms) {
-          if (term.includes(queryLower) || queryLower.includes(term)) {
-            results.push({ product, score: 90, matchReasons: ['search term'] });
-            addedIds.add(product.id);
-            return;
-          }
-        }
-      }
-      
-      // Check number
-      if (product.number && queryLower.includes(product.number)) {
-        results.push({ product, score: 95, matchReasons: ['number'] });
-        addedIds.add(product.id);
-        return;
-      }
-      
-      // Check brand
-      if (product.brand.toLowerCase().includes(queryLower)) {
-        results.push({ product, score: 85, matchReasons: ['brand'] });
-        addedIds.add(product.id);
-        return;
-      }
-    });
-    
-    return results;
   }
 
   // ===== GET POPULAR PRODUCTS FOR SUGGESTIONS =====
@@ -2710,39 +3082,39 @@ window.fcAddToCartWithVariant = function(variantId, event) {
     }
   };
 
-  // ===== PERFORM SEARCH =====
+  // ===== PERFORM SEARCH WITH ENHANCED FUZZY MATCHING =====
   function performSearch(query) {
     currentSearchQuery = query;
     content.innerHTML = '<div class="fc-loading">Searching...</div>';
     
     setTimeout(() => {
-      // Search in catalog
-      const catalogResults = simpleCatalogSearch(query);
+      // Use enhanced search
+      const results = enhancedFuzzySearch(query);
       
-      // Search in hardcoded products
-      const hardcodedResults = searchHardcodedProducts(query);
+      // Also search in catalog (simpler)
+      const catalogResults = simpleCatalogSearch(query);
       
       let html = '';
       
-      // Show catalog results
+      // Show catalog results if any
       if (catalogResults.length > 0) {
         html += renderCatalogPerfumes(catalogResults, query);
       }
       
-      // Show hardcoded products
-      if (hardcodedResults.length > 0) {
-        html += `<div class="fc-section-title">Our Products (${hardcodedResults.length})</div>`;
+      // Show hardcoded products results
+      if (results.length > 0) {
+        html += `<div class="fc-section-title">Our Products (${results.length})</div>`;
         
-        hardcodedResults.slice(0, 6).forEach(match => {
+        results.slice(0, 8).forEach(match => {
           const p = match.product;
           const priceFormatted = '£' + (p.price / 100).toFixed(2);
           
           html += `
             <div class="fc-real-perfume-item" onclick="window.fcViewDetails('${p.url}')">
-              <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy">
+              <img class="fc-real-perfume-image" src="${p.image}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/60x60?text=Perfume'">
               <div class="fc-real-perfume-info">
                 <div class="fc-real-perfume-name">${p.title}</div>
-                <div class="fc-real-perfume-year">${priceFormatted}</div>
+                <div class="fc-real-perfume-year">${priceFormatted} <span style="color:#8A7A70; font-size:10px;">(${Math.round(match.score)}% - ${match.reasons})</span></div>
               </div>
             </div>
           `;
@@ -2750,7 +3122,7 @@ window.fcAddToCartWithVariant = function(variantId, event) {
       }
       
       // If no results, show suggestions
-      if (catalogResults.length === 0 && hardcodedResults.length === 0) {
+      if (catalogResults.length === 0 && results.length === 0) {
         html = '<div class="fc-no-results">No products found for "' + query + '"</div>';
         html += renderSuggestions();
       }
