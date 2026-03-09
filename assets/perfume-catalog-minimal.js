@@ -1589,7 +1589,7 @@ window.PerfumeCatalog = {
       id: "valentino_uomo_born_in_roma_360",
       name: "Uomo Born in Roma Valentino",
       brand: "Valentino",
-      image: "https://magicperfume.co.uk/cdn/shop/files/360M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Uomo_Born_in_Roma.png?v=1772098564",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Uomo_Born_in_Roma.png?v=1772098564",
       top_notes: ["Mandarin", "Salt", "Mint"],
       heart_notes: ["Lavender", "Sage", "Cedar"],
