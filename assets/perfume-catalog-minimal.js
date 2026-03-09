@@ -1177,7 +1177,7 @@ window.PerfumeCatalog = {
       id: "jpg_classique_442",
       name: "Classique Essence de Parfum Jean Paul Gaultier",
       brand: "Jean Paul Gaultier",
-      image: "https://magicperfume.co.uk/cdn/shop/files/442W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Classique_Essence_de_Parfum.png?v=1772097516",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Classique_Essence_de_Parfum.png?v=1772097516",
       top_notes: ["Rose", "Ginger", "Bergamot"],
       heart_notes: ["Tuberose", "Jasmine", "Orange Blossom"],
