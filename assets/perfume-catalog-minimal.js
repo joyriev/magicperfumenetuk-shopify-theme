@@ -1093,7 +1093,7 @@ window.PerfumeCatalog = {
       id: "paco_lady_million_023",
       name: "Lady Million Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/023W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/LADY_MILION.jpg?v=1772103059",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/LADY_MILION.jpg?v=1772103059",
       top_notes: ["Raspberry", "Neroli", "Lemon"],
       heart_notes: ["Orange Blossom", "Jasmine", "Honey"],
