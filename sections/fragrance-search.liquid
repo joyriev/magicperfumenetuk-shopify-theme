@@ -2562,13 +2562,9 @@ function renderHardcodedProductCard(product, badge) {
       });
   }
 
-  // ===== ADD TO CART - MODIFIED TO NOT CLOSE POPUP =====
-
-window.fcAddToCart = function(variantId, event) {
-  // If event is passed, stop propagation
-  if (event) {
-    event.stopPropagation();
-  }
+// ===== ULTIMATE SOLUTION - Use Shopify's built-in methods =====
+window.fcAddToCart = function(productUrl, event) {
+  if (event) event.stopPropagation();
   
   const btn = event?.target || document.activeElement;
   const originalText = btn.innerText;
@@ -2577,12 +2573,20 @@ window.fcAddToCart = function(variantId, event) {
   btn.innerText = 'Adding...';
   btn.disabled = true;
   
-  console.log('Adding to cart with variant:', variantId);
-  console.log('Variant type:', typeof variantId);
+  // Extract product handle from URL
+  let handle = '';
+  if (typeof productUrl === 'string' && productUrl.includes('/products/')) {
+    handle = productUrl.split('/products/')[1].split('?')[0].split('#')[0];
+  } else {
+    // If it's a numeric ID (fallback for backward compatibility)
+    console.log('Using fallback variant ID method');
+    window.fcAddToCartWithVariant(Number(productUrl), event);
+    return;
+  }
   
-  // Make sure variantId is a number
-  const numericVariantId = Number(variantId);
+  console.log('Adding product with handle:', handle);
   
+  // Use Shopify's cart API
   fetch('/cart/add.js', {
     method: 'POST',
     headers: { 
@@ -2590,12 +2594,13 @@ window.fcAddToCart = function(variantId, event) {
       'X-Requested-With': 'XMLHttpRequest'
     },
     body: JSON.stringify({ 
-      id: numericVariantId, 
-      quantity: 1 
+      items: [{ 
+        id: handle,  // Shopify can accept the handle directly!
+        quantity: 1 
+      }] 
     })
   })
   .then(response => {
-    console.log('Response status:', response.status);
     if (!response.ok) {
       return response.json().then(err => {
         throw new Error(err.description || 'Error adding to cart');
@@ -2622,9 +2627,7 @@ window.fcAddToCart = function(variantId, event) {
     console.error('Error adding to cart:', error);
     btn.innerText = 'Error';
     btn.style.background = '#c62828';
-    
-    // Show more detailed error message
-    showNotification(`❌ Error: ${error.message || 'Could not add to cart'}`);
+    showNotification('❌ Could not add to cart');
     
     setTimeout(() => {
       btn.innerText = originalText;
@@ -2633,8 +2636,43 @@ window.fcAddToCart = function(variantId, event) {
     }, 3000);
   });
   
-  // IMPORTANT: Prevent event propagation to keep popup open
   return false;
+};
+
+// Keep this as fallback for backward compatibility
+window.fcAddToCartWithVariant = function(variantId, event) {
+  if (event) event.stopPropagation();
+  
+  const btn = event?.target || document.activeElement;
+  const originalText = btn.innerText;
+  const originalBackground = btn.style.background;
+  
+  btn.innerText = 'Adding...';
+  btn.disabled = true;
+  
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: Number(variantId), quantity: 1 })
+  })
+  .then(response => response.json())
+  .then(() => {
+    btn.innerText = '✓ Added!';
+    fetchCartAndUpdate();
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = originalBackground || '#C41E3A';
+      btn.disabled = false;
+    }, 2000);
+  })
+  .catch(() => {
+    btn.innerText = 'Error';
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = originalBackground || '#C41E3A';
+      btn.disabled = false;
+    }, 2000);
+  });
 };
 
   // ===== VIEW DETAILS =====
