@@ -1073,7 +1073,7 @@ window.PerfumeCatalog = {
       id: "paco_scandal_192",
       name: "Scandal Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/192W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/SCANDAL.jpg?v=1772036652",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/SCANDAL.jpg?v=1772036652",
       top_notes: ["Mandarin", "Gardenia", "Blood Orange"],
       heart_notes: ["Honey", "Jasmine", "Rose"],
