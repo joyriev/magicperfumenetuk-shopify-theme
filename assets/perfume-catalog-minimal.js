@@ -1305,7 +1305,7 @@ window.PerfumeCatalog = {
       id: "gucci_flora_162",
       name: "Flora by Gucci",
       brand: "Gucci",
-      image: "https://magicperfume.co.uk/cdn/shop/files/162W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/flora.png?v=1772102480",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/flora.png?v=1772102480",
       top_notes: ["Citrus", "Peony", "Mandarin"],
       heart_notes: ["Rose", "Osmanthus", "Carnation"],
