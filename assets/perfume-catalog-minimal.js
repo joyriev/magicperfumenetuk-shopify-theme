@@ -1281,7 +1281,7 @@ window.PerfumeCatalog = {
       id: "lancome_nomade_049",
       name: "Nomade Lancome",
       brand: "Lancome",
-      image: "https://magicperfume.co.uk/cdn/shop/files/049W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/nomade.webp?v=1772101560",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/nomade.webp?v=1772101560",
       top_notes: ["Mirabelle", "Freesia", "Bergamot"],
       heart_notes: ["Rose", "Jasmine", "Oakmoss"],
