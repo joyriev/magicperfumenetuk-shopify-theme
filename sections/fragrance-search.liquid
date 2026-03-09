@@ -3134,71 +3134,129 @@ function renderHardcodedProductCard(product, badge) {
       });
   }
 
-// ===== ULTIMATE SOLUTION - Use Shopify's built-in methods =====
-// ===== SMART ADD TO CART - FETCHES VARIANT ID FIRST =====
-window.fcAddToCart = function(productUrl, event) {
-  if (event) event.stopPropagation();
-  
-  const btn = event?.target || document.activeElement;
-  const originalText = btn.innerText;
-  const originalBackground = btn.style.background;
-  
-  btn.innerText = 'Finding variant...';
-  btn.disabled = true;
-  
-  // Extract product handle from URL
-  let handle = '';
-  if (typeof productUrl === 'string' && productUrl.includes('/products/')) {
-    handle = productUrl.split('/products/')[1].split('?')[0].split('#')[0];
-  } else {
-    // If it's already a variant ID (fallback)
-    window.fcAddToCartWithVariant(Number(productUrl), event);
-    return;
-  }
-  
-  console.log('🔍 Fetching product data for handle:', handle);
-  
-  // FIRST: Fetch the product to get variant IDs
-  fetch(`/products/${handle}.js`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Product not found');
-      }
-      return response.json();
-    })
-    .then(product => {
-      console.log('✅ Product found:', product.title);
-      
-      // Find the £19.99 variant (100ml) - price in pence
-      let targetVariant = null;
-      
-      // Look for variant with price 1999 (£19.99)
-      targetVariant = product.variants.find(v => v.price == 1999);
-      
-      // If not found, use the first available variant
-      if (!targetVariant && product.variants.length > 0) {
-        targetVariant = product.variants[0];
-        console.log('⚠️ Using first available variant:', targetVariant.id);
-      }
-      
-      if (!targetVariant) {
-        throw new Error('No variants available');
-      }
-      
-      console.log('🎯 Selected variant ID:', targetVariant.id, 'Price: £' + (targetVariant.price/100).toFixed(2));
-      
-      // SECOND: Add to cart using the variant ID
-      return fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({ 
-          id: targetVariant.id, 
-          quantity: 1 
-        })
+  // ===== ULTIMATE SOLUTION - Use Shopify's built-in methods =====
+  // ===== SMART ADD TO CART - FETCHES VARIANT ID FIRST =====
+  window.fcAddToCart = function(productUrl, event) {
+    if (event) event.stopPropagation();
+    
+    const btn = event?.target || document.activeElement;
+    const originalText = btn.innerText;
+    const originalBackground = btn.style.background;
+    
+    btn.innerText = 'Finding variant...';
+    btn.disabled = true;
+    
+    // Extract product handle from URL
+    let handle = '';
+    if (typeof productUrl === 'string' && productUrl.includes('/products/')) {
+      handle = productUrl.split('/products/')[1].split('?')[0].split('#')[0];
+    } else {
+      // If it's already a variant ID (fallback)
+      window.fcAddToCartWithVariant(Number(productUrl), event);
+      return;
+    }
+    
+    console.log('🔍 Fetching product data for handle:', handle);
+    
+    // FIRST: Fetch the product to get variant IDs
+    fetch(`/products/${handle}.js`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        return response.json();
+      })
+      .then(product => {
+        console.log('✅ Product found:', product.title);
+        
+        // Find the £19.99 variant (100ml) - price in pence
+        let targetVariant = null;
+        
+        // Look for variant with price 1999 (£19.99)
+        targetVariant = product.variants.find(v => v.price == 1999);
+        
+        // If not found, use the first available variant
+        if (!targetVariant && product.variants.length > 0) {
+          targetVariant = product.variants[0];
+          console.log('⚠️ Using first available variant:', targetVariant.id);
+        }
+        
+        if (!targetVariant) {
+          throw new Error('No variants available');
+        }
+        
+        console.log('🎯 Selected variant ID:', targetVariant.id, 'Price: £' + (targetVariant.price/100).toFixed(2));
+        
+        // SECOND: Add to cart using the variant ID
+        return fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ 
+            id: targetVariant.id, 
+            quantity: 1 
+          })
+        });
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => {
+            throw new Error(err.description || 'Error adding to cart');
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('✅ Added to cart:', data);
+        btn.innerText = '✓ Added!';
+        btn.style.background = '#2E7D32';
+        
+        fetchCartAndUpdate().then(cart => {
+          showNotification(`✓ Added! ${cart.item_count}/3 items for free gift`);
+        });
+        
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = originalBackground || '#C41E3A';
+          btn.disabled = false;
+        }, 2000);
+      })
+      .catch(error => {
+        console.error('❌ Error:', error);
+        btn.innerText = 'Error';
+        btn.style.background = '#c62828';
+        showNotification('❌ Could not add to cart');
+        
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.background = originalBackground || '#C41E3A';
+          btn.disabled = false;
+        }, 3000);
       });
+    
+    return false;
+  };
+
+  // Keep this as fallback for variant IDs
+  window.fcAddToCartWithVariant = function(variantId, event) {
+    if (event) event.stopPropagation();
+    
+    const btn = event?.target || document.activeElement;
+    const originalText = btn.innerText;
+    const originalBackground = btn.style.background;
+    
+    btn.innerText = 'Adding...';
+    btn.disabled = true;
+    
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: JSON.stringify({ id: Number(variantId), quantity: 1 })
     })
     .then(response => {
       if (!response.ok) {
@@ -3209,14 +3267,9 @@ window.fcAddToCart = function(productUrl, event) {
       return response.json();
     })
     .then(data => {
-      console.log('✅ Added to cart:', data);
       btn.innerText = '✓ Added!';
       btn.style.background = '#2E7D32';
-      
-      fetchCartAndUpdate().then(cart => {
-        showNotification(`✓ Added! ${cart.item_count}/3 items for free gift`);
-      });
-      
+      fetchCartAndUpdate();
       setTimeout(() => {
         btn.innerText = originalText;
         btn.style.background = originalBackground || '#C41E3A';
@@ -3224,68 +3277,15 @@ window.fcAddToCart = function(productUrl, event) {
       }, 2000);
     })
     .catch(error => {
-      console.error('❌ Error:', error);
       btn.innerText = 'Error';
       btn.style.background = '#c62828';
-      showNotification('❌ Could not add to cart');
-      
       setTimeout(() => {
         btn.innerText = originalText;
         btn.style.background = originalBackground || '#C41E3A';
         btn.disabled = false;
-      }, 3000);
+      }, 2000);
     });
-  
-  return false;
-};
-
-// Keep this as fallback for variant IDs
-window.fcAddToCartWithVariant = function(variantId, event) {
-  if (event) event.stopPropagation();
-  
-  const btn = event?.target || document.activeElement;
-  const originalText = btn.innerText;
-  const originalBackground = btn.style.background;
-  
-  btn.innerText = 'Adding...';
-  btn.disabled = true;
-  
-  fetch('/cart/add.js', {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: JSON.stringify({ id: Number(variantId), quantity: 1 })
-  })
-  .then(response => {
-    if (!response.ok) {
-      return response.json().then(err => {
-        throw new Error(err.description || 'Error adding to cart');
-      });
-    }
-    return response.json();
-  })
-  .then(data => {
-    btn.innerText = '✓ Added!';
-    btn.style.background = '#2E7D32';
-    fetchCartAndUpdate();
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.style.background = originalBackground || '#C41E3A';
-      btn.disabled = false;
-    }, 2000);
-  })
-  .catch(error => {
-    btn.innerText = 'Error';
-    btn.style.background = '#c62828';
-    setTimeout(() => {
-      btn.innerText = originalText;
-      btn.style.background = originalBackground || '#C41E3A';
-      btn.disabled = false;
-    }, 2000);
-  });
-};
+  };
 
   // ===== VIEW DETAILS =====
   window.fcViewDetails = function(url) {
