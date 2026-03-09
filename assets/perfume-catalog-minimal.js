@@ -1521,7 +1521,7 @@ window.PerfumeCatalog = {
       id: "ck_eternity_women_106",
       name: "Eternity for Women Calvin Klein",
       brand: "Calvin Klein",
-      image: "https://magicperfume.co.uk/cdn/shop/files/106W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/eternity.png?v=1772101348",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/eternity.png?v=1772101348",
       top_notes: ["Mandarin", "Bergamot", "Lemon"],
       heart_notes: ["Lily of the Valley", "Rose", "Jasmine"],
