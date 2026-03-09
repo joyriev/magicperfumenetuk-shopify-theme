@@ -541,7 +541,7 @@ window.PerfumeCatalog = {
       id: "ysl_deep_red_022",
       name: "Deep Red Yves Saint Laurent",
       brand: "Yves Saint Laurent",
-      image: "https://magicperfume.co.uk/cdn/shop/files/022W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Deep_Red.png?v=1772102981",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Deep_Red.png?v=1772102981",
       top_notes: ["Black Currant", "Mandarin", "Pink Pepper"],
       heart_notes: ["Rose", "Jasmine", "Orange Blossom"],
