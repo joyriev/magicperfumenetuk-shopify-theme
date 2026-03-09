@@ -2444,18 +2444,15 @@
   }
 
   // ===== RENDER HARDCODED PRODUCT CARD =====
-  function renderHardcodedProductCard(product, badge) {
+function renderHardcodedProductCard(product, badge) {
     const priceFormatted = '£' + (product.price / 100).toFixed(2);
-    
-    let displayNumber = product.number ? `No. ${product.number}` : '';
-    let displayName = product.title;
     
     return `
       <div class="fc-product-card">
         <div class="fc-badge">${badge}</div>
         <div class="fc-product-inner">
-          <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy">
-          <div class="fc-product-title">${displayNumber ? displayNumber + ' - ' : ''}${displayName}</div>
+          <img class="fc-product-image" src="${product.image}" alt="${product.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/150x150?text=Tom+Ford'">
+          <div class="fc-product-title">${product.title}</div>
           <div class="fc-product-price">${priceFormatted}</div>
           <button class="fc-add-to-cart" onclick="event.stopPropagation(); window.fcAddToCart(${product.variant}, event)">Add to Cart</button>
           <div>
@@ -2464,8 +2461,7 @@
         </div>
       </div>
     `;
-  }
-
+}
   // ===== SIMPLE SEARCH FOR CATALOG =====
   function simpleCatalogSearch(query) {
     if (!query || query.length < 1) return [];
