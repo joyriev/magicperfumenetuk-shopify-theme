@@ -1033,7 +1033,7 @@ window.PerfumeCatalog = {
       id: "paco_one_million_elixir_334",
       name: "1 Million Elixir Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/334M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/One_Million_Elixir.png?v=1772101088",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/One_Million_Elixir.png?v=1772101088",
       top_notes: ["Grapefruit", "Mandarin", "Mint"],
       heart_notes: ["Cinnamon", "Rose", "Saffron"],
