@@ -6,6 +6,19 @@ window.PerfumeCatalog = {
   // ===== DIOR — 10 products =====
   dior: [
   {
+  id: "hardcoded-dior-miss-cherie-082",
+  title: "No. 082 - Inspired by Miss Cherie",
+  image: "https://magicperfume.co.uk/cdn/shop/files/082W_c.webp?v=1771765712&width=1200",
+  url: "https://magicperfume.co.uk/products/magic-perfume-no-082w",
+  variant: 52698255819119, // £19.99 variant from your data
+  price: 1999,
+  brand: "Dior", // ✅ CORRECT - Miss Cherie is Dior
+  brandKey: "dior",
+  number: "082",
+  gender: "female",
+  searchTerms: ["miss cherie", "dior", "female", "082"]
+},
+    {
   id: "dior-homme-intense-277",
   name: "Dior Homme Intense",
   brand: "Dior",
