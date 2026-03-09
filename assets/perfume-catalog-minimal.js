@@ -450,26 +450,7 @@ window.PerfumeCatalog = {
 
   // ===== YSL — 7 products =====
   ysl: [
-    {
-      id: "ysl_homme_intense_277",
-      name: "Homme Intense Yves Saint Laurent",
-      brand: "Yves Saint Laurent",
-      image: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200",
-      catalogImage: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200",
-      top_notes: ["Lavender"],
-      heart_notes: ["Tuscan Iris", "Ambrette Seed", "Pear"],
-      base_notes: ["Virginia Cedar", "Vetiver"],
-      description: "An intense and sensual fragrance that enhances masculinity.",
-      year: "2011",
-      gender: "Male",
-      productNumbers: ["277"],
-      shopifyProduct: {
-        title: "No. 277 - Inspired by Homme Intense",
-        url: "https://magicperfume.co.uk/products/magic-perfume-no-277m",
-        price: "£19.99",
-        image: "https://magicperfume.co.uk/cdn/shop/files/277M_c.webp?v=1771765712&width=1200"
-      }
-    },
+   
     {
       id: "ysl_libre_034",
       name: "Libre Yves Saint Laurent",
