@@ -24,7 +24,7 @@ window.PerfumeCatalog = {
   brand: "Dior",
   year: "2005",
   gender: "female",
-  image: "https://magicperfume.co.uk/cdn/shop/files/miss_cherie.png", // You'll need the correct image URL
+  image: "https://magicperfume.co.uk/cdn/shop/files/miss_cherie_edp.png?v=1772104486", // You'll need the correct image URL
   description: "A playful and gourmand fragrance that captures the spirit of a young, carefree woman with its unique blend of strawberry, caramel popcorn, and patchouli.",
   top_notes: ["Strawberry", "Cherry", "Mandarin", "Pineapple"],
   heart_notes: ["Caramel Popcorn", "Jasmine", "Rose", "Violet"],
