@@ -1013,7 +1013,7 @@ window.PerfumeCatalog = {
       id: "paco_invictus_228",
       name: "Invictus Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/228M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Invictus_EDT.png?v=1772097596",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Invictus_EDT.png?v=1772097596",
       top_notes: ["Grapefruit", "Mandarin", "Sea Notes"],
       heart_notes: ["Bay Leaf", "Jasmine", "Cedar"],
