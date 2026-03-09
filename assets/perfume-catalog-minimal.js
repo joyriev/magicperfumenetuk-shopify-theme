@@ -495,7 +495,7 @@ window.PerfumeCatalog = {
       id: "ysl_opium_083",
       name: "Opium Yves Saint Laurent",
       brand: "Yves Saint Laurent",
-      image: "https://magicperfume.co.uk/cdn/shop/files/083W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/opium.png?v=1772100276",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/opium.png?v=1772100276",
       top_notes: ["Mandarin", "Plum", "Clove", "Coriander"],
       heart_notes: ["Carnation", "Rose", "Jasmine", "Lily of the Valley"],
