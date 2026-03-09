@@ -1653,7 +1653,7 @@ window.PerfumeCatalog = {
       id: "prada_fame_498",
       name: "Fame Prada",
       brand: "Prada",
-      image: "https://magicperfume.co.uk/cdn/shop/files/498W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/fame.png?v=1772095718",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/fame.png?v=1772095718",
       top_notes: ["Mango", "Bergamot", "Mandarin"],
       heart_notes: ["Jasmine", "Rose", "Incense"],
