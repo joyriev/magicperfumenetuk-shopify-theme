@@ -2145,6 +2145,217 @@
     }
   ];
 
+  // ===== SMART RECOMMENDATION SYSTEM FOR SINGLE-PRODUCT BRANDS =====
+
+  // ===== 1. FRAGRANCE FAMILY CLASSIFICATION =====
+  const fragranceFamilies = {
+    // Fresh/Citrus
+    'fresh': ['aqua', 'acqua', 'water', 'ocean', 'sea', 'marine', 'citrus', 'lemon', 'orange', 'bergamot', 'grapefruit', 'lime', 'mandarin'],
+    
+    // Woody
+    'woody': ['wood', 'oud', 'cedar', 'sandalwood', 'vetiver', 'patchouli', 'oakmoss', 'pine', 'cypress'],
+    
+    // Oriental/Spicy
+    'oriental': ['oriental', 'spice', 'cinnamon', 'clove', 'nutmeg', 'saffron', 'incense', 'amber', 'vanilla', 'tonka'],
+    
+    // Floral
+    'floral': ['floral', 'rose', 'jasmine', 'lavender', 'lily', 'ylang', 'violet', 'orchid', 'geranium', 'freesia'],
+    
+    // Gourmand
+    'gourmand': ['gourmand', 'sweet', 'vanilla', 'caramel', 'chocolate', 'coffee', 'honey', 'coconut', 'almond'],
+    
+    // Leather/Tobacco
+    'leather': ['leather', 'tobacco', 'smoke', 'tar', 'birch', 'rum', 'whiskey'],
+    
+    // Aromatic/Fougère
+    'aromatic': ['aromatic', 'herbal', 'mint', 'basil', 'rosemary', 'thyme', 'sage', 'lavender'],
+    
+    // Chypre
+    'chypre': ['chypre', 'moss', 'bergamot', 'labdanum', 'oakmoss']
+  };
+
+  // ===== 2. SIMILAR FRAGRANCE MAPPINGS =====
+  const similarFragrances = {
+    // Cool Water style (fresh aquatic)
+    'cool water': {
+      family: 'fresh',
+      similar: [
+        { number: '221', name: 'Acqua Di Gio', brand: 'Giorgio Armani' },
+        { number: '200', name: 'Cool Water', brand: 'Davidoff' },
+        { number: '228', name: 'Invictus', brand: 'Paco Rabanne' },
+        { number: '252', name: 'Bleu de Chanel', brand: 'Chanel' }
+      ]
+    },
+    
+    // Terre d'Hermès style (woody earthy)
+    'terre': {
+      family: 'woody',
+      similar: [
+        { number: '227', name: 'Terre d\'Hermès', brand: 'Hermès' },
+        { number: '287', name: 'Oud Wood', brand: 'Tom Ford' },
+        { number: '286', name: 'Luna Rossa Extreme', brand: 'Prada' },
+        { number: '283', name: 'Y', brand: 'Giorgio Armani' }
+      ]
+    },
+    
+    // Baccarat Rouge style (sweet amber)
+    'baccarat rouge': {
+      family: 'oriental',
+      similar: [
+        { number: '466', name: 'Baccarat Rouge 540', brand: 'Maison Francis Kurkdjian' },
+        { number: '438', name: 'Lost Cherry', brand: 'Tom Ford' },
+        { number: '193', name: 'Tobacco Vanille', brand: 'Tom Ford' },
+        { number: '132', name: 'Black Opium', brand: 'Yves Saint Laurent' }
+      ]
+    },
+    
+    // Angel style (gourmand)
+    'angel': {
+      family: 'gourmand',
+      similar: [
+        { number: '113', name: 'Angel', brand: 'Mugler' },
+        { number: '145', name: 'Hypnotic Poison', brand: 'Dior' },
+        { number: '412', name: 'La Belle', brand: 'Jean Paul Gaultier' },
+        { number: '461', name: 'Good Girl', brand: 'Carolina Herrera' }
+      ]
+    },
+    
+    // Joop Homme style (sweet oriental)
+    'joop': {
+      family: 'oriental',
+      similar: [
+        { number: '211', name: 'Joop! Homme', brand: 'Joop!' },
+        { number: '247', name: 'Le Male', brand: 'Jean Paul Gaultier' },
+        { number: '349', name: 'Ultra Male', brand: 'Jean Paul Gaultier' },
+        { number: '275', name: '1 Million', brand: 'Paco Rabanne' }
+      ]
+    },
+    
+    // Flower by Kenzo style (floral)
+    'flower': {
+      family: 'floral',
+      similar: [
+        { number: '074', name: 'Flower by Kenzo', brand: 'Kenzo' },
+        { number: '159', name: 'J\'Adore', brand: 'Dior' },
+        { number: '162', name: 'Flora', brand: 'Gucci' },
+        { number: '079', name: 'Coco Mademoiselle', brand: 'Chanel' }
+      ]
+    },
+    
+    // Aqva Pour Homme style (aquatic)
+    'aqva': {
+      family: 'fresh',
+      similar: [
+        { number: '305', name: 'Aqva Pour Homme', brand: 'Bvlgari' },
+        { number: '221', name: 'Acqua Di Gio', brand: 'Giorgio Armani' },
+        { number: '200', name: 'Cool Water', brand: 'Davidoff' },
+        { number: '228', name: 'Invictus', brand: 'Paco Rabanne' }
+      ]
+    },
+    
+    // Ange ou Demon style (floral oriental)
+    'ange ou demon': {
+      family: 'oriental',
+      similar: [
+        { number: '142', name: 'Ange ou Démon', brand: 'Givenchy' },
+        { number: '132', name: 'Black Opium', brand: 'Yves Saint Laurent' },
+        { number: '461', name: 'Good Girl', brand: 'Carolina Herrera' },
+        { number: '412', name: 'La Belle', brand: 'Jean Paul Gaultier' }
+      ]
+    }
+  };
+
+  // ===== 3. GET PRODUCTS BY FRAGRANCE FAMILY =====
+  function getProductsByFamily(family, excludeId) {
+    const familyKeywords = fragranceFamilies[family] || [];
+    
+    return hardcodedProducts.filter(product => {
+      if (product.id === excludeId) return false;
+      
+      const searchText = (product.title + ' ' + (product.searchTerms || []).join(' ')).toLowerCase();
+      
+      // Check if any family keyword matches
+      return familyKeywords.some(keyword => 
+        searchText.includes(keyword)
+      );
+    });
+  }
+
+  // ===== 4. GET SIMILAR PRODUCTS FROM MAPPINGS =====
+  function getSimilarFromMapping(product, excludeId) {
+    const productTitle = product.title.toLowerCase();
+    let similarProducts = [];
+    
+    // Check if product matches any known fragrance
+    for (const [key, value] of Object.entries(similarFragrances)) {
+      if (productTitle.includes(key)) {
+        // Get products from the similar list
+        value.similar.forEach(sim => {
+          const found = hardcodedProducts.find(p => 
+            p.number === sim.number && p.id !== excludeId
+          );
+          if (found) similarProducts.push(found);
+        });
+        break;
+      }
+    }
+    
+    return similarProducts;
+  }
+
+  // ===== 5. GET PRODUCTS BY SIMILAR NOTES (fallback) =====
+  function getProductsByNotes(product, excludeId) {
+    // This is a simplified version - you can expand based on your catalog
+    const productTitle = product.title.toLowerCase();
+    
+    // Determine likely fragrance family from title
+    let family = 'fresh'; // default
+    
+    for (const [fam, keywords] of Object.entries(fragranceFamilies)) {
+      if (keywords.some(k => productTitle.includes(k))) {
+        family = fam;
+        break;
+      }
+    }
+    
+    return getProductsByFamily(family, excludeId);
+  }
+
+  // ===== 6. MAIN RECOMMENDATION FUNCTION =====
+  function getRecommendationsForProduct(product) {
+    if (!product) return [];
+    
+    console.log('🎯 Getting recommendations for:', product.title);
+    
+    // First try: Get from similar mappings
+    let recommendations = getSimilarFromMapping(product, product.id);
+    
+    // Second try: Get by fragrance family
+    if (recommendations.length === 0) {
+      recommendations = getProductsByNotes(product, product.id);
+    }
+    
+    // Third try: Get popular products from same gender
+    if (recommendations.length === 0) {
+      recommendations = hardcodedProducts
+        .filter(p => p.gender === product.gender && p.id !== product.id)
+        .slice(0, 4);
+    }
+    
+    // Remove duplicates and limit to 4
+    const unique = [];
+    const seen = new Set();
+    
+    recommendations.forEach(p => {
+      if (!seen.has(p.id) && p.id !== product.id) {
+        seen.add(p.id);
+        unique.push(p);
+      }
+    });
+    
+    return unique.slice(0, 4);
+  }
+
   // ===== ULTIMATE TEXT NORMALIZATION WITH FULL PUNCTUATION HANDLING =====
 
   // ===== 1. COMPREHENSIVE CHARACTER MAPPING =====
@@ -2653,25 +2864,35 @@
       // RECOMMENDED: The found product
       html += renderHardcodedProductCard(hardcodedProduct, 'Recommended');
       
-      // YOU MIGHT LIKE IT: Strictly same brand and same gender only
-      const sameBrandGenderProducts = hardcodedProducts.filter(p => 
-        p.brandKey === hardcodedProduct.brandKey && 
-        p.gender === hardcodedProduct.gender && 
-        p.id !== hardcodedProduct.id
-      );
+      // YOU MIGHT LIKE IT: Smart recommendations
+      const recommendations = getRecommendationsForProduct(hardcodedProduct);
       
-      if (sameBrandGenderProducts.length > 0) {
-        // Pick the first one
-        const similarProduct = sameBrandGenderProducts[0];
-        html += renderHardcodedProductCard(similarProduct, 'You might like it');
+      if (recommendations.length > 0) {
+        // Show first recommendation
+        html += renderHardcodedProductCard(recommendations[0], 'You might like it');
       } else {
-        // Show nothing if no same brand/gender products
         html += `<div class="fc-product-card" style="visibility: hidden;"></div>`;
       }
       
       html += '</div>';
+      
+      // If there are more recommendations, show them in a row
+      if (recommendations.length > 1) {
+        html += `<div class="fc-subsection-title">More recommendations</div>`;
+        html += '<div class="fc-grid-2col">';
+        
+        for (let i = 1; i < Math.min(recommendations.length, 3); i++) {
+          html += renderHardcodedProductCard(recommendations[i], 'Similar');
+        }
+        
+        // Fill empty slots if needed
+        for (let i = recommendations.length - 1; i < 2; i++) {
+          html += `<div class="fc-product-card" style="visibility: hidden;"></div>`;
+        }
+        
+        html += '</div>';
+      }
     } else {
-      // If no hardcoded product found, show nothing
       html += `<div class="fc-subsection-title">No matching product found</div>`;
     }
     
