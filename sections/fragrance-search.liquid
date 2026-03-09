@@ -1239,7 +1239,7 @@
 {
   id: "hardcoded-tomford-cherry-smoke-434",
   title: "No. 434 - Inspired by Cherry Smoke",
-  image: "https://magicperfume.co.uk/cdn/shop/files/434M_c.webp?v=1771765712&width=1200",
+  image: "https://magicperfume.co.uk/cdn/shop/files/434W_c.webp?v=1771765750&width=1200",
   url: "https://magicperfume.co.uk/products/magic-perfume-no-434w?variant=52698257588591",
   variant: 52698257588591,
   price: 1999,
@@ -2563,62 +2563,78 @@ function renderHardcodedProductCard(product, badge) {
   }
 
   // ===== ADD TO CART - MODIFIED TO NOT CLOSE POPUP =====
-  window.fcAddToCart = function(variantId, event) {
-    // If event is passed, stop propagation
-    if (event) {
-      event.stopPropagation();
-    }
-    
-    const btn = event?.target || document.activeElement;
-    const originalText = btn.innerText;
-    const originalBackground = btn.style.background;
-    
-    btn.innerText = 'Adding...';
-    btn.disabled = true;
-    
-    console.log('Adding to cart with variant:', variantId);
-    
-    fetch('/cart/add.js', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: JSON.stringify({ 
-        id: variantId, 
-        quantity: 1 
-      })
+window.fcAddToCart = function(variantId, event) {
+  // If event is passed, stop propagation
+  if (event) {
+    event.stopPropagation();
+  }
+  
+  const btn = event?.target || document.activeElement;
+  const originalText = btn.innerText;
+  const originalBackground = btn.style.background;
+  
+  btn.innerText = 'Adding...';
+  btn.disabled = true;
+  
+  console.log('Adding to cart with variant:', variantId);
+  console.log('Variant type:', typeof variantId);
+  
+  // Make sure variantId is a number
+  const numericVariantId = Number(variantId);
+  
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
+    },
+    body: JSON.stringify({ 
+      id: numericVariantId, 
+      quantity: 1 
     })
-    .then(response => response.json())
-    .then(data => {
-      btn.innerText = '✓ Added!';
-      btn.style.background = '#2E7D32';
-      
-      fetchCartAndUpdate().then(cart => {
-        showNotification(`✓ Added! ${cart.item_count}/3 items for free gift`);
+  })
+  .then(response => {
+    console.log('Response status:', response.status);
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.description || 'Error adding to cart');
       });
-      
-      setTimeout(() => {
-        btn.innerText = originalText;
-        btn.style.background = originalBackground || '#C41E3A';
-        btn.disabled = false;
-      }, 2000);
-    })
-    .catch(error => {
-      console.error('Error adding to cart:', error);
-      btn.innerText = 'Error';
-      btn.style.background = '#c62828';
-      
-      setTimeout(() => {
-        btn.innerText = originalText;
-        btn.style.background = originalBackground || '#C41E3A';
-        btn.disabled = false;
-      }, 1500);
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log('Success:', data);
+    btn.innerText = '✓ Added!';
+    btn.style.background = '#2E7D32';
+    
+    fetchCartAndUpdate().then(cart => {
+      showNotification(`✓ Added! ${cart.item_count}/3 items for free gift`);
     });
     
-    // IMPORTANT: Prevent event propagation to keep popup open
-    return false;
-  };
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = originalBackground || '#C41E3A';
+      btn.disabled = false;
+    }, 2000);
+  })
+  .catch(error => {
+    console.error('Error adding to cart:', error);
+    btn.innerText = 'Error';
+    btn.style.background = '#c62828';
+    
+    // Show more detailed error message
+    showNotification(`❌ Error: ${error.message || 'Could not add to cart'}`);
+    
+    setTimeout(() => {
+      btn.innerText = originalText;
+      btn.style.background = originalBackground || '#C41E3A';
+      btn.disabled = false;
+    }, 3000);
+  });
+  
+  // IMPORTANT: Prevent event propagation to keep popup open
+  return false;
+};
 
   // ===== VIEW DETAILS =====
   window.fcViewDetails = function(url) {
