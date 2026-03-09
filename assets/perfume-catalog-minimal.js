@@ -1457,7 +1457,7 @@ window.PerfumeCatalog = {
       id: "carolina_good_girl_461",
       name: "Good Girl Velvet Fatale Carolina Herrera",
       brand: "Carolina Herrera",
-      image: "https://magicperfume.co.uk/cdn/shop/files/461W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Good_Girl_Velvet_Fatale.png?v=1772103513",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Good_Girl_Velvet_Fatale.png?v=1772103513",
       top_notes: ["Plum", "Saffron", "Bergamot"],
       heart_notes: ["Tuberose", "Jasmine", "Orange Blossom"],
