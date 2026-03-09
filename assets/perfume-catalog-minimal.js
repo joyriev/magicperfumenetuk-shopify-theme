@@ -1157,7 +1157,7 @@ window.PerfumeCatalog = {
       id: "jpg_la_belle_412",
       name: "La Belle Jean Paul Gaultier",
       brand: "Jean Paul Gaultier",
-      image: "https://magicperfume.co.uk/cdn/shop/files/412W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/la_belle.png?v=1772096850",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/la_belle.png?v=1772096850",
       top_notes: ["Pear", "Bergamot"],
       heart_notes: ["Jasmine", "Orange Blossom"],
