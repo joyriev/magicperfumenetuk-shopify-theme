@@ -481,7 +481,7 @@ window.PerfumeCatalog = {
       id: "ysl_black_opium_132",
       name: "Black Opium Yves Saint Laurent",
       brand: "Yves Saint Laurent",
-      image: "https://magicperfume.co.uk/cdn/shop/files/132W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/black_opium.png?v=1772103749",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/black_opium.png?v=1772103749",
       top_notes: ["Coffee", "Pink Pepper", "Orange Blossom"],
       heart_notes: ["Jasmine", "Bitter Almond", "Licorice"],
