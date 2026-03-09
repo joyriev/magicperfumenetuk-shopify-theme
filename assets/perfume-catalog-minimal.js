@@ -1545,7 +1545,7 @@ window.PerfumeCatalog = {
       id: "mugler_angel_113",
       name: "Angel Mugler",
       brand: "Thierry Mugler",
-      image: "https://magicperfume.co.uk/cdn/shop/files/113W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/angel_edp.png?v=1772100649",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/angel_edp.png?v=1772100649",
       top_notes: ["Cotton Candy", "Bergamot", "Pineapple", "Coconut"],
       heart_notes: ["Honey", "Red Berries", "Peach", "Plum", "Apricot"],
