@@ -1633,7 +1633,7 @@ window.PerfumeCatalog = {
       id: "prada_luna_rossa_extreme_286",
       name: "Luna Rossa Extreme Prada",
       brand: "Prada",
-      image: "https://magicperfume.co.uk/cdn/shop/files/286M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/extreme.png?v=1772101502",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/extreme.png?v=1772101502",
       top_notes: ["Lavender", "Orange", "Clary Sage"],
       heart_notes: ["Musk", "Geranium", "Tonka Bean"],
