@@ -1053,7 +1053,7 @@ window.PerfumeCatalog = {
       id: "paco_phantom_399",
       name: "Phantom Paco Rabanne",
       brand: "Paco Rabanne",
-      image: "https://magicperfume.co.uk/cdn/shop/files/399M_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Phantom.png?v=1772100849",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Phantom.png?v=1772100849",
       top_notes: ["Lemon", "Bergamot", "Lavender"],
       heart_notes: ["Sage", "Vetiver", "Patchouli"],
