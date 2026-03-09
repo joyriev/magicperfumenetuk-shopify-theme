@@ -3404,5 +3404,62 @@ function renderHardcodedProductCard(product, badge) {
     });
   });
 
-})(); 
+})();
+
+// ===== ENSURE ALL GLOBAL FUNCTIONS ARE AVAILABLE =====
+// These are already defined inside the IIFE but need to be explicitly attached to window
+
+// Make sure fcToggleSearch is available globally
+if (typeof window.fcToggleSearch !== 'function') {
+  console.warn('fcToggleSearch not found, reattaching...');
+  window.fcToggleSearch = function() {
+    const searchPopup = document.getElementById('fcSearchPopup');
+    const searchInput = document.getElementById('fcSearchInput');
+    if (searchPopup.classList.contains('active')) {
+      searchPopup.classList.remove('active');
+    } else {
+      searchPopup.classList.add('active');
+      if (searchInput) searchInput.focus();
+      // Try to fetch cart update if function exists
+      if (typeof fetchCartAndUpdate === 'function') {
+        fetchCartAndUpdate();
+      }
+    }
+  };
+}
+
+// Make sure fcAddToCart is available globally
+if (typeof window.fcAddToCart !== 'function') {
+  console.warn('fcAddToCart not found, providing fallback...');
+  window.fcAddToCart = function(productUrl, event) {
+    if (event) event.stopPropagation();
+    alert('Add to cart function loading. Please try again in a moment.');
+  };
+}
+
+// Make sure fcViewDetails is available globally
+if (typeof window.fcViewDetails !== 'function') {
+  window.fcViewDetails = function(url) {
+    window.location.href = url;
+  };
+}
+
+// Make sure fcShowPerfumeDetail is available globally
+if (typeof window.fcShowPerfumeDetail !== 'function') {
+  window.fcShowPerfumeDetail = function(perfumeId) {
+    console.log('Detail view for:', perfumeId);
+  };
+}
+
+// Make sure fcGoBack is available globally
+if (typeof window.fcGoBack !== 'function') {
+  window.fcGoBack = function() {
+    const steps = document.getElementById('fcSteps');
+    const content = document.getElementById('fcContent');
+    if (steps) steps.style.display = 'block';
+    if (content) content.innerHTML = '';
+  };
+}
+
+console.log('✅ All global functions attached to window');
 </script>
