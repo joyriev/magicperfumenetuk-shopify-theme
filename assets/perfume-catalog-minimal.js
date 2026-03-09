@@ -1477,7 +1477,7 @@ window.PerfumeCatalog = {
       id: "carolina_very_good_girl_404",
       name: "Very Good Girl Carolina Herrera",
       brand: "Carolina Herrera",
-      image: "https://magicperfume.co.uk/cdn/shop/files/404W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/Very_Good_Girl.png?v=1772100736",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/Very_Good_Girl.png?v=1772100736",
       top_notes: ["Red Currant", "Litchi", "Bergamot"],
       heart_notes: ["Rose", "Jasmine", "Orange Blossom"],
