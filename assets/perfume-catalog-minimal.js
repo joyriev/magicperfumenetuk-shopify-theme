@@ -1261,7 +1261,7 @@ window.PerfumeCatalog = {
       id: "lancome_tresor_141",
       name: "Tresor Lancome",
       brand: "Lancome",
-      image: "https://magicperfume.co.uk/cdn/shop/files/141W_c.webp?v=1771765712&width=1200",
+      image: "https://magicperfume.co.uk/cdn/shop/files/tresor.png?v=1772097891",
       catalogImage: "https://magicperfume.co.uk/cdn/shop/files/tresor.png?v=1772097891",
       top_notes: ["Peach", "Apricot", "Rose"],
       heart_notes: ["Lily of the Valley", "Jasmine", "Iris"],
