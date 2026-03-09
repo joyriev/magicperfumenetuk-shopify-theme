@@ -11,7 +11,7 @@ window.PerfumeCatalog = {
   brand: "Dior",
   year: "2011",
   gender: "male",
-  image: "https://magicperfume.co.uk/cdn/shop/files/dior_homme_intense.png", // You'll need the correct image URL
+  image: "https://magicperfume.co.uk/cdn/shop/files/homme_intense.png?v=1772099043", // You'll need the correct image URL
   description: "A refined and powerful interpretation of the Dior Homme line. An oriental woody fragrance that combines the elegance of iris with the sensuality of leather and the depth of cedar.",
   top_notes: ["Lavender", "Sage"],
   heart_notes: ["Iris", "Amber", "Cocoa"],
