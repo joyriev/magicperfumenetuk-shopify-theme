@@ -2327,22 +2327,28 @@
     
     console.log('🎯 Getting recommendations for:', product.title);
     
-    // First try: Get from similar mappings
-    let recommendations = getSimilarFromMapping(product, product.id);
+    // First try: Get from similar mappings (gender-matched)
+    let recommendations = getSimilarFromMapping(product, product.id)
+      .filter(p => p.gender === product.gender || p.gender === 'unisex');
     
-    // Second try: Get by fragrance family
+    // Second try: Get by fragrance family (gender-matched)
     if (recommendations.length === 0) {
-      recommendations = getProductsByNotes(product, product.id);
+      const noteBasedRecs = getProductsByNotes(product, product.id);
+      recommendations = noteBasedRecs.filter(p => p.gender === product.gender || p.gender === 'unisex');
     }
     
-    // Third try: Get popular products from same gender
+    // Third try: Get from same brand (gender-matched)
     if (recommendations.length === 0) {
       recommendations = hardcodedProducts
-        .filter(p => p.gender === product.gender && p.id !== product.id)
-        .slice(0, 4);
+        .filter(p => 
+          p.brandKey === product.brandKey && 
+          p.id !== product.id &&
+          (p.gender === product.gender || p.gender === 'unisex')
+        )
+        .slice(0, 1);
     }
     
-    // Remove duplicates and limit to 4
+    // Remove duplicates and limit to 1 (only "You might like it" card)
     const unique = [];
     const seen = new Set();
     
@@ -2353,7 +2359,7 @@
       }
     });
     
-    return unique.slice(0, 4);
+    return unique.slice(0, 1);
   }
 
   // ===== ULTIMATE TEXT NORMALIZATION WITH FULL PUNCTUATION HANDLING =====
