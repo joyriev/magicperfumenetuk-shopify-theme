@@ -2276,7 +2276,9 @@
     '211': '247', // Joop Homme → Le Male
     '074': '101', // Flower by Kenzo → La Vie Est Belle
     '360': '318', // Uomo Born in Roma → Stronger With You Intensely
-    '469': '132'  // Born in Roma → Black Opium
+    '469': '132', // Born in Roma → Black Opium
+    '288': '252', // Aventus for Him → Bleu de Chanel
+    '488': '079'  // Aventus for Her → Coco Mademoiselle
   };
 
   // ===== 3. GET PRODUCTS BY FRAGRANCE FAMILY =====
@@ -2563,6 +2565,99 @@
     return matrix[len2][len1];
   }
 
+  // ===== DAMERAU-LEVENSHTEIN DISTANCE (allows transpositions) =====
+  function damerauLevenshteinDistance(s1, s2) {
+    const len1 = s1.length;
+    const len2 = s2.length;
+    const matrix = Array(len2 + 1).fill(null).map(() => Array(len1 + 1).fill(0));
+    
+    for (let i = 0; i <= len1; i++) matrix[0][i] = i;
+    for (let j = 0; j <= len2; j++) matrix[j][0] = j;
+    
+    for (let j = 1; j <= len2; j++) {
+      for (let i = 1; i <= len1; i++) {
+        const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+        matrix[j][i] = Math.min(
+          matrix[j][i - 1] + 1,      // insertion
+          matrix[j - 1][i] + 1,      // deletion
+          matrix[j - 1][i - 1] + cost // substitution
+        );
+        
+        // Transposition
+        if (i > 1 && j > 1 && s1[i - 1] === s2[j - 2] && s1[i - 2] === s2[j - 1]) {
+          matrix[j][i] = Math.min(matrix[j][i], matrix[j - 2][i - 2] + cost);
+        }
+      }
+    }
+    
+    return matrix[len2][len1];
+  }
+
+  // ===== ADVANCED FUZZY SIMILARITY SCORE =====
+  function getAdvancedFuzzySimilarity(query, text) {
+    // Normalize both strings
+    const q = query.toLowerCase();
+    const t = text.toLowerCase();
+    
+    // Exact match
+    if (q === t) return 100;
+    
+    // Direct contains
+    if (t.includes(q) || q.includes(t)) return 90;
+    
+    // Damerau-Levenshtein (allows transpositions like 'teh' for 'the')
+    const dDistance = damerauLevenshteinDistance(q, t);
+    const maxLen = Math.max(q.length, t.length);
+    const dSimilarity = maxLen > 0 ? ((maxLen - dDistance) / maxLen) * 100 : 0;
+    
+    // Regular Levenshtein
+    const lDistance = levenshteinDistance(q, t);
+    const lSimilarity = maxLen > 0 ? ((maxLen - lDistance) / maxLen) * 100 : 0;
+    
+    return Math.max(dSimilarity, lSimilarity);
+  }
+
+  // ===== BIDIRECTIONAL FUZZY MATCH =====
+  function getBidirectionalFuzzyScore(query, text) {
+    // Forward match
+    const forward = getAdvancedFuzzySimilarity(query, text);
+    
+    // Backward match (reversed)
+    const backward = getAdvancedFuzzySimilarity(query, [...text].reverse().join(''));
+    
+    // Word-level match (break into words and match)
+    const queryWords = query.toLowerCase().split(/[\s\-_]+/).filter(w => w.length > 0);
+    const textWords = text.toLowerCase().split(/[\s\-_]+/).filter(w => w.length > 0);
+    
+    let wordScore = 0;
+    if (queryWords.length > 0 && textWords.length > 0) {
+      const matches = queryWords.filter(qw => 
+        textWords.some(tw => getAdvancedFuzzySimilarity(qw, tw) > 70)
+      ).length;
+      wordScore = (matches / queryWords.length) * 100;
+    }
+    
+    return Math.max(forward, backward, wordScore);
+  }
+
+  // ===== COMPOUND WORD MATCHING (brand+name without spaces) =====
+  function matchCompoundWords(query, ...textParts) {
+    const allCombinations = [
+      textParts.join(''),           // No spaces
+      textParts.join(' '),          // With spaces
+      textParts.reverse().join(''), // Reversed, no spaces
+      textParts.reverse().join(' ')  // Reversed, with spaces
+    ];
+    
+    let bestScore = 0;
+    for (const combo of allCombinations) {
+      const score = getBidirectionalFuzzyScore(query, combo);
+      bestScore = Math.max(bestScore, score);
+    }
+    
+    return bestScore;
+  }
+
   // ===== 5. HANDLE APOSTROPHES SPECIFICALLY =====
   function handleApostrophes(text) {
     // Create multiple versions with and without apostrophes
@@ -2595,20 +2690,30 @@
     const normalized = normalizeTextUltimate(original);
     variants.add(normalized);
     
+    // Add reversed version (backward search)
+    const reversed = normalized.split('').reverse().join('');
+    variants.add(reversed);
+    
     // Split into words and add combinations
     const words = normalized.split(' ').filter(w => w.length > 0);
     
     // Add individual words
     words.forEach(word => variants.add(word));
     
-    // Add words combined (no spaces)
+    // Add words combined (no spaces) - CRITICAL FOR BRAND+NAME MATCHING
     if (words.length > 1) {
-      variants.add(words.join(''));
+      variants.add(words.join(''));              // diormen → diormen
       variants.add(words.join('').replace(/[0-9]/g, '')); // Remove numbers
       
       // Add reversed order
       variants.add([...words].reverse().join(''));
       variants.add([...words].reverse().join(' '));
+      
+      // Add reversed word combinations
+      const reversedWords = [...words].reverse();
+      reversedWords.forEach(word => {
+        variants.add(word.split('').reverse().join('')); // Single word reversed
+      });
     }
     
     // Add with and without apostrophes for each word
@@ -2661,6 +2766,23 @@
     texts.push(normalizeTextUltimate(product.brand));
     texts.push(product.brand.toLowerCase().replace(/[^a-z0-9]/gi, ''));
     
+    // COMPOUND WORDS: Brand + Name combinations (no spaces, no commas)
+    const brandNormalized = normalizeTextUltimate(product.brand);
+    const titleNormalized = normalizeTextUltimate(product.title);
+    const titleWords = titleNormalized.split(' ').filter(w => w.length > 0);
+    
+    if (titleWords.length > 0) {
+      // Brand + first word of product
+      texts.push(brandNormalized + titleWords[0]);
+      texts.push(titleWords[0] + brandNormalized);
+      
+      // Brand + full product name (first 2 words)
+      if (titleWords.length > 1) {
+        texts.push(brandNormalized + titleWords.slice(0, 2).join(''));
+        texts.push(titleWords.slice(0, 2).join('') + brandNormalized);
+      }
+    }
+    
     // Number
     if (product.number) {
       texts.push(product.number);
@@ -2712,55 +2834,37 @@
           }
           
           // Contains match
-          else if (productText.includes(variant)) {
+          else if (productText.includes(variant) || variant.includes(productText)) {
             bestScore = Math.max(bestScore, 90);
             matchReasons.push('contains');
           }
           
-          // Variant contains product text (for short queries)
-          else if (variant.includes(productText) && productText.length >= 3) {
-            bestScore = Math.max(bestScore, 80);
-            matchReasons.push('partial');
-          }
-          
-          // Word boundary match
-          else {
-            const productWords = productText.split(' ');
-            for (const word of productWords) {
-              if (word.length >= 3) {
-                if (word.includes(variant) || variant.includes(word)) {
-                  bestScore = Math.max(bestScore, 70);
-                  matchReasons.push('word');
-                  break;
-                }
-                
-                // Fuzzy match for short words
-                if (variant.length >= 3 && word.length >= 3) {
-                  const distance = levenshteinDistance(variant, word);
-                  const maxLen = Math.max(variant.length, word.length);
-                  const similarity = (maxLen - distance) / maxLen * 100;
-                  
-                  if (similarity > 65) {
-                    bestScore = Math.max(bestScore, similarity);
-                    matchReasons.push(`fuzzy ${Math.round(similarity)}%`);
-                  }
-                }
-              }
+          // ADVANCED BIDIRECTIONAL FUZZY MATCH (NEW)
+          else if (variant.length >= 2 && productText.length >= 2) {
+            const fuzzyScore = getBidirectionalFuzzyScore(variant, productText);
+            
+            // Lower threshold for fuzzy matching (60% instead of 65%) to catch more typos
+            if (fuzzyScore > 60) {
+              bestScore = Math.max(bestScore, fuzzyScore);
+              matchReasons.push(`fuzzy-advanced ${Math.round(fuzzyScore)}%`);
             }
           }
-          
-          // Number match
-          if (product.number && (variant === product.number || variant === product.number.replace(/^0+/, ''))) {
-            bestScore = Math.max(bestScore, 95);
-            matchReasons.push('number');
-          }
-          
-          // Brand match
-          const brandNorm = normalizeTextUltimate(product.brand);
-          if (brandNorm.includes(variant) || variant.includes(brandNorm)) {
-            bestScore = Math.max(bestScore, 85);
-            matchReasons.push('brand');
-          }
+        }
+      }
+      
+      // Number match
+      if (product.number && (variant === product.number || variant === product.number.replace(/^0+/, ''))) {
+        bestScore = Math.max(bestScore, 95);
+        matchReasons.push('number');
+      }
+      
+      // Brand match with advanced fuzzy
+      const brandNorm = normalizeTextUltimate(product.brand);
+      if (brandNorm.length > 0) {
+        const brandFuzzyScore = getBidirectionalFuzzyScore(searchVariants[0] || '', brandNorm);
+        if (brandFuzzyScore > 60) {
+          bestScore = Math.max(bestScore, brandFuzzyScore + 5); // Slight boost for brand match
+          matchReasons.push('brand-fuzzy');
         }
       }
       
@@ -2772,7 +2876,8 @@
         }
       }
       
-      if (bestScore > 30 && !addedIds.has(product.id)) {
+      // LOWER THRESHOLD from 30 to 20 for better typo tolerance
+      if (bestScore > 20 && !addedIds.has(product.id)) {
         results.push({
           product,
           score: bestScore,
@@ -3027,7 +3132,7 @@ function renderHardcodedProductCard(product, badge) {
       </div>
     `;
 }
-  // ===== FUZZY CATALOG SEARCH - USES SAME LOGIC AS PRODUCT SEARCH =====
+  // ===== FUZZY CATALOG SEARCH - USES ADVANCED BIDIRECTIONAL MATCHING =====
   function fuzzyCatalogSearch(query) {
     if (!query || query.length < 1) return [];
     
@@ -3066,7 +3171,7 @@ function renderHardcodedProductCard(product, badge) {
           continue;
         }
         
-        // Check brand specifically (with fuzzy)
+        // Check brand specifically (with advanced fuzzy)
         if (perfume.brand) {
           const brandNorm = normalizeTextUltimate(perfume.brand);
           if (brandNorm.includes(variant) || variant.includes(brandNorm)) {
@@ -3074,15 +3179,14 @@ function renderHardcodedProductCard(product, badge) {
             continue;
           }
           
-          // Fuzzy match for brand
-          const brandDistance = levenshteinDistance(variant, brandNorm);
-          const brandSimilarity = brandNorm.length > 0 ? ((brandNorm.length - brandDistance) / brandNorm.length) * 100 : 0;
-          if (brandSimilarity > 70) {
-            bestScore = Math.max(bestScore, brandSimilarity);
+          // ADVANCED BIDIRECTIONAL fuzzy match for brand
+          const brandFuzzyScore = getBidirectionalFuzzyScore(variant, brandNorm);
+          if (brandFuzzyScore > 60) { // Lowered from 70 to 60
+            bestScore = Math.max(bestScore, brandFuzzyScore);
           }
         }
         
-        // Check perfume name specifically (with fuzzy)
+        // Check perfume name specifically (with advanced fuzzy)
         if (perfume.name) {
           const nameNorm = normalizeTextUltimate(perfume.name);
           if (nameNorm.includes(variant) || variant.includes(nameNorm)) {
@@ -3090,28 +3194,26 @@ function renderHardcodedProductCard(product, badge) {
             continue;
           }
           
-          // Fuzzy match for name
-          const nameDistance = levenshteinDistance(variant, nameNorm);
-          const nameSimilarity = nameNorm.length > 0 ? ((nameNorm.length - nameDistance) / nameNorm.length) * 100 : 0;
-          if (nameSimilarity > 65) {
-            bestScore = Math.max(bestScore, nameSimilarity);
+          // ADVANCED BIDIRECTIONAL fuzzy match for name
+          const nameFuzzyScore = getBidirectionalFuzzyScore(variant, nameNorm);
+          if (nameFuzzyScore > 60) { // Lowered from 65 to 60
+            bestScore = Math.max(bestScore, nameFuzzyScore);
           }
         }
         
-        // Check individual words in perfume
+        // Check individual words in perfume (with advanced fuzzy)
         for (const word of perfumeWords) {
-          if (word.length < 3) continue;
+          if (word.length < 2) continue;
           
           if (word.includes(variant) || variant.includes(word)) {
             bestScore = Math.max(bestScore, 80);
             break;
           }
           
-          // Fuzzy match for words
-          const wordDistance = levenshteinDistance(variant, word);
-          const wordSimilarity = word.length > 0 ? ((word.length - wordDistance) / word.length) * 100 : 0;
-          if (wordSimilarity > 60) {
-            bestScore = Math.max(bestScore, wordSimilarity);
+          // ADVANCED BIDIRECTIONAL fuzzy match for words
+          const wordFuzzyScore = getBidirectionalFuzzyScore(variant, word);
+          if (wordFuzzyScore > 55) { // Lowered from 60 to 55
+            bestScore = Math.max(bestScore, wordFuzzyScore);
           }
         }
       }
@@ -3127,7 +3229,8 @@ function renderHardcodedProductCard(product, badge) {
         bestScore = Math.max(bestScore, 95);
       }
       
-      if (bestScore > 50 && !addedIds.has(perfume.id)) {
+      // LOWERED THRESHOLD from 50 to 35 for better typo tolerance
+      if (bestScore > 35 && !addedIds.has(perfume.id)) {
         results.push({
           perfume,
           score: bestScore
