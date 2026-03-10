@@ -2325,41 +2325,20 @@
   function getRecommendationsForProduct(product) {
     if (!product) return [];
     
-    console.log('🎯 Getting recommendations for:', product.title);
+    console.log('🎯 Getting recommendations for:', product.title, 'Brand:', product.brandKey, 'Gender:', product.gender);
     
-    // First try: Get from similar mappings (gender-matched)
-    let recommendations = getSimilarFromMapping(product, product.id)
-      .filter(p => p.gender === product.gender || p.gender === 'unisex');
+    // Get OTHER perfumes from the SAME BRAND that match the SAME GENDER
+    const recommendations = hardcodedProducts
+      .filter(p => 
+        p.brandKey === product.brandKey && 
+        p.id !== product.id &&
+        (p.gender === product.gender || p.gender === 'unisex')
+      )
+      .slice(0, 1);
     
-    // Second try: Get by fragrance family (gender-matched)
-    if (recommendations.length === 0) {
-      const noteBasedRecs = getProductsByNotes(product, product.id);
-      recommendations = noteBasedRecs.filter(p => p.gender === product.gender || p.gender === 'unisex');
-    }
+    console.log('💡 Same-brand recommendations found:', recommendations.length);
     
-    // Third try: Get from same brand (gender-matched)
-    if (recommendations.length === 0) {
-      recommendations = hardcodedProducts
-        .filter(p => 
-          p.brandKey === product.brandKey && 
-          p.id !== product.id &&
-          (p.gender === product.gender || p.gender === 'unisex')
-        )
-        .slice(0, 1);
-    }
-    
-    // Remove duplicates and limit to 1 (only "You might like it" card)
-    const unique = [];
-    const seen = new Set();
-    
-    recommendations.forEach(p => {
-      if (!seen.has(p.id) && p.id !== product.id) {
-        seen.add(p.id);
-        unique.push(p);
-      }
-    });
-    
-    return unique.slice(0, 1);
+    return recommendations;
   }
 
   // ===== ULTIMATE TEXT NORMALIZATION WITH FULL PUNCTUATION HANDLING =====
