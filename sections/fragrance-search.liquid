@@ -2265,6 +2265,18 @@
     }
   };
 
+  // ===== HARDCODED "YOU MIGHT LIKE IT" RECOMMENDATIONS =====
+  const hardcodedRecommendations = {
+    '227': '252', // Terre d'Hermès → Bleu de Chanel
+    '142': '132', // Ange ou Démon → Black Opium
+    '466': '438', // Baccarat Rouge 540 → Lost Cherry
+    '040': '196', // For Her → Miss Dior Le Parfum
+    '305': '221', // Aqva Pour Homme → Acqua Di Gio
+    '200': '252', // Cool Water → Bleu de Chanel
+    '211': '247', // Joop Homme → Le Male
+    '074': '101'  // Flower by Kenzo → La Vie Est Belle
+  };
+
   // ===== 3. GET PRODUCTS BY FRAGRANCE FAMILY =====
   function getProductsByFamily(family, excludeId) {
     const familyKeywords = fragranceFamilies[family] || [];
@@ -2325,9 +2337,20 @@
   function getRecommendationsForProduct(product) {
     if (!product) return [];
     
-    console.log('🎯 Getting recommendations for:', product.title, 'Brand:', product.brandKey, 'Gender:', product.gender);
+    console.log('🎯 Getting recommendations for:', product.title, 'Number:', product.number);
     
-    // Get OTHER perfumes from the SAME BRAND that match the SAME GENDER
+    // First: Check if there's a hardcoded recommendation for this product number
+    if (product.number && hardcodedRecommendations[product.number]) {
+      const recNumber = hardcodedRecommendations[product.number];
+      const recommendedProduct = hardcodedProducts.find(p => p.number === recNumber);
+      
+      if (recommendedProduct && recommendedProduct.id !== product.id) {
+        console.log('✅ Found hardcoded recommendation:', recommendedProduct.title);
+        return [recommendedProduct];
+      }
+    }
+    
+    // Fallback: Get OTHER perfumes from the SAME BRAND that match the SAME GENDER
     const recommendations = hardcodedProducts
       .filter(p => 
         p.brandKey === product.brandKey && 
