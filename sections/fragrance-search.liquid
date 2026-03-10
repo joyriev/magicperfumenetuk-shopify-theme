@@ -2875,23 +2875,6 @@
       }
       
       html += '</div>';
-      
-      // If there are more recommendations, show them in a row
-      if (recommendations.length > 1) {
-        html += `<div class="fc-subsection-title">More recommendations</div>`;
-        html += '<div class="fc-grid-2col">';
-        
-        for (let i = 1; i < Math.min(recommendations.length, 3); i++) {
-          html += renderHardcodedProductCard(recommendations[i], 'Similar');
-        }
-        
-        // Fill empty slots if needed
-        for (let i = recommendations.length - 1; i < 2; i++) {
-          html += `<div class="fc-product-card" style="visibility: hidden;"></div>`;
-        }
-        
-        html += '</div>';
-      }
     } else {
       html += `<div class="fc-subsection-title">No matching product found</div>`;
     }
