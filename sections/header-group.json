@@ -17,8 +17,8 @@
       "settings": {
         "background_color": "#000000",
         "background_color_2": "#e32402",
-        "prepend_text": "Buy 4 for £24 Only",
-        "link_text": "Shop Now",
+        "prepend_text": "St. Patrick's Day Sale:",
+        "link_text": "4 for £24.99",
         "append_text": "",
         "link": "shopify://products/4x-30ml-perfume-bottles"
       }
