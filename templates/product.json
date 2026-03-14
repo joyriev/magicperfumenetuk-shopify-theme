@@ -227,8 +227,8 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Free delivery on all orders over £40!",
-            "perk_content": ""
+            "perk_title": "Delivery in 3-4 Days by Royal Mail",
+            "perk_content": "Free delivery on all orders over £40!"
           }
         },
         "perks_NV4H3P": {
