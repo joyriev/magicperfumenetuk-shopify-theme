@@ -106,7 +106,7 @@
         "collapsible_tab_FAAFhb": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Description",
+            "heading": "Scent Profile",
             "icon": "none",
             "content": "{{ product.description }}",
             "page": ""
@@ -124,7 +124,7 @@
         "collapsible_tab_HiNKBa": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "What does 19% perfume mean?",
+            "heading": "What does 21% perfume mean?",
             "icon": "none",
             "content": "<p>It means that the content of the bottle contains up to 21% perfume oil. Which is more than standard for Eau de Parfum.</p>",
             "page": ""
@@ -154,7 +154,7 @@
           "settings": {
             "heading": "What makes Magic Perfume different than other dupe brands?",
             "icon": "none",
-            "content": "<p>We don't hide behind vague claims or unclear descriptions — our perfumes speak for themselves. With 21% oil concentration, they last anywhere from 4 to 12+ hours on skin. How long exactly? That depends on your individual skin chemistry.</p>",
+            "content": "<p>We don't hide behind vague claims or unclear descriptions — our perfumes speak for themselves. With 21% oil concentration, they last anywhere from 4 hours with delicate usage, up to 12+ hours with a couple more sprays on skin. How long exactly? That depends on your individual skin chemistry.</p>",
             "page": ""
           }
         },
