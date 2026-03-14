@@ -1,6 +1,382 @@
+{% doc %}
+  @prompt
+    Create a countdown timer that counts down to St. Patrick's Day (March 17th). The timer should display days, hours, minutes, and seconds remaining. Include customizable options for the target date and time, text color, background color, and font size. The design should be eye-catching and suitable for a promotional banner.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-countdown-timer-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    text-align: center;
+  }
+
+  .ai-countdown-timer-container-{{ ai_gen_id }} {
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .ai-countdown-timer-heading-{{ ai_gen_id }} {
+    color: {{ block.settings.heading_color }};
+    font-size: {{ block.settings.heading_size }}px;
+    margin: 0 0 {{ block.settings.spacing }}px 0;
+    font-weight: 700;
+  }
+
+  .ai-countdown-timer-display-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: center;
+    gap: {{ block.settings.spacing }}px;
+    flex-wrap: wrap;
+  }
+
+  .ai-countdown-timer-unit-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+  }
+
+  .ai-countdown-timer-value-{{ ai_gen_id }} {
+    color: {{ block.settings.number_color }};
+    font-size: {{ block.settings.number_size }}px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ai-countdown-timer-label-{{ ai_gen_id }} {
+    color: {{ block.settings.label_color }};
+    font-size: {{ block.settings.label_size }}px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .ai-countdown-timer-expired-{{ ai_gen_id }} {
+    color: {{ block.settings.expired_text_color }};
+    font-size: {{ block.settings.expired_text_size }}px;
+    font-weight: 600;
+    display: none;
+  }
+
+  .ai-countdown-timer-expired-{{ ai_gen_id }}.active {
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-countdown-timer-heading-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.heading_size }}px * 0.8);
+    }
+
+    .ai-countdown-timer-value-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.number_size }}px * 0.7);
+    }
+
+    .ai-countdown-timer-label-{{ ai_gen_id }} {
+      font-size: calc({{ block.settings.label_size }}px * 0.8);
+    }
+
+    .ai-countdown-timer-unit-{{ ai_gen_id }} {
+      min-width: 60px;
+    }
+  }
+{% endstyle %}
+
+<countdown-timer-{{ ai_gen_id }}
+  class="ai-countdown-timer-{{ ai_gen_id }}"
+  data-target-date="{{ block.settings.target_date }}"
+  data-target-time="{{ block.settings.target_time }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-countdown-timer-container-{{ ai_gen_id }}">
+    {% if block.settings.heading != blank %}
+      <h2 class="ai-countdown-timer-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="ai-countdown-timer-display-{{ ai_gen_id }}">
+      <div class="ai-countdown-timer-unit-{{ ai_gen_id }}">
+        <div class="ai-countdown-timer-value-{{ ai_gen_id }}" data-unit="days">00</div>
+        <div class="ai-countdown-timer-label-{{ ai_gen_id }}">Days</div>
+      </div>
+      <div class="ai-countdown-timer-unit-{{ ai_gen_id }}">
+        <div class="ai-countdown-timer-value-{{ ai_gen_id }}" data-unit="hours">00</div>
+        <div class="ai-countdown-timer-label-{{ ai_gen_id }}">Hours</div>
+      </div>
+      <div class="ai-countdown-timer-unit-{{ ai_gen_id }}">
+        <div class="ai-countdown-timer-value-{{ ai_gen_id }}" data-unit="minutes">00</div>
+        <div class="ai-countdown-timer-label-{{ ai_gen_id }}">Minutes</div>
+      </div>
+      <div class="ai-countdown-timer-unit-{{ ai_gen_id }}">
+        <div class="ai-countdown-timer-value-{{ ai_gen_id }}" data-unit="seconds">00</div>
+        <div class="ai-countdown-timer-label-{{ ai_gen_id }}">Seconds</div>
+      </div>
+    </div>
+
+    {% if block.settings.expired_message != blank %}
+      <div class="ai-countdown-timer-expired-{{ ai_gen_id }}">
+        {{ block.settings.expired_message }}
+      </div>
+    {% endif %}
+  </div>
+</countdown-timer-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CountdownTimer{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.targetDate = null;
+        this.interval = null;
+      }
+
+      connectedCallback() {
+        const dateStr = this.dataset.targetDate;
+        const timeStr = this.dataset.targetTime;
+
+        if (dateStr && timeStr) {
+          this.targetDate = new Date(dateStr + 'T' + timeStr);
+        } else if (dateStr) {
+          this.targetDate = new Date(dateStr + 'T00:00:00');
+        }
+
+        if (this.targetDate && !isNaN(this.targetDate.getTime())) {
+          this.startCountdown();
+        }
+      }
+
+      disconnectedCallback() {
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+      }
+
+      startCountdown() {
+        this.updateCountdown();
+        this.interval = setInterval(() => {
+          this.updateCountdown();
+        }, 1000);
+      }
+
+      updateCountdown() {
+        const now = new Date().getTime();
+        const distance = this.targetDate.getTime() - now;
+
+        if (distance < 0) {
+          this.handleExpired();
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        this.querySelector('[data-unit="days"]').textContent = String(days).padStart(2, '0');
+        this.querySelector('[data-unit="hours"]').textContent = String(hours).padStart(2, '0');
+        this.querySelector('[data-unit="minutes"]').textContent = String(minutes).padStart(2, '0');
+        this.querySelector('[data-unit="seconds"]').textContent = String(seconds).padStart(2, '0');
+      }
+
+      handleExpired() {
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+
+        const display = this.querySelector('.ai-countdown-timer-display-{{ ai_gen_id }}');
+        const expiredMessage = this.querySelector('.ai-countdown-timer-expired-{{ ai_gen_id }}');
+
+        if (display) {
+          display.style.display = 'none';
+        }
+
+        if (expiredMessage) {
+          expiredMessage.classList.add('active');
+        }
+      }
+    }
+
+    customElements.define('countdown-timer-{{ ai_gen_id }}', CountdownTimer{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Countdown timer",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "St. Patrick's Day Sale Ends In"
+    },
+    {
+      "type": "text",
+      "id": "target_date",
+      "label": "Target date",
+      "default": "2026-03-17",
+      "info": "Format: YYYY-MM-DD (e.g., 2026-03-17)"
+    },
+    {
+      "type": "text",
+      "id": "target_time",
+      "label": "Target time",
+      "default": "23:59",
+      "info": "Format: HH:MM (24-hour format, e.g., 23:59)"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "expired_message",
+      "label": "Expired message",
+      "default": "The sale has ended!"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "label": "Spacing",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#1e7a3e"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "number_color",
+      "label": "Numbers",
+      "default": "#ffd700"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Labels",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "expired_text_color",
+      "label": "Expired message",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Heading size",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "number_size",
+      "label": "Number size",
+      "min": 24,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "expired_text_size",
+      "label": "Expired message size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown timer"
+    }
+  ]
+}
 {% endschema %}
