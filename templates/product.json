@@ -123,6 +123,7 @@
         },
         "collapsible_tab_T6Fk9z": {
           "type": "collapsible_tab",
+          "disabled": true,
           "settings": {
             "heading": "Is it a perfumed water?",
             "icon": "none",
@@ -135,7 +136,16 @@
           "settings": {
             "heading": "How long does the perfume last?",
             "icon": "none",
-            "content": "<p>The perfume lasts for different lengths of time depending on the person, from 3 to 8 hours for a calm, intense scent. After a longer period of time, the scent fades.</p>",
+            "content": "<p>The perfume lasts for different lengths of time depending on the person, from 4 to 8 hours for a calm, intense scent. After a longer period of time, the scent fades.</p>",
+            "page": ""
+          }
+        },
+        "collapsible_tab_HiNKBa": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "What does 19% perfume mean?",
+            "icon": "none",
+            "content": "<p>It means that the content of the bottle contains up to 19% perfume oil. Which is more than standard for Eau de Parfum.</p>",
             "page": ""
           }
         },
@@ -145,15 +155,6 @@
             "heading": "Does the inspired scent differ?",
             "icon": "none",
             "content": "<p>No, this scent is a perfect complement with the same fragrance.</p>",
-            "page": ""
-          }
-        },
-        "collapsible_tab_HiNKBa": {
-          "type": "collapsible_tab",
-          "settings": {
-            "heading": "What does 19% perfume mean?",
-            "icon": "none",
-            "content": "<p>It means that the content of the bottle contains up to 19% perfume oil. Original bottles contain between 16 and 21% perfume for Eau de Parfum.</p>",
             "page": ""
           }
         },
@@ -200,8 +201,8 @@
         "collapsible_tab_bKn87j",
         "collapsible_tab_T6Fk9z",
         "collapsible_tab_GUrz86",
-        "collapsible_tab_TKfWP3",
         "collapsible_tab_HiNKBa",
+        "collapsible_tab_TKfWP3",
         "product_reviews_W3CkbE"
       ],
       "settings": {
@@ -226,8 +227,8 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Free delivery on all orders over €50!",
-            "perk_content": "This week only"
+            "perk_title": "Free delivery on all orders over £40!",
+            "perk_content": ""
           }
         },
         "perks_NV4H3P": {
@@ -235,7 +236,7 @@
           "settings": {
             "perk_image": "shopify://shop_images/SAVINGS.avif",
             "perk_title": "Exclusive discounts for returning customers",
-            "perk_content": "Vouchers up to €100"
+            "perk_content": "Vouchers up to £100"
           }
         },
         "perks_qWY7Uy": {
@@ -290,7 +291,7 @@
         "stack_EkfTtL": {
           "type": "stack",
           "settings": {
-            "our_stack": "Daily compliments from €10",
+            "our_stack": "Daily compliments from £10",
             "other_brands": "Often mass-produced"
           }
         },
@@ -812,6 +813,7 @@
         "heading": "BESTSELERS",
         "subheading": "",
         "collection": "best-sellers",
+        "show_all_button_text": "Afficher tout",
         "padding_top": 72,
         "padding_bottom": 72
       }
