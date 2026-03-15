@@ -75,18 +75,49 @@
         "padding_bottom": 36
       }
     },
+    "blocky_lys_scrolling_text_bar_ezcYVr": {
+      "type": "blocky-lys-scrolling-text-bar",
+      "blocks": {
+        "text_xwGBnE": {
+          "type": "text",
+          "settings": {
+            "text": "🚚Free delivery over £40!🚚"
+          }
+        },
+        "text_RryXcp": {
+          "type": "text",
+          "settings": {
+            "text": "🤝60-Day money-back guarantee🤝"
+          }
+        }
+      },
+      "block_order": [
+        "text_xwGBnE",
+        "text_RryXcp"
+      ],
+      "name": "Scrolling Text Bar",
+      "settings": {
+        "text_size": "1.75",
+        "background_color": "#000000",
+        "text_color": "#FFFFFF",
+        "speed": 1,
+        "text_spacing": 3,
+        "padding_top": 16,
+        "padding_bottom": 16
+      }
+    },
     "1773585429cbd1a095": {
       "type": "_blocks",
       "blocks": {
         "ai_gen_block_539d48c_Wr9nfb": {
           "type": "ai_gen_block_539d48c",
           "settings": {
-            "heading": "Featured products",
+            "heading": "Bestsellers",
             "heading_alignment": "center",
             "collection": "best-sellers",
-            "products_to_show": 12,
+            "products_to_show": 26,
             "enable_filtering": true,
-            "excluded_tags": "",
+            "excluded_tags": "bestseller, fuer-frauen,Winter, fuer-maenner, Spring, Summer, Autumn, bundle",
             "enable_quick_add": true,
             "quick_add_label": "Add to cart",
             "choose_options_label": "Choose options",
@@ -129,69 +160,6 @@
         "ai_gen_block_539d48c_Wr9nfb"
       ],
       "settings": {}
-    },
-    "blocky_lys_scrolling_text_bar_ezcYVr": {
-      "type": "blocky-lys-scrolling-text-bar",
-      "blocks": {
-        "text_xwGBnE": {
-          "type": "text",
-          "settings": {
-            "text": "🚚Free delivery over £40!🚚"
-          }
-        },
-        "text_RryXcp": {
-          "type": "text",
-          "settings": {
-            "text": "🤝60-Day money-back guarantee🤝"
-          }
-        }
-      },
-      "block_order": [
-        "text_xwGBnE",
-        "text_RryXcp"
-      ],
-      "name": "Scrolling Text Bar",
-      "settings": {
-        "text_size": "1.75",
-        "background_color": "#000000",
-        "text_color": "#FFFFFF",
-        "speed": 1,
-        "text_spacing": 3,
-        "padding_top": 16,
-        "padding_bottom": 16
-      }
-    },
-    "featured_collection_LDtyna": {
-      "type": "featured-collection",
-      "custom_css": [
-        ".button,.btn {background-color: #000; color: #fff; border-color: #000;}"
-      ],
-      "name": "t:sections.featured-collection.presets.name",
-      "settings": {
-        "title": "Bestsellers",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "best-sellers",
-        "products_to_show": 16,
-        "columns_desktop": 4,
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": true,
-        "color_scheme": "scheme-1",
-        "image_ratio": "portrait",
-        "image_shape": "default",
-        "show_secondary_image": false,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "standard",
-        "columns_mobile": "2",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
     },
     "collection_list_Lf8fiy": {
       "type": "collection-list",
@@ -671,9 +639,8 @@
     "main",
     "home_hero_banner_Q9NjcW",
     "feature_heighlights_YbX8yj",
-    "1773585429cbd1a095",
     "blocky_lys_scrolling_text_bar_ezcYVr",
-    "featured_collection_LDtyna",
+    "1773585429cbd1a095",
     "collection_list_Lf8fiy",
     "massive_review_ritX7q"
   ]
