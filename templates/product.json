@@ -252,9 +252,9 @@
         "perks_qWY7Uy": {
           "type": "perks",
           "settings": {
-            "perk_image": "shopify://shop_images/GIFTS.webp",
-            "perk_title": "Free gift wrapping",
-            "perk_content": "Add a personalised message (up to 100 characters)"
+            "perk_image": "shopify://shop_images/icon-refund.svg",
+            "perk_title": "60-Day money-back guarantee",
+            "perk_content": "No question asked"
           }
         },
         "perks_HKnHJ8": {
