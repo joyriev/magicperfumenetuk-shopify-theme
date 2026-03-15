@@ -295,7 +295,7 @@
           "settings": {
             "heading": "Is it an Eau de Parfum?",
             "icon": "none",
-            "row_content": "<p>Yes, it is an Eau de Parfum — it contains up to 19% fragrance oil.<br/><br/>For comparison, an Eau de Toilette typically contains around 5–8%, while pure perfume extract starts from about 41% and above.</p>",
+            "row_content": "<p>Yes, it is an Eau de Parfum — it contains up to 21% fragrance oil.<br/><br/>For comparison, an Eau de Toilette typically contains around 5–8%, while pure perfume extract starts from about 41% and above.</p>",
             "page": ""
           }
         },
@@ -304,7 +304,7 @@
           "settings": {
             "heading": "How long does the perfume last?",
             "icon": "none",
-            "row_content": "<p>The longevity varies from person to person, but typically the fragrance lasts between 3 and 8 hours with a soft yet noticeable scent. After a longer period, the fragrance gradually fades.</p>",
+            "row_content": "<p>The perfume lasts between 4 and up to 12 hours. The duration varies from person to person, providing a calm, intense scent for 4 to 12 hours. After this period, the scent gradually fades.</p>",
             "page": ""
           }
         },
@@ -320,9 +320,9 @@
         "collapsible_row_gJVQkB": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "What does 19% perfume mean?",
+            "heading": "What does 21 % perfume mean?",
             "icon": "none",
-            "row_content": "<p>It means the contents of the bottle contain up to 19% perfume oil.<br/><br/>Original Eau de Parfum fragrances typically contain between 16% and 21% perfume oil.</p>",
+            "row_content": "<p>It means the contents of the bottle contain up to 21% perfume oil.<br/><br/>Original Eau de Parfum fragrances typically contain between 16% and 21% perfume oil.</p>",
             "page": ""
           }
         }
