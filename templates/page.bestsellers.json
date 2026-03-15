@@ -75,6 +75,61 @@
         "padding_bottom": 36
       }
     },
+    "1773585429cbd1a095": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_539d48c_Wr9nfb": {
+          "type": "ai_gen_block_539d48c",
+          "settings": {
+            "heading": "Featured products",
+            "heading_alignment": "center",
+            "collection": "best-sellers",
+            "products_to_show": 12,
+            "enable_filtering": true,
+            "excluded_tags": "",
+            "enable_quick_add": true,
+            "quick_add_label": "Add to cart",
+            "choose_options_label": "Choose options",
+            "show_see_more": true,
+            "see_more_text": "See more",
+            "see_more_bg_color": "#0f172a",
+            "see_more_hover_bg_color": "#000000",
+            "see_more_text_color": "#ffffff",
+            "see_more_border_color": "#0f172a",
+            "see_more_border_radius": 26,
+            "columns_desktop": 4,
+            "columns_tablet": 3,
+            "columns_mobile": "2",
+            "grid_gap": 20,
+            "section_padding": 40,
+            "desktop_width_percent": 100,
+            "heading_size": 32,
+            "heading_color": "#000000",
+            "filter_bg_color": "#ffffff",
+            "filter_text_color": "#000000",
+            "filter_border_color": "#e0e0e0",
+            "filter_hover_border_color": "#cccccc",
+            "filter_active_border_color": "#0f172a",
+            "filter_border_radius": 8,
+            "card_bg_color": "#ffffff",
+            "card_border_color": "#e0e0e0",
+            "card_border_radius": 18,
+            "product_title_color": "#000000",
+            "product_price_color": "#666666",
+            "button_bg_color": "#0f172a",
+            "button_hover_bg_color": "#000000",
+            "button_text_color": "#ffffff",
+            "button_border_color": "#0f172a",
+            "button_border_radius": 26
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_539d48c_Wr9nfb"
+      ],
+      "settings": {}
+    },
     "blocky_lys_scrolling_text_bar_ezcYVr": {
       "type": "blocky-lys-scrolling-text-bar",
       "blocks": {
@@ -616,6 +671,7 @@
     "main",
     "home_hero_banner_Q9NjcW",
     "feature_heighlights_YbX8yj",
+    "1773585429cbd1a095",
     "blocky_lys_scrolling_text_bar_ezcYVr",
     "featured_collection_LDtyna",
     "collection_list_Lf8fiy",
