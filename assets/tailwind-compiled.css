@@ -121,6 +121,10 @@
     top: 16px
 }
 
+.bottom-0 {
+    bottom: 0px
+}
+
 .isolate {
     isolation: isolate
 }
@@ -415,6 +419,11 @@
     height: 60px
 }
 
+.size-14 {
+    width: 56px;
+    height: 56px
+}
+
 .\!h-8 {
     height: 32px !important
 }
@@ -545,6 +554,10 @@
 
 .max-w-\[700px\] {
     max-width: 700px
+}
+
+.max-w-screen-md {
+    max-width: 768px
 }
 
 .flex-1 {
@@ -841,6 +854,10 @@
 
 .border-t-2 {
     border-top-width: 2px
+}
+
+.border-l-2 {
+    border-left-width: 2px
 }
 
 .border-solid {
@@ -1233,6 +1250,11 @@
     padding-bottom: 32px
 }
 
+.px-8 {
+    padding-left: 32px;
+    padding-right: 32px
+}
+
 .\!pb-3 {
     padding-bottom: 12px !important
 }
@@ -1311,6 +1333,10 @@
 
 .pt-8 {
     padding-top: 32px
+}
+
+.pb-\[95px\] {
+    padding-bottom: 95px
 }
 
 .text-left {
@@ -1680,6 +1706,12 @@
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
 }
 
+.shadow-\[0_0_20px_5px_rgba\(0\2c 0\2c 0\2c 0\.1\)\] {
+    --tw-shadow: 0 0 20px 5px rgba(0,0,0,0.1);
+    --tw-shadow-colored: 0 0 20px 5px var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+}
+
 .outline {
     outline-style: solid
 }
@@ -1726,6 +1758,10 @@
     transition-duration: 300ms
 }
 
+.duration-500 {
+    transition-duration: 500ms
+}
+
 .ease-in {
     transition-timing-function: cubic-bezier(0.4, 0, 1, 1)
 }
@@ -1764,6 +1800,10 @@
 
 .\[transform\:translateX\(-50\%\)\] {
     transform: translateX(-50%)
+}
+
+.\[transform\:translateY\(100\%\)\] {
+    transform: translateY(100%)
 }
 
 .animate-move-left {
@@ -1920,6 +1960,10 @@
         display: block
     }
 
+    .md\:flex {
+        display: flex
+    }
+
     .md\:grid {
         display: grid
     }
@@ -1954,6 +1998,10 @@
 
     .md\:w-full {
         width: 100%
+    }
+
+    .md\:w-auto {
+        width: auto
     }
 
     .md\:scale-105 {
@@ -2058,6 +2106,10 @@
         padding-top: 24px
     }
 
+    .md\:pb-4 {
+        padding-bottom: 16px
+    }
+
     .md\:text-left {
         text-align: left
     }
@@ -2120,6 +2172,10 @@
         padding-left: 16px;
         padding-right: 16px
     }
+}
+
+.\[\&\.active\]\:\[transform\:translateY\(0\)\].active {
+    transform: translateY(0)
 }
 
 .\[\&\>\.active\]\:\[border\:2px_solid_\#000000\]>.active {
