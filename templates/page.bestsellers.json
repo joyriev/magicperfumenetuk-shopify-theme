@@ -109,7 +109,7 @@
     "featured_collection_LDtyna": {
       "type": "featured-collection",
       "custom_css": [
-        ".button, .btn {background-color: #000; color: #fff; border-color: #000;}"
+        ".button,.btn {background-color: #000; color: #fff; border-color: #000;}"
       ],
       "name": "t:sections.featured-collection.presets.name",
       "settings": {
@@ -133,6 +133,54 @@
         "show_rating": false,
         "quick_add": "standard",
         "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "collection_list_Lf8fiy": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_De7VH8": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "spring-collection"
+          }
+        },
+        "featured_collection_egnRNd": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_CBPHGJ": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_Chbzaw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_De7VH8",
+        "featured_collection_egnRNd",
+        "featured_collection_CBPHGJ",
+        "featured_collection_Chbzaw"
+      ],
+      "name": "t:sections.collection-list.presets.name",
+      "settings": {
+        "title": "Smell Best This Season",
+        "heading_size": "h2",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "1",
         "swipe_on_mobile": false,
         "padding_top": 36,
         "padding_bottom": 36
@@ -570,6 +618,7 @@
     "feature_heighlights_YbX8yj",
     "blocky_lys_scrolling_text_bar_ezcYVr",
     "featured_collection_LDtyna",
+    "collection_list_Lf8fiy",
     "massive_review_ritX7q"
   ]
 }
