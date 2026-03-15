@@ -21,8 +21,8 @@
       "type": "home-hero-banner",
       "name": "Home Hero Banner",
       "settings": {
-        "image": "shopify://shop_images/magic_banner_english.png",
-        "mobile_image": "shopify://shop_images/magic_banner_mobile_english.png",
+        "image": "shopify://shop_images/Projekt_bez_nazwy.png",
+        "mobile_image": "shopify://shop_images/Projekt_bez_nazwy.png",
         "link": "shopify://collections/best-sellers"
       }
     },
@@ -58,7 +58,7 @@
           "settings": {
             "perk_image": "shopify://shop_images/icon-refund.svg",
             "perk_title": "60-Day money-back guarantee",
-            "perk_content": "No questions asked"
+            "perk_content": "We accept products back for refund or exchange."
           }
         }
       },
