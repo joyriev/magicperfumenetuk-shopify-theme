@@ -30,10 +30,9 @@
         },
         "text_RP9BNp": {
           "type": "text",
-          "disabled": true,
           "settings": {
             "heading": "Address",
-            "subtext": "<p>128 city road London<br/><br/>Magico Parfums ist eine Tochtergesellschaft von MOMMENTE IT PTE. LTD.<br/>113B Jalan Besar, Singapur 208833<br/><br/>Phone: +1 888 373 6114<br/>Email: hello@magicperfume.co.uk</p>"
+            "subtext": "<p>10 York Rd, London SE1 7ND, United Kingdom.</p><p>Company No.:16645431<br/><br/>Phone: +1 888 373 6114<br/>Email: hello@magicperfume.co.uk</p>"
           }
         }
       },
