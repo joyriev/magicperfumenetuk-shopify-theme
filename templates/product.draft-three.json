@@ -272,6 +272,7 @@
         "perks_qWY7Uy",
         "perks_HKnHJ8"
       ],
+      "disabled": true,
       "name": "Feature Highlights",
       "settings": {
         "background_color": "#ffffff",
@@ -281,7 +282,6 @@
     },
     "scent_breakdown_pqKDL9": {
       "type": "scent-breakdown",
-      "disabled": true,
       "name": "Scent Breakdown",
       "settings": {
         "background_color": "#f7f7f7",
@@ -335,6 +335,7 @@
         "stack_w3Jyyc",
         "stack_dXbqXq"
       ],
+      "disabled": true,
       "name": "Stacks Up",
       "settings": {
         "background_color": "#f7f7f7",
@@ -371,6 +372,7 @@
         "heading_PJdXGz",
         "text_Mhwr3T"
       ],
+      "disabled": true,
       "name": "Image and Text",
       "settings": {
         "background_color": "#ffffff",
