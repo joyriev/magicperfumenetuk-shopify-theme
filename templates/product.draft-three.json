@@ -51,7 +51,7 @@
         "custom_liquid_QcxgR4": {
           "type": "custom_liquid",
           "settings": {
-            "custom_liquid": "{% render 'draft-three-atc.liquid %}"
+            "custom_liquid": "{% render 'draft-three-atc'%}"
           }
         },
         "payment_badges_FkCwVc": {
