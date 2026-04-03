@@ -125,6 +125,14 @@
     top: 16px
 }
 
+.\!left-0 {
+    left: 0px !important
+}
+
+.\!right-0 {
+    right: 0px !important
+}
+
 .isolate {
     isolation: isolate
 }
@@ -195,6 +203,11 @@
 .my-6 {
     margin-top: 24px;
     margin-bottom: 24px
+}
+
+.\!my-6 {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important
 }
 
 .\!mb-0 {
@@ -307,6 +320,10 @@
 
 .mt-auto {
     margin-top: auto
+}
+
+.\!mt-8 {
+    margin-top: 32px !important
 }
 
 .line-clamp-1 {
@@ -422,6 +439,16 @@
 .size-\[60px\] {
     width: 60px;
     height: 60px
+}
+
+.\!size-7 {
+    width: 28px !important;
+    height: 28px !important
+}
+
+.size-3 {
+    width: 12px;
+    height: 12px
 }
 
 .\!h-8 {
@@ -951,6 +978,11 @@
     border-color: transparent
 }
 
+.\!border-gray-200 {
+    --tw-border-opacity: 1 !important;
+    border-color: rgb(229 231 235 / var(--tw-border-opacity, 1)) !important
+}
+
 .bg-\[\#0F172A\] {
     --tw-bg-opacity: 1;
     background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1))
@@ -1086,6 +1118,15 @@
 
 .bg-white\/50 {
     background-color: rgb(255 255 255 / 0.5)
+}
+
+.bg-green-600 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
+}
+
+.bg-white\/60 {
+    background-color: rgb(255 255 255 / 0.6)
 }
 
 .bg-opacity-20 {
@@ -1254,6 +1295,16 @@
     padding-bottom: 32px
 }
 
+.\!py-4 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important
+}
+
+.px-7 {
+    padding-left: 28px;
+    padding-right: 28px
+}
+
 .\!pb-3 {
     padding-bottom: 12px !important
 }
@@ -1336,6 +1387,14 @@
 
 .pt-8 {
     padding-top: 32px
+}
+
+.pl-4 {
+    padding-left: 16px
+}
+
+.pt-5 {
+    padding-top: 20px
 }
 
 .text-left {
@@ -1727,6 +1786,11 @@
 
 .filter {
     filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+}
+
+.backdrop-blur-sm {
+    --tw-backdrop-blur: blur(4px);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
 }
 
 .transition {
