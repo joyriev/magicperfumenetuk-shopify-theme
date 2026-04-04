@@ -767,9 +767,9 @@
       "name": "Massive Review",
       "settings": {
         "background_color": "#fcfbf9",
-        "heading": "Customer reviews",
-        "review_text": "4.7/5 stars based on over 10,400 reviews",
-        "button_text": "Show more reviews",
+        "heading": "Recensioni dei clienti",
+        "review_text": "4,7 su 5 stelle basato su oltre 10.400 recensioni",
+        "button_text": "Mostra altre recensioni",
         "button_link": "",
         "padding_top": 72,
         "padding_bottom": 72
