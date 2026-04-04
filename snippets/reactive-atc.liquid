@@ -22,7 +22,7 @@
     {% endif %}
     {% if product.metafields.custom.inspired_by.value.title != blank %}
       <div>
-        <p class="text-sm my-0">Inspired by:</p>
+        <p class="text-sm my-0">Ispirato a:</p>
         <h4 class="font-semibold my-0 line-clamp-1">{{ product.metafields.custom.inspired_by.value.title }}</h4>
       </div>
     {% endif %}
@@ -34,8 +34,8 @@
   {% endif %}
   {% if product.metafields.custom.scent_intensity != blank %}
     <div class="flex items-center gap-[5px]">
-      Fragrance Intensity:
-      <span class="text-highlight leading-4">Statement</span>
+      Intensità della fragranza:
+      <span class="text-highlight leading-4">Decisa</span>
       {% assign intensity = product.metafields.custom.scent_intensity.value | times: 1 %}
       <div class="flex gap-[5px] items-center justify-center ml-1">
         {% for i in (1..3) %}
@@ -69,8 +69,8 @@
 {% if product.variants.size > 1 %}
   {% comment %} Variant Selector {% endcomment %}
   <div class="flex justify-between items-center mb-3 !mt-6">
-    <h2 class="m-0 text-base font-semibold">Select size:</h2>
-    <div class="text-sm italic text-gray-500">80% of our customers choose 50 ml or larger</div>
+    <h2 class="m-0 text-base font-semibold">Seleziona il formato:</h2>
+    <div class="text-sm italic text-gray-500">L’80% dei nostri clienti sceglie 50 ml o più</div>
   </div>
 
   <div class="flex gap-3" id="variant-selector">
@@ -90,13 +90,13 @@
           <div class="text-base font-semibold">{{ variant.title }}</div>
           <div class="text-xs text-gray-600">
             {{- cart.currency.symbol -}}
-            {{- per_ml }} Per spray</div>
+            {{- per_ml }} Per spruzzo</div>
         </div>
         {% if variant.title == '50ml' %}
-          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#c8202f] px-2 py-0.5">Popular</span>
+          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#c8202f] px-2 py-0.5">Popolare</span>
         {% endif %}
         {% if variant.title == '100ml' %}
-          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#22613a] px-2 py-0.5">Bestseller</span>
+          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#22613a] px-2 py-0.5">Best seller</span>
         {% endif %}
       </button>
     {% endfor %}
@@ -130,7 +130,7 @@
       {% if product.metafields.custom.choose_your_fragrances_options != blank %}
       disabled="disabled"
       {% endif %}>
-      <span>Add to Cart</span>
+      <span>Aggiungi al carrello</span>
       <div class="ml-2 pl-2 border-0 border-l flex items-center border-solid border-gray-200/20">
         <div
           class="inline-block text-lg bg-gray-800 px-3 rounded"
@@ -238,8 +238,8 @@
       width="40"
       height="40" />
     <div class="text-slate-900">
-      <strong class="font-semibold">Try it for 60 days - completely risk-free.</strong>
-      <div class="[display:none] md:block">If you're not absolutely delighted, we'll give you a full refund!</div>
+      <strong class="font-semibold">Provalo per 60 giorni, senza alcun rischio.</strong>
+      <div class="[display:none] md:block">Se non sei completamente soddisfatto, ti rimborsiamo l’intero importo!</div>
     </div>
   </div>
 </div>
