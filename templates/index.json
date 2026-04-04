@@ -11,6 +11,7 @@
   "sections": {
     "home_hero_banner_ahfGnr": {
       "type": "home-hero-banner",
+      "disabled": true,
       "name": "Home Hero Banner",
       "settings": {
         "image": "shopify://shop_images/herobanner.webp",
@@ -20,7 +21,6 @@
     },
     "home_hero_WB9hXg": {
       "type": "home-hero",
-      "disabled": true,
       "name": "Homepage Hero",
       "settings": {
         "background_color": "#0b0b0b",
