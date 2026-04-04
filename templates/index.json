@@ -160,7 +160,7 @@
         "heading_CcxYji": {
           "type": "heading",
           "settings": {
-            "content": "EU Production",
+            "content": "Produzione nell’Unione Europea",
             "heading_type": "h2",
             "font_size": 40,
             "mobile_font_size": 24,
@@ -170,7 +170,7 @@
         "text_gHnd8C": {
           "type": "text",
           "settings": {
-            "content": "<p>Our EU-based production guarantees the highest quality standards and allows us to monitor and control every step of the manufacturing process.</p><p>From the selection of premium raw materials to the careful filling of each bottle, we ensure that every product meets our high expectations for quality and craftsmanship.</p>",
+            "content": "<p><br/>La nostra produzione europea garantisce standard qualitativi elevati e un controllo rigoroso in ogni fase del processo. </p><p>Dalla selezione di materie prime pregiate fino al riempimento accurato di ogni flacone, ogni dettaglio è seguito con la massima attenzione per offrire un prodotto all’altezza delle più alte aspettative in termini di qualità e artigianalità.<br/><br/></p>",
             "mobile_content": "",
             "font_size": 18,
             "text_color": "#000000"
