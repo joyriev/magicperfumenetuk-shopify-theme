@@ -146,10 +146,10 @@
       "name": "Popular Products",
       "settings": {
         "background_color": "#f7f7f7",
-        "heading": "BESTSELLERS",
+        "heading": "I più venduti",
         "subheading": "",
         "collection": "best-sellers",
-        "show_all_button_text": "View All Bestsellers",
+        "show_all_button_text": "Scopri tutti i più venduti",
         "padding_top": 72,
         "padding_bottom": 72
       }
