@@ -41,6 +41,14 @@
     inset: 0px
 }
 
+.\!left-0 {
+    left: 0px !important
+}
+
+.\!right-0 {
+    right: 0px !important
+}
+
 .-top-10 {
     top: -40px
 }
@@ -125,14 +133,6 @@
     top: 16px
 }
 
-.\!left-0 {
-    left: 0px !important
-}
-
-.\!right-0 {
-    right: 0px !important
-}
-
 .isolate {
     isolation: isolate
 }
@@ -170,6 +170,11 @@
     margin-bottom: 0px !important
 }
 
+.\!my-6 {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important
+}
+
 .-mx-2 {
     margin-left: -8px;
     margin-right: -8px
@@ -205,11 +210,6 @@
     margin-bottom: 24px
 }
 
-.\!my-6 {
-    margin-top: 24px !important;
-    margin-bottom: 24px !important
-}
-
 .\!mb-0 {
     margin-bottom: 0px !important
 }
@@ -232,6 +232,10 @@
 
 .\!mt-6 {
     margin-top: 24px !important
+}
+
+.\!mt-8 {
+    margin-top: 32px !important
 }
 
 .-mt-4 {
@@ -322,10 +326,6 @@
     margin-top: auto
 }
 
-.\!mt-8 {
-    margin-top: 32px !important
-}
-
 .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
@@ -391,6 +391,11 @@
     aspect-ratio: 1 / 1
 }
 
+.\!size-7 {
+    width: 28px !important;
+    height: 28px !important
+}
+
 .size-10 {
     width: 40px;
     height: 40px
@@ -409,6 +414,11 @@
 .size-20 {
     width: 80px;
     height: 80px
+}
+
+.size-3 {
+    width: 12px;
+    height: 12px
 }
 
 .size-4 {
@@ -439,16 +449,6 @@
 .size-\[60px\] {
     width: 60px;
     height: 60px
-}
-
-.\!size-7 {
-    width: 28px !important;
-    height: 28px !important
-}
-
-.size-3 {
-    width: 12px;
-    height: 12px
 }
 
 .\!h-8 {
@@ -515,10 +515,6 @@
     width: 96px
 }
 
-.w-28 {
-    width: 112px
-}
-
 .w-5 {
     width: 20px
 }
@@ -567,6 +563,10 @@
     max-width: 896px
 }
 
+.max-w-\[100px\] {
+    max-width: 100px
+}
+
 .max-w-\[250px\] {
     max-width: 250px
 }
@@ -585,10 +585,6 @@
 
 .max-w-screen-md {
     max-width: 768px
-}
-
-.max-w-\[100px\] {
-    max-width: 100px
 }
 
 .flex-1 {
@@ -677,10 +673,6 @@
 
 .grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr))
-}
-
-.grid-rows-3 {
-    grid-template-rows: repeat(3, minmax(0, 1fr))
 }
 
 .flex-col {
@@ -895,6 +887,11 @@
     border-style: solid
 }
 
+.\!border-gray-200 {
+    --tw-border-opacity: 1 !important;
+    border-color: rgb(229 231 235 / var(--tw-border-opacity, 1)) !important
+}
+
 .border-\[\#0F172A\] {
     --tw-border-opacity: 1;
     border-color: rgb(15 23 42 / var(--tw-border-opacity, 1))
@@ -976,11 +973,6 @@
 
 .border-transparent {
     border-color: transparent
-}
-
-.\!border-gray-200 {
-    --tw-border-opacity: 1 !important;
-    border-color: rgb(229 231 235 / var(--tw-border-opacity, 1)) !important
 }
 
 .bg-\[\#0F172A\] {
@@ -1076,6 +1068,11 @@
     background-color: rgb(34 197 94 / 0.2)
 }
 
+.bg-green-600 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
+}
+
 .bg-green-700 {
     --tw-bg-opacity: 1;
     background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1))
@@ -1118,11 +1115,6 @@
 
 .bg-white\/50 {
     background-color: rgb(255 255 255 / 0.5)
-}
-
-.bg-green-600 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1))
 }
 
 .bg-white\/60 {
@@ -1205,6 +1197,11 @@
     padding-right: 12px !important
 }
 
+.\!py-4 {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important
+}
+
 .px-1 {
     padding-left: 4px;
     padding-right: 4px
@@ -1233,6 +1230,11 @@
 .px-6 {
     padding-left: 24px;
     padding-right: 24px
+}
+
+.px-7 {
+    padding-left: 28px;
+    padding-right: 28px
 }
 
 .px-8 {
@@ -1293,16 +1295,6 @@
 .py-8 {
     padding-top: 32px;
     padding-bottom: 32px
-}
-
-.\!py-4 {
-    padding-top: 16px !important;
-    padding-bottom: 16px !important
-}
-
-.px-7 {
-    padding-left: 28px;
-    padding-right: 28px
 }
 
 .\!pb-3 {
@@ -1381,20 +1373,16 @@
     padding-top: 16px
 }
 
+.pt-5 {
+    padding-top: 20px
+}
+
 .pt-6 {
     padding-top: 24px
 }
 
 .pt-8 {
     padding-top: 32px
-}
-
-.pl-4 {
-    padding-left: 16px
-}
-
-.pt-5 {
-    padding-top: 20px
 }
 
 .text-left {
@@ -2027,10 +2015,6 @@
         display: flex
     }
 
-    .md\:grid {
-        display: grid
-    }
-
     .md\:hidden {
         display: none
     }
@@ -2054,10 +2038,6 @@
 
     .md\:w-16 {
         width: 64px
-    }
-
-    .md\:w-\[calc\(100\%-144px\)\] {
-        width: calc(100% - 144px)
     }
 
     .md\:w-\[calc\(25\%-0\.75rem\)\] {
@@ -2226,10 +2206,6 @@
 
     .lg\:w-1\/12 {
         width: 8.333333%
-    }
-
-    .lg\:w-36 {
-        width: 144px
     }
 
     .lg\:w-5\/12 {
