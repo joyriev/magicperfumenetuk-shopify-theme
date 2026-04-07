@@ -71,7 +71,10 @@
               {% if cart_count >= 5 %}
                 🎉 3+2 Offer unlocked!
               {% else %}
-                Add {{ 5 | minus: cart_count }} more items for 3+2 Offer
+                Aggiungi
+                <strong>{{ 5 | minus: cart_count }}</strong>
+                bottiglie,
+                <strong>2 in omaggio</strong>.
               {% endif %}
             </div>
             <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
