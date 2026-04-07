@@ -60,40 +60,55 @@
             </div>
           </div>
         </div>
-      {%- endif -%}
+      {%- else -%}
 
-      <div class="bc-rewards-bars-wrap" style="flex-direction: row;">
-        <div class="bc-progress-wrap">
-          <div class="bc-progress-text" style="color: #000000;">
-            🎉 3+2-Angebot freigeschaltet!
+        <div class="bc-rewards-bars-wrap" style="flex-direction: row;">
+          <div class="bc-progress-wrap">
+            {% assign cart_count = cart.item_count %}
+            {% assign progress_percentage = cart_count | times: 20 | at_most: 100 %}
+
+            <div class="bc-progress-text" style="color: #000000;">
+              {% if cart_count >= 5 %}
+                🎉 3+2 Offer unlocked!
+              {% else %}
+                Add {{ 5 | minus: cart_count }} more items for 3+2 Offer
+              {% endif %}
+            </div>
+            <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
+              <div class="bc-progress-fill" style="width: {{ progress_percentage }}%; background-color: #93D3FF;"></div>
+              <div class="bc-checkpoints">
+                <div class="bc-checkpoint {% if cart_count >= 5 %}is-reached{% endif %}" style="left: 100%; 
+               background-color: {% if cart_count >= 5 %}#93D3FF{% else %}#E2E2E2{% endif %};
+               color: #000000;">
+                  {{ 'icon-gift.svg' | inline_asset_content }}
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
-            <div class="bc-progress-fill" style="width: 100%; background-color: #93D3FF;"></div>
-            <div class="bc-checkpoints">
-              <div class="bc-checkpoint is-reached" style="left: 100%; 
-               background-color: #93D3FF;
-               color: #4D4949;">
-                {{ 'icon-gift.svg' | inline_asset_content }}
+          <div class="bc-progress-wrap">
+            {% assign cart_total = cart.total_price %}
+            {% assign progress_percentage = cart_total | divided_by: 5000 | times: 100 | at_most: 100 %}
+
+            <div class="bc-progress-text" style="color: #000000;">
+              {% if cart_total >= 5000 %}
+                🎉 Free shipping unlocked! {{ cart_total }}
+              {% else %}
+                Add {{ 5000 | minus: cart_total | money }} more for free shipping
+              {% endif %}
+            </div>
+            <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
+              <div class="bc-progress-fill" style="width: {{ progress_percentage }}%; background-color: #93D3FF;"></div>
+              <div class="bc-checkpoints">
+                <div class="bc-checkpoint {% if cart_total >= 5000 %}is-reached{% endif %}" style="left: 100%; 
+               background-color: {% if cart_total >= 5000 %}#93D3FF{% else %}#E2E2E2 {% endif %};
+               color: #000000;">
+                  {{ 'icon-truck.svg' | inline_asset_content }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="bc-progress-wrap">
-          <div class="bc-progress-text" style="color: #000000;">
-            🎉 Kostenloser Versand freigeschaltet!
-          </div>
-          <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
-            <div class="bc-progress-fill" style="width: 100%; background-color: #93D3FF;"></div>
-            <div class="bc-checkpoints">
-              <div class="bc-checkpoint is-reached" style="left: 100%; 
-               background-color: #93D3FF;
-               color: #4D4949;">
-                {{ 'icon-truck.svg' | inline_asset_content }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% endif %}
 
       <cart-drawer-items
         {% if cart == empty %}
