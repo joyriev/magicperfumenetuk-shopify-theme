@@ -1,7 +1,7 @@
 {% assign upsell_collection = collections[settings.cart_drawer_collection] %}
 
 {% if upsell_collection and upsell_collection.all_products.size > 0 %}
-  <h3 class="text-center text-sm uppercase tracking-wider my-2">Recommended Products</h3>
+  <h3 class="text-center text-lg tracking-wider my-2">Potrebbero interessarti anche...</h3>
   <div class="flex flex-col gap-3 mb-3">
     {% assign shown = 0 %}
     {% for product in upsell_collection.all_products %}
@@ -13,9 +13,7 @@
         {% endif %}
       {% endfor %}
       {% unless in_cart %}
-
         {% assign product_form_id = 'product-form-' | append: product.id %}
-
         <product-form class="product-form">
           {%- form 'product'
             , product
@@ -69,9 +67,9 @@
                 {% endif %}
               </div>
               <div>
-                <button type="submit" name="add" class="product-form__submit button tracking-wider leading-snug px-4 py-2 rounded-full w-full">
+                <button type="submit" name="add" class="product-form__submit button tracking-wider text-xs leading-snug px-2 py-2 rounded-full w-full">
                     <span>
-                        Add
+                        Aggiungi
                     </span>
                     <div class="loading__spinner hidden">
                         <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
