@@ -26,32 +26,6 @@
       aria-modal="true"
       aria-label="{{ 'sections.cart.title' | t }}"
       tabindex="-1">
-      {%- if cart == empty -%}
-        <div class="drawer__inner-empty">
-          <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank %} cart-drawer__warnings--has-collection{% endif %}">
-            <div class="cart-drawer__empty-content">
-              <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
-              <button
-                class="drawer__close"
-                type="button"
-                onclick="this.closest('cart-drawer').close()"
-                aria-label="{{ 'accessibility.close' | t }}">
-                {% render 'icon-close' %}
-              </button>
-              <a href="{{ routes.all_products_collection_url }}" class="button rounded-full leading-[50px]">
-                {{ 'general.continue_shopping' | t }}
-              </a>
-
-              {%- if shop.customer_accounts_enabled and customer == null -%}
-                <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
-                <p class="cart__login-paragraph">
-                  {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
-                </p>
-              {%- endif -%}
-            </div>
-          </div>
-        </div>
-      {%- endif -%}
       <div class="drawer__header">
         <h2 class="drawer__heading">
           {{ 'sections.cart.title' | t }}
@@ -68,6 +42,59 @@
           {% render 'icon-close' %}
         </button>
       </div>
+      {%- if cart == empty -%}
+        <div class="drawer__inner-empty">
+          <div class="cart-drawer__warnings center{% if settings.cart_drawer_collection != blank %} cart-drawer__warnings--has-collection{% endif %}">
+            <div class="cart-drawer__empty-content">
+              <h2 class="cart__empty-text">{{ 'sections.cart.empty' | t }}</h2>
+              <a href="{{ routes.all_products_collection_url }}" class="button rounded-full leading-[50px]">
+                {{ 'general.continue_shopping' | t }}
+              </a>
+
+              {%- if shop.customer_accounts_enabled and customer == null -%}
+                <p class="cart__login-title h3">{{ 'sections.cart.login.title' | t }}</p>
+                <p class="cart__login-paragraph">
+                  {{ 'sections.cart.login.paragraph_html' | t: link: routes.account_login_url }}
+                </p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
+      <div class="bc-rewards-bars-wrap" style="flex-direction: row;">
+        <div class="bc-progress-wrap">
+          <div class="bc-progress-text" style="color: #000000;">
+            🎉 3+2-Angebot freigeschaltet!
+          </div>
+          <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
+            <div class="bc-progress-fill" style="width: 100%; background-color: #93D3FF;"></div>
+            <div class="bc-checkpoints">
+              <div class="bc-checkpoint is-reached" style="left: 100%; 
+               background-color: #93D3FF;
+               color: #4D4949;">
+                {{ 'icon-gift.svg' | inline_asset_content }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bc-progress-wrap">
+          <div class="bc-progress-text" style="color: #000000;">
+            🎉 Kostenloser Versand freigeschaltet!
+          </div>
+          <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
+            <div class="bc-progress-fill" style="width: 100%; background-color: #93D3FF;"></div>
+            <div class="bc-checkpoints">
+              <div class="bc-checkpoint is-reached" style="left: 100%; 
+               background-color: #93D3FF;
+               color: #4D4949;">
+                {{ 'icon-truck.svg' | inline_asset_content }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <cart-drawer-items
         {% if cart == empty %}
         class=" is-empty"

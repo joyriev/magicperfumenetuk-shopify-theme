@@ -29,9 +29,7 @@
 }
 
 .drawer__inner-empty {
-  height: 100%;
-  padding: 0 1.5rem;
-  overflow: hidden;
+  padding: 20px 24px 60px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -41,16 +39,6 @@
   flex-direction: column;
   flex: 1;
   justify-content: center;
-}
-
-cart-drawer.is-empty .drawer__inner {
-  display: grid;
-  grid-template-rows: 1fr;
-  align-items: center;
-}
-
-cart-drawer.is-empty .drawer__header {
-  display: none;
 }
 
 cart-drawer:not(.is-empty) .cart-drawer__warnings,
@@ -164,6 +152,7 @@ cart-drawer {
   flex-grow: 1;
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 30px;
 }
 
 .cart-drawer__collection {
@@ -457,4 +446,65 @@ cart-drawer-items::-webkit-scrollbar-track-piece {
   .cart-drawer .cart-item__error {
     margin-left: 0;
   }
+}
+
+/* Progress Bar Styles */
+.bc-rewards-bars-wrap {
+    padding: 16px 24px;
+    display: flex;
+    column-gap: 8px;
+    row-gap: 32px;
+    border-bottom: 1px solid #E2E2E2;
+    margin-bottom: 16px;
+}
+
+.bc-progress-wrap {
+    padding-right: 12px;
+    flex: 1;
+}
+
+.bc-progress-text {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1.25;
+}
+
+.bc-progress-bar {
+    position: relative;
+    height: 8px;
+    border-radius: 99px;
+    margin-top: 8px;
+}
+
+.bc-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s ease;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.25) 75%, transparent 75%, transparent);
+    background-size: 20px 20px;
+}
+
+.bc-checkpoints {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+
+.bc-checkpoint {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
