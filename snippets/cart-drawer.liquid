@@ -91,7 +91,7 @@
 
             <div class="bc-progress-text" style="color: #000000;">
               {% if cart_total >= 5000 %}
-                🎉 Free shipping unlocked! {{ cart_total }}
+                🎉 Free shipping unlocked!
               {% else %}
                 Add {{ 5000 | minus: cart_total | money }} more for free shipping
               {% endif %}
