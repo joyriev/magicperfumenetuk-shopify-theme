@@ -551,6 +551,7 @@
         },
         "review_EHhBTz": {
           "type": "review",
+          "disabled": true,
           "settings": {
             "content": "<p>“I’ve worn Creed Aventus for years, but this is the closest dupe I’ve found — and at a fraction of the price. The pineapple-vanilla combination is perfectly captured.”</p>",
             "author": "Alvarez P.",
