@@ -441,6 +441,7 @@
         },
         "review_PKRG66": {
           "type": "review",
+          "disabled": true,
           "settings": {
             "content": "<p>“I wasn’t sure what to expect, but this really impressed me. It smells super fresh and honestly quite close to Aventus. It lasts well and the price is much better.”</p>",
             "author": "Michael T.",
