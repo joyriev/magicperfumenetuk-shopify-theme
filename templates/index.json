@@ -24,8 +24,8 @@
       "name": "Homepage Hero",
       "settings": {
         "background_color": "#0b0b0b",
-        "background_image": "shopify://shop_images/magic_header_1.png",
-        "mobile_background_image": "shopify://shop_images/magic_header_mobile_1.jpg",
+        "background_image": "shopify://shop_images/magyx_header_desktop.webp",
+        "mobile_background_image": "shopify://shop_images/magyx_header_mobile.webp",
         "title": "Homepage Hero",
         "subtitle": "Acquista 3, 1 è GRATIS",
         "button_text": "Per uomo",
