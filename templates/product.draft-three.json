@@ -235,6 +235,17 @@
         "padding_bottom": 72
       }
     },
+    "similar_scents_N7ATEW": {
+      "type": "similar-scents",
+      "name": "Similar Scents",
+      "settings": {
+        "background_color": "#f7f7f7",
+        "title": "Parfums mit ähnlichen Duftnoten",
+        "subtitle": "Die clevere Alternative zu überteuerten Luxusmarken.",
+        "padding_top": 0,
+        "padding_bottom": 72
+      }
+    },
     "feature_heighlights_fCUG3E": {
       "type": "feature-heighlights",
       "blocks": {
@@ -853,6 +864,7 @@
   },
   "order": [
     "main",
+    "similar_scents_N7ATEW",
     "feature_heighlights_fCUG3E",
     "scent_breakdown_pqKDL9",
     "stacks_up_WR4y4d",
