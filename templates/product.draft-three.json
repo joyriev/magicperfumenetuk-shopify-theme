@@ -237,7 +237,6 @@
     },
     "similar_scents_N7ATEW": {
       "type": "similar-scents",
-      "disabled": true,
       "name": "Similar Scents",
       "settings": {
         "background_color": "#f7f7f7",
