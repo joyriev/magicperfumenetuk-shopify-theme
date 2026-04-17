@@ -27,10 +27,10 @@
         "background_image": "shopify://shop_images/magyx_header_desktop.webp",
         "mobile_background_image": "shopify://shop_images/magyx_header_mobile.webp",
         "title": "Homepage Hero",
-        "subtitle": "Acquista 3, 1 è GRATIS",
-        "button_text": "Per uomo",
+        "subtitle": "Acquista 3, il quarto è tuo.",
+        "button_text": "Scopri per lui",
         "button_link": "shopify://collections/man",
-        "second_button_text": "Per donna",
+        "second_button_text": "Scopri per lei",
         "second_button_link": "shopify://collections/woman",
         "padding_top": 36,
         "padding_bottom": 36
