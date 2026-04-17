@@ -2133,6 +2133,12 @@
     line-height: 20px !important
 }
 
+.after\:\!text-xs::after {
+    content: var(--tw-content);
+    font-size: 12px !important;
+    line-height: 16px !important
+}
+
 .after\:text-black::after {
     content: var(--tw-content);
     --tw-text-opacity: 1;
@@ -2400,6 +2406,10 @@
 
     .md\:text-center {
         text-align: center
+    }
+
+    .md\:text-right {
+        text-align: right
     }
 
     .md\:text-2xl {
