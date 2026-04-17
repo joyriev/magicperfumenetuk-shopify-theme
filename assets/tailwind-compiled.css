@@ -413,6 +413,11 @@
     height: 28px !important
 }
 
+.\!size-8 {
+    width: 32px !important;
+    height: 32px !important
+}
+
 .size-10 {
     width: 40px;
     height: 40px
@@ -436,6 +441,11 @@
 .size-3 {
     width: 12px;
     height: 12px
+}
+
+.size-32 {
+    width: 128px;
+    height: 128px
 }
 
 .size-4 {
@@ -598,6 +608,10 @@
 
 .max-w-\[700px\] {
     max-width: 700px
+}
+
+.max-w-full {
+    max-width: 100%
 }
 
 .max-w-md {
@@ -2107,6 +2121,18 @@
 .before\:content-\[\'\'\]::before {
     --tw-content: '';
     content: var(--tw-content)
+}
+
+.after\:\!text-sm::after {
+    content: var(--tw-content);
+    font-size: 14px !important;
+    line-height: 20px !important
+}
+
+.after\:text-black::after {
+    content: var(--tw-content);
+    --tw-text-opacity: 1;
+    color: rgb(0 0 0 / var(--tw-text-opacity, 1))
 }
 
 .hover\:scale-105:hover {
