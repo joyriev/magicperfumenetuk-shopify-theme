@@ -146,7 +146,7 @@
       "name": "Popular Products",
       "settings": {
         "background_color": "#f7f7f7",
-        "heading": "I più venduti",
+        "heading": "Quelli che si riordinano senza pensarci",
         "subheading": "",
         "collection": "best-sellers",
         "show_all_button_text": "Scopri tutti i più venduti",
@@ -160,7 +160,7 @@
         "heading_CcxYji": {
           "type": "heading",
           "settings": {
-            "content": "Produzione nell’Unione Europea",
+            "content": "Prodotto in Europa. Ogni dettaglio controllato.",
             "heading_type": "h2",
             "font_size": 40,
             "mobile_font_size": 24,
@@ -170,7 +170,7 @@
         "text_gHnd8C": {
           "type": "text",
           "settings": {
-            "content": "<p><br/>La nostra produzione europea garantisce standard qualitativi elevati e un controllo rigoroso in ogni fase del processo. </p><p>Dalla selezione di materie prime pregiate fino al riempimento accurato di ogni flacone, ogni dettaglio è seguito con la massima attenzione per offrire un prodotto all’altezza delle più alte aspettative in termini di qualità e artigianalità.<br/><br/></p>",
+            "content": "<p><br/>Ogni fragranza Magyx viene miscelata in impianti europei che rispettano i più severi standard IFRA. Niente ingredienti di dubbia provenienza. </p><p>Nessun riempitivo. Le stesse materie prime dei marchi da cui ci siamo ispirati — senza pagare la loro pubblicità.<br/><br/></p>",
             "mobile_content": "",
             "font_size": 18,
             "text_color": "#000000"
