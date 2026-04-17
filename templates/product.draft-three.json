@@ -52,14 +52,6 @@
           "disabled": true,
           "settings": {}
         },
-        "text_RTGAG3": {
-          "type": "text",
-          "name": "Notes",
-          "settings": {
-            "text": "<strong>Note di Testa:</strong> {{ product.metafields.custom.top_notes.value.heading.value }}",
-            "text_style": "body"
-          }
-        },
         "custom_liquid_QcxgR4": {
           "type": "custom_liquid",
           "settings": {
@@ -214,7 +206,6 @@
         "variant_picker_hH3Diz",
         "buy_buttons_eXWBwX",
         "reactive_atc_LBDQE9",
-        "text_RTGAG3",
         "custom_liquid_QcxgR4",
         "payment_badges_FkCwVc",
         "delivery_deadline_CQHJwz",
