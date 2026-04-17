@@ -44,10 +44,10 @@
                   <div class="text-lg my-2">
                     {{ similar_scent.price.value | money }}
                   </div>
-                  <div class="inline-block text-xs leading-tight bg-white py-1 px-3 rounded-full mb-2 {% if similar_scent.similarity == 'Ähnliche Notizen' %}text-green-600{% else %} text-yellow-600 {% endif %}">
+                  <div class="inline-block text-xs leading-tight bg-white py-1 px-3 rounded-full mb-2 {% if similar_scent.similarity == 'Note simili' %}text-green-600{% else %} text-yellow-600 {% endif %}">
                     {{ similar_scent.similarity }}
                   </div>
-                  <p class="my-0 text-sm underline cursor-pointer" data-tippy-content="{{ similar_scent.common_notes }}">Gemeinsame Noten ansehen</p>
+                  <p class="my-0 text-sm underline cursor-pointer" data-tippy-content="{{ similar_scent.common_notes }}">Visualizza note comuni</p>
                 </div>
               </div>
             </div>
@@ -90,26 +90,26 @@
 
 {% schema %}
   {
-    "name": "Similar Scents",
+    "name": "Profumi simili",
     "tag": "section",
     "settings": [
       {
         "type": "color",
         "id": "background_color",
-        "label": "Background Color",
+        "label": "Colore di sfondo",
         "default": "#fcfbf9"
       },
       {
         "type": "text",
         "id": "title",
-        "label": "Title",
-        "default": "Parfums mit ähnlichen Duftnoten"
+        "label": "Titolo",
+        "default": "Profumi con note olfattive simili"
       },
       {
         "type": "text",
         "id": "subtitle",
-        "label": "Subtitle",
-        "default": "Die clevere Alternative zu überteuerten Luxusmarken."
+        "label": "Sottotitolo",
+        "default": "L'alternativa intelligente ai marchi di lusso sovrapprezzati."
       },
       {
         "type": "header",
@@ -138,7 +138,7 @@
     ],
     "presets": [
       {
-        "name": "Similar Scents"
+        "name": "Profumi simili"
       }
     ]
   }
