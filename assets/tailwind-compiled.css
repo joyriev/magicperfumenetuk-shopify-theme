@@ -199,6 +199,11 @@
     margin-bottom: 0px
 }
 
+.my-1 {
+    margin-top: 4px;
+    margin-bottom: 4px
+}
+
 .my-2 {
     margin-top: 8px;
     margin-bottom: 8px
@@ -1501,6 +1506,10 @@
     font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
+.font-serif {
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif
+}
+
 .text-2xl {
     font-size: 24px;
     line-height: 32px
@@ -1853,6 +1862,11 @@
 
 .text-white\/50 {
     color: rgb(255 255 255 / 0.5)
+}
+
+.text-yellow-600 {
+    --tw-text-opacity: 1;
+    color: rgb(202 138 4 / var(--tw-text-opacity, 1))
 }
 
 .underline {
