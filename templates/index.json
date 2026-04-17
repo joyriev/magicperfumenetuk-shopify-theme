@@ -23,7 +23,7 @@
       "type": "home-hero",
       "name": "Homepage Hero",
       "settings": {
-        "background_color": "#0b0b0b",
+        "background_color": "#d2bfa8",
         "background_image": "shopify://shop_images/magyx_header_desktop.webp",
         "mobile_background_image": "shopify://shop_images/magyx_header_mobile.webp",
         "title": "Homepage Hero",
