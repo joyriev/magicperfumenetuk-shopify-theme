@@ -237,11 +237,12 @@
     },
     "similar_scents_N7ATEW": {
       "type": "similar-scents",
+      "disabled": true,
       "name": "Similar Scents",
       "settings": {
         "background_color": "#f7f7f7",
-        "title": "Parfums mit ähnlichen Duftnoten",
-        "subtitle": "Die clevere Alternative zu überteuerten Luxusmarken.",
+        "title": "Profumi con note olfattive simili",
+        "subtitle": "L'alternativa intelligente ai marchi di lusso dai prezzi esorbitanti.",
         "padding_top": 0,
         "padding_bottom": 72
       }
