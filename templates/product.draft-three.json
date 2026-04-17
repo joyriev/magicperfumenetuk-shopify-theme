@@ -106,7 +106,7 @@
         "collapsible_tab_FAAFhb": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Scent Profile",
+            "heading": "Profilo Olfattivo",
             "icon": "none",
             "content": "{{ product.description }}",
             "page": ""
