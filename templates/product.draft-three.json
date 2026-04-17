@@ -22,6 +22,10 @@
           "type": "title",
           "settings": {}
         },
+        "similar_scents_6RgR66": {
+          "type": "similar_scents",
+          "settings": {}
+        },
         "price_MG94AW": {
           "type": "price",
           "disabled": true,
@@ -197,6 +201,7 @@
       "block_order": [
         "custom_rating_text_ehyqmQ",
         "title_DkyBTh",
+        "similar_scents_6RgR66",
         "price_MG94AW",
         "variant_picker_hH3Diz",
         "buy_buttons_eXWBwX",
