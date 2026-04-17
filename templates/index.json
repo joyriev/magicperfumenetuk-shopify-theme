@@ -99,7 +99,7 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Consegna in 3–4 giorni con GLS Italia",
+            "perk_title": "Consegna in 3–4 giorni. Tracciata, garantita.",
             "perk_content": "Spedizione gratuita su tutti gli ordini superiori a 40€"
           }
         },
@@ -107,15 +107,15 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SAVINGS.avif",
-            "perk_title": "Sconti esclusivi dedicati ai clienti fidelizzati",
-            "perk_content": "Voucher fino a 100€"
+            "perk_title": "Più acquisti, più risparmi",
+            "perk_content": "fino a 100€ di voucher"
           }
         },
         "perks_yTdgqz": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/icon-refund.svg",
-            "perk_title": "Garanzia soddisfatti o rimborsati entro 60 giorni",
+            "perk_title": "60 giorni. Senza domande.",
             "perk_content": "enza domande"
           }
         },
@@ -123,8 +123,8 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SSUPPORT.webp",
-            "perk_title": "Assistenza clienti dedicata",
-            "perk_content": "Dalle 8:00 alle 20:00, 7 giorni su 7"
+            "perk_title": "Sempre qualcuno disponibile",
+            "perk_content": "7 giorni su 7"
           }
         }
       },
