@@ -1,7 +1,16 @@
 {% liquid
   assign product_form_id = 'product-form-' | append: section.id
-  assign selected_variant = product.selected_or_first_available_variant
   assign selling_points = product.metafields.custom.selling_points.value
+  assign selected_variant = product.selected_or_first_available_variant
+
+  for variant in product.variants
+    assign variant_title_down = variant.title | downcase
+
+    if variant_title_down contains '50'
+      assign selected_variant = variant
+      break
+    endif
+  endfor
 %}
 
 {% if selling_points %}
@@ -26,11 +35,11 @@
 {% if product.variants.size > 1 %}
   {% comment %} Variant Selector {% endcomment %}
   <h2 class="m-0 text-sm text-gray-400 tracking-wide font-normal">Selezione formato:</h2>
-  <div class="flex gap-3 flex-wrap" id="variant-selector">
+  <div class="flex gap-3" id="variant-selector">
     {% for variant in product.variants %}
       <button
         type="button"
-        class="variant-button flex md:flex-col items-center gap-2 rounded-lg px-7 pt-5 pb-4 bg-white border-2 border-solid cursor-pointer font-['Plus_Jakarta_Sans'] relative {% if variant.id == selected_variant.id %}border-black{% else %}border-gray-200{% endif %}"
+        class="variant-button flex-grow rounded-lg px-7 pt-5 pb-4 bg-white border-2 border-solid cursor-pointer font-['Plus_Jakarta_Sans'] relative {% if variant.id == selected_variant.id %}border-black{% else %}border-gray-200{% endif %}"
         data-variant-id="{{ variant.id }}"
         data-variant-title="{{ variant.title }}"
         data-original-price="{{ variant.price | money }}"
