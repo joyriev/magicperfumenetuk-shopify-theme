@@ -22,7 +22,7 @@
           "type": "title",
           "settings": {}
         },
-        "similar_scents_6RgR66": {
+        "similar_scents_EiG7Hk": {
           "type": "similar_scents",
           "settings": {}
         },
@@ -201,7 +201,7 @@
       "block_order": [
         "custom_rating_text_ehyqmQ",
         "title_DkyBTh",
-        "similar_scents_6RgR66",
+        "similar_scents_EiG7Hk",
         "price_MG94AW",
         "variant_picker_hH3Diz",
         "buy_buttons_eXWBwX",
