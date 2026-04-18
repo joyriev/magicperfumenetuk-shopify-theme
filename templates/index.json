@@ -28,9 +28,9 @@
         "mobile_background_image": "shopify://shop_images/magyx_header_mobile.webp",
         "title": "Homepage Hero",
         "subtitle": "Acquista 3, il quarto è tuo.",
-        "button_text": "Uomo",
+        "button_text": "Per Uomo",
         "button_link": "shopify://collections/man",
-        "second_button_text": "Donna",
+        "second_button_text": "Per Donna",
         "second_button_link": "shopify://collections/woman",
         "padding_top": 36,
         "padding_bottom": 36
