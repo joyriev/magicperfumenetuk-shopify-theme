@@ -217,8 +217,49 @@
 {% assign month_en = future_date | date: "%B" %}
 {% assign day = future_date | date: "%d" %}
 
-{% assign weekday = weekday_en %}
-{% assign month = month_en %}
+{% case weekday_en %}
+  {% when "Monday" %}
+    {% assign weekday = "Lunedì" %}
+  {% when "Tuesday" %}
+    {% assign weekday = "Martedì" %}
+  {% when "Wednesday" %}
+    {% assign weekday = "Mercoledì" %}
+  {% when "Thursday" %}
+    {% assign weekday = "Giovedì" %}
+  {% when "Friday" %}
+    {% assign weekday = "Venerdì" %}
+  {% when "Saturday" %}
+    {% assign weekday = "Sabato" %}
+  {% when "Sunday" %}
+    {% assign weekday = "Domenica" %}
+{% endcase %}
+
+{% case month_en %}
+  {% when "January" %}
+    {% assign month = "Gennaio" %}
+  {% when "February" %}
+    {% assign month = "Febbraio" %}
+  {% when "March" %}
+    {% assign month = "Marzo" %}
+  {% when "April" %}
+    {% assign month = "Aprile" %}
+  {% when "May" %}
+    {% assign month = "Maggio" %}
+  {% when "June" %}
+    {% assign month = "Giugno" %}
+  {% when "July" %}
+    {% assign month = "Luglio" %}
+  {% when "August" %}
+    {% assign month = "Agosto" %}
+  {% when "September" %}
+    {% assign month = "Settembre" %}
+  {% when "October" %}
+    {% assign month = "Ottobre" %}
+  {% when "November" %}
+    {% assign month = "Novembre" %}
+  {% when "December" %}
+    {% assign month = "Dicembre" %}
+{% endcase %}
 
 <div class="!my-6 flex justify-center items-center gap-3">
   <span class="size-3 bg-green-600 rounded-full animate-ping-large shrink-0"></span>
