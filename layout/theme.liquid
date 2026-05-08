@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="">
     <link rel="canonical" href="{{ canonical_url }}">
-<meta name="facebook-domain-verification" content="fp0qoohovvyj592jpakoee00leo926" />
+    <meta name="facebook-domain-verification" content="fp0qoohovvyj592jpakoee00leo926" />
     {%- if settings.favicon != blank -%}
       <link
         rel="icon"
@@ -361,7 +361,7 @@ body {
       class="content-for-layout focus-none"
       role="main"
       tabindex="-1">
-      {% capture ICART_FULL_PAGE_LAYOUT %}{{ content_for_layout }}{% endcapture %}{% include 'icart-variables', ICART_FULL_PAGE_LAYOUT: ICART_FULL_PAGE_LAYOUT %}
+      {{ content_for_layout }}
     </main>
 
     {% sections 'footer-group' %}
@@ -425,6 +425,6 @@ body {
     {% unless template.name == 'product' %}
       {% section 'fragrance-search' %}
     {% endunless %}
-    {% render 'checkout-modal' %}
+  {% comment %} {% render 'checkout-modal' %} {% endcomment %}
   </body>
 </html>
