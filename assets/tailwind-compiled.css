@@ -342,6 +342,10 @@
     margin-top: 24px
 }
 
+.\!mb-1 {
+    margin-bottom: 4px !important
+}
+
 .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
