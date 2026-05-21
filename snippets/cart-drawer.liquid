@@ -69,7 +69,8 @@
 
             <div class="bc-progress-text" style="color: #000000;">
               {% if cart_count >= 4 %}
-                🎉 Congratulazioni! <strong>1 bottiglie gratis</strong>.
+                🎉 Congratulazioni!
+                <strong>1 bottiglie gratis</strong>.
               {% else %}
                 Aggiungi
                 <strong>{{ 4 | minus: cart_count }}</strong>
@@ -96,7 +97,9 @@
               {% if cart_total >= 5000 %}
                 🎉 Spedizione gratuita sbloccata!
               {% else %}
-                Aggiungi <strong>{{ 5000 | minus: cart_total | money }}</strong> per la spedizione gratuita.
+                Aggiungi
+                <strong>{{ 5000 | minus: cart_total | money }}</strong>
+                per la spedizione gratuita.
               {% endif %}
             </div>
             <div class="bc-progress-bar" style="background-color: #E2E2E2; margin-bottom: 0;">
@@ -528,9 +531,27 @@
             {%- endif -%}
           </div>
 
-          <div class="totals" role="status">
-            <h2 class="totals__total">{{ 'sections.cart.estimated_total' | t }}</h2>
-            <p class="totals__total-value">{{ cart.total_price | money_with_currency }}</p>
+          {% if cart.total_price != cart.original_total_price %}
+            <div class="totals flex-wrap gap-4 !mb-3" role="status">
+              <h2 class="totals__total">Subtotale:</h2>
+              <p class="totals__total-value">
+                {{ cart.original_total_price | money_with_currency }}
+              </p>
+            </div>
+
+            <div class="totals flex-wrap gap-4 !mb-3" role="status">
+              <h2 class="totals__total">Sconto:</h2>
+              <p class="totals__total-value">
+                <span class="text-green-700">-{{ cart.original_total_price | minus: cart.total_price | money_with_currency }}</span>
+              </p>
+            </div>
+          {% endif %}
+
+          <div class="totals flex-wrap gap-4" role="status">
+            <h2 class="totals__total">Totale:</h2>
+            <p class="totals__total-value">
+              <span>{{ cart.total_price | money_with_currency }}</span>
+            </p>
           </div>
 
           <small class="tax-note caption-large rte">
@@ -583,8 +604,6 @@
             disabled
             {% endif %}>
             {{ 'sections.cart.checkout' | t }}
-            <span style="color: #6c6c6c; margin: 0 5px;">•</span>
-            {{ cart.total_price | money_with_currency }}
           </button>
         </div>
         <img
