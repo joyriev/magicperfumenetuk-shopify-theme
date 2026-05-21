@@ -127,6 +127,7 @@
         },
         "collapsible_tab_HiNKBa": {
           "type": "collapsible_tab",
+          "disabled": true,
           "settings": {
             "heading": "Si tratta di acqua profumata?",
             "icon": "none",
