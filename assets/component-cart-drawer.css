@@ -294,7 +294,6 @@ cart-drawer-items {
 
 .cart-drawer .totals {
   justify-content: space-between;
-  display: none;
 }
 
 .cart-drawer .price {
