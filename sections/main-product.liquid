@@ -880,7 +880,7 @@
                   {% endif %}
                 {% when 'similar_scents' %}
                   {% if product.metafields.custom.similar_scents != blank %}
-                    <p class="text-base font-serif leading-tight">Parfums mit ähnlichen Duftnoten:</p>
+                    <p class="text-base font-serif leading-tight">Profumi con note simili:</p>
                     {% assign similar_scents = product.metafields.custom.similar_scents.value %}
                     <div class="swiper slider-{{ section.id }}-{{ forloop.index }}">
                       <div class="swiper-wrapper">
