@@ -336,12 +336,22 @@
         "stack_w3Jyyc",
         "stack_dXbqXq"
       ],
+      "disabled": true,
       "name": "Stacks Up",
       "settings": {
         "background_color": "#f7f7f7",
         "title": "Why Magic Perfume?",
         "subtitle": "The smart alternative to overpriced luxury brands.",
         "padding_top": 12,
+        "padding_bottom": 72
+      }
+    },
+    "scent_breakdown_wCqYbq": {
+      "type": "scent-breakdown",
+      "name": "Scent Breakdown",
+      "settings": {
+        "background_color": "#f7f7f7",
+        "padding_top": 72,
         "padding_bottom": 72
       }
     },
@@ -882,6 +892,7 @@
     "feature_heighlights_NpGkmP",
     "scent_breakdown_pqKDL9",
     "stacks_up_WR4y4d",
+    "scent_breakdown_wCqYbq",
     "manus_smell_journey_bqViA7",
     "manus_why_it_last_89w7wG",
     "manus_comparison_7pxmUi",
