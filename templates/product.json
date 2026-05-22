@@ -231,47 +231,47 @@
         "padding_bottom": 72
       }
     },
-    "feature_heighlights_fCUG3E": {
+    "feature_heighlights_NpGkmP": {
       "type": "feature-heighlights",
       "blocks": {
-        "perks_MLz9YK": {
+        "perks_iNhz9P": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Delivery in 3-4 Days by Royal Mail",
-            "perk_content": "Free delivery on all orders over £40!"
+            "perk_title": "Consegna in 3–4 giorni. Tracciata, garantita.",
+            "perk_content": "Spedizione gratuita su tutti gli ordini superiori a 40€"
           }
         },
-        "perks_NV4H3P": {
+        "perks_EtC9aR": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SAVINGS.avif",
-            "perk_title": "Exclusive discounts for returning customers",
-            "perk_content": "Vouchers up to £100"
+            "perk_title": "Più acquisti, più risparmi",
+            "perk_content": "fino a 100€ di voucher"
           }
         },
-        "perks_qWY7Uy": {
+        "perks_cAqQXb": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/icon-refund.svg",
-            "perk_title": "60-Day money-back guarantee",
-            "perk_content": "No question asked"
+            "perk_title": "Garanzia 60 giorni soddisfatti o rimborsati.",
+            "perk_content": "Provalo, amalo — o ti rimborsiamo ogni centesimo."
           }
         },
-        "perks_HKnHJ8": {
+        "perks_6hEHiJ": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SSUPPORT.webp",
-            "perk_title": "Expert customer support",
-            "perk_content": "8:00am – 8:00pm, 7 days a week"
+            "perk_title": "Sempre qualcuno disponibile",
+            "perk_content": "7 giorni su 7"
           }
         }
       },
       "block_order": [
-        "perks_MLz9YK",
-        "perks_NV4H3P",
-        "perks_qWY7Uy",
-        "perks_HKnHJ8"
+        "perks_iNhz9P",
+        "perks_EtC9aR",
+        "perks_cAqQXb",
+        "perks_6hEHiJ"
       ],
       "name": "Feature Highlights",
       "settings": {
@@ -879,7 +879,7 @@
   },
   "order": [
     "main",
-    "feature_heighlights_fCUG3E",
+    "feature_heighlights_NpGkmP",
     "scent_breakdown_pqKDL9",
     "stacks_up_WR4y4d",
     "manus_smell_journey_bqViA7",
