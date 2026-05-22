@@ -20,7 +20,7 @@
     </span>
   </div>
   <div class="text-lg font-semibold text-black leading-normal">
-    Works out at just {{ product.price | divided_by: product_count | money }} / bottle
+    Solo {{ product.price | divided_by: product_count | money }} per bottiglia
   </div>
 </div>
 
@@ -54,9 +54,9 @@
           stroke-width="2"
           d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
       </svg>
-      <span>Upgrade to
+      <span>Passa a
         <a href="{{ next_bundle_product.url }}" class="ml-auto font-medium text-red-600 whitespace-nowrap transition-colors">
-          {{ next_size }}ML for {{ price_difference }} more.</a>
+          {{ next_size }}ML con soli {{ price_difference }} in più.</a>
       </span>
     </div>
   </div>
@@ -72,7 +72,7 @@
     <template x-for="(product, index) in $store.bundleBuilder.selectedProducts" :key="product.id">
       <div class="bg-white border border-solid border-black w-full p-[7px] flex items-center gap-2 justify-between rounded-lg relative">
         {% if product.tags contains 'bogo' %}
-          <div x-show="index + 1 === {{ product_count }}" class="bg-[#b72f33] text-white px-2 py-1 font-semibold absolute top-0 right-0 rounded-tr-md leading-none text-sm">Free Bottle</div>
+          <div x-show="index + 1 === {{ product_count }}" class="bg-[#b72f33] text-white px-2 py-1 font-semibold absolute top-0 right-0 rounded-tr-md leading-none text-sm">Bottiglia gratuita</div>
         {% endif %}
         <img
           class="object-cover rounded"
@@ -92,11 +92,11 @@
     <template x-for="i in ({{ product_count }} - $store.bundleBuilder.selectedProducts.length)" :key="i">
       <button @click="$store.bundleBuilder.showModal = true" class="bg-white border border-solid border-gray-200 flex items-center p-[7px] rounded-lg gap-2 pr-4 cursor-pointer relative">
         {% if product.tags contains 'bogo' %}
-          <div x-show="i === {{ product_count }} - $store.bundleBuilder.selectedProducts.length" class="bg-[#b72f33] text-white px-2 py-1 font-semibold absolute top-0 right-0 rounded-tr-md">Free Bottle</div>
+          <div x-show="i === {{ product_count }} - $store.bundleBuilder.selectedProducts.length" class="bg-[#b72f33] text-white px-2 py-1 font-semibold absolute top-0 right-0 rounded-tr-md">Bottiglia gratuita</div>
         {% endif %}
         {% render 'perfume-icon' %}
         <div class="text-base">
-          Choose your perfume
+          Scegli il tuo profumo
         </div>
         <span class="inline-block ml-auto">{% render 'arrow-down' %}</span>
       </button>
@@ -112,8 +112,8 @@
         'cursor-pointer hover:bg-black': $store.bundleBuilder.selectedProducts.length >= {{ product_count }}
       }"
     class="atc-button cta_product_from_submit_btn flex flex-wrap items-center !mb-0 text-2xl !pb-3 !pt-3 rounded-lg button bg-black transition-colors shadow-xl tracking-normal button--full-width button--primary">
-    <span x-show="$store.bundleBuilder.selectedProducts.length < {{ product_count }}" x-text="'Select ' + ({{ product_count }} - $store.bundleBuilder.selectedProducts.length) + ' More'"></span>
-    <div class="flex" x-show="$store.bundleBuilder.selectedProducts.length === {{ product_count }}">Shop Now
+    <span x-show="$store.bundleBuilder.selectedProducts.length < {{ product_count }}" x-text="'Seleziona altre ' + ({{ product_count }} - $store.bundleBuilder.selectedProducts.length)"></span>
+    <div class="flex" x-show="$store.bundleBuilder.selectedProducts.length === {{ product_count }}">Acquista ora
       <div class="ml-2 pl-2 border-0 border-l flex items-center border-solid border-gray-200/20">
         <div
           class="inline-block text-lg bg-black px-3 rounded"
