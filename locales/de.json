@@ -644,6 +644,18 @@
           },
           "max_cycles_base_shipping": {
             "many": "%{count} weitere Lieferungen zu je %{shipping_price}"
+          },
+          "max_cycles_base_shipping_delivery_not_included": {
+            "many": "%{count} weitere Lieferungen zu je %{shipping_price}"
+          },
+          "prepaid_free_shipping_with_cycles": {
+            "many": "Kostenloser Versand für den ersten Zeitraum von %{cycle}, danach zum Preis von %{recurring_order_shipping_price}"
+          },
+          "prepaid_order_one_cycle": {
+            "many": "%{shipping_price} für weitere %{count} Lieferungen (%{per_delivery_cost})"
+          },
+          "prepaid_order_one_cycle_delivery_not_included": {
+            "many": "%{shipping_price} pro %{count} Lieferungen (%{per_delivery_cost})"
           }
         }
       }
