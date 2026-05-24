@@ -541,5 +541,29 @@
         }
       }
     }
+  },
+  "shopify": {
+    "checkout": {
+      "general": {
+        "map": {
+          "cluster_title": {
+            "many": "Gruppierung von {{number}} Textmarkern"
+          }
+        }
+      },
+      "stock": {
+        "unshippable_product": {
+          "header": {
+            "many": "Keine Lieferung verfügbar für %{count} Artikel"
+          },
+          "message": {
+            "many": "Diese Artikel werden aus deinem Warenkorb entfernt, da für deine Adresse keine Liefermethoden verfügbar sind."
+          }
+        },
+        "item_label": {
+          "many": "{{count}} Artikel"
+        }
+      }
+    }
   }
 }
