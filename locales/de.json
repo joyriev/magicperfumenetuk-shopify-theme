@@ -861,6 +861,21 @@
         },
         "location_nearby_one_item": {
           "many": "Es gibt %{count} Filialen in der Nähe mit diesem Artikel"
+        },
+        "location_nearby_other_items": {
+          "many": "Es gibt %{count} Filialen in der Nähe mit den Artikeln"
+        },
+        "location_nearby_short_one_item": {
+          "many": "%{count} Filialen in der Nähe mit diesem Artikel"
+        },
+        "location_nearby_short_other_items": {
+          "many": "%{count} Filialen in der Nähe mit den Artikeln"
+        },
+        "location_far_away_one_item": {
+          "many": "%{count} Standorte mit dem Artikel"
+        },
+        "location_far_away_other_items": {
+          "many": "%{count} Standorte mit Artikeln"
         }
       }
     }
