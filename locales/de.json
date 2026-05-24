@@ -849,6 +849,18 @@
         },
         "toggle_more_locations": {
           "many": "%{count} weitere Standorte"
+        },
+        "pickup_unavailable_banner_title_with_country": {
+          "many": "Keine Filiale in %{country} mit deinen Artikeln"
+        },
+        "location_information_far_away_one_item": {
+          "many": "Es gibt %{count} Standorte mit dem Artikel"
+        },
+        "location_information_far_away_other_items": {
+          "many": "Es gibt %{count} Standorte mit den Artikeln"
+        },
+        "location_nearby_one_item": {
+          "many": "Es gibt %{count} Filialen in der Nähe mit diesem Artikel"
         }
       }
     }
