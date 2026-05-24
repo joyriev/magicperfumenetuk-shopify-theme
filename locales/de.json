@@ -729,6 +729,22 @@
         },
         "thank_you_unconfirmed_items_heading": {
           "many": "Einige Artikel sind nicht bestätigt"
+        },
+        "thank_you_unconfirmed_items_description": {
+          "many": "Für diese wurde keine Belastung vorgenommen"
+        },
+        "thank_you_item_label": {
+          "many": "%{count} Artikel"
+        },
+        "items_fulfilled_by_store": {
+          "many": "Die Artikel, die du gekauft hast, werden von anderen Geschäften versendet."
+        }
+      },
+      "review": {
+        "blocks": {
+          "ship_items_to": {
+            "many": "Versende %{count} Artikel an"
+          }
         }
       }
     }
