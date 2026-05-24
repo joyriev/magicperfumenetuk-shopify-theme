@@ -594,6 +594,25 @@
         },
         "view_all_items": {
           "many": "Alle Artikel anzeigen (%{count})"
+        },
+        "pickup_unavailable_banner_title": {
+          "many": "Kein Geschäft verfügbar mit deinen Artikeln"
+        },
+        "pickup_unavailable_banner_title_with_country": {
+          "many": "Kein Geschäft verfügbar in %{country} mit deinen Artikeln"
+        },
+        "discount_code_applied_count": {
+          "many": "Zeige %{count} Rabatte"
+        }
+      },
+      "shipping": {
+        "other_method": {
+          "many": "%{count} weitere Zahlungsmethoden verfügbar ab"
+        },
+        "subscription_delivery_description": {
+          "prepaid_delivery_frequency": {
+            "many": "für %{count} Lieferungen"
+          }
         }
       }
     }
