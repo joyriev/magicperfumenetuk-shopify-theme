@@ -821,6 +821,24 @@
         "validation_errors_banner": {
           "heading": {
             "many": "Es gibt {{count}} Fehler:"
+          },
+          "errors_in_section": {
+            "many": "{{count}} Fehler in {{section}}"
+          }
+        }
+      },
+      "local_pickup": {
+        "paginator": {
+          "label": {
+            "many": "%{first} - %{last} von %{count} Geschäften"
+          }
+        },
+        "reveal_more_label": {
+          "many": "Zeige weitere %{count} Standorte"
+        },
+        "all_stores_far_away": {
+          "title_with_item": {
+            "many": "Die nächste Filiale mit deinen Artikeln ist mehr als %{distance} von %{location} entfernt"
           }
         }
       }
