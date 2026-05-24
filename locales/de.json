@@ -582,6 +582,18 @@
           "merchandise_quantity_label": {
             "many": "%{count} Artikel"
           }
+        },
+        "discount_title_stacking": {
+          "many": "Rabatte"
+        },
+        "subtotal_label_with_quantity": {
+          "many": "Zwischensumme · %{count} Artikel"
+        },
+        "number_items": {
+          "many": "%{count} Artikel"
+        },
+        "view_all_items": {
+          "many": "Alle Artikel anzeigen (%{count})"
         }
       }
     }
