@@ -657,6 +657,20 @@
           "prepaid_order_one_cycle_delivery_not_included": {
             "many": "%{shipping_price} pro %{count} Lieferungen (%{per_delivery_cost})"
           }
+        },
+        "shipping_method_recurring_shipments_group_title": {
+          "many": "Wiederkehrende Versände"
+        },
+        "unbranded_description_with_fulfillment_days": {
+          "many": "Versand innerhalb von %{count} Werktagen"
+        },
+        "unbranded_description_with_fulfillment_weeks": {
+          "many": "Versand innerhalb von %{count} Wochen"
+        }
+      },
+      "payment": {
+        "order_covered_by_gift_cards_notice": {
+          "many": "Deine Bestellung ist durch deine Geschenkgutscheine abgedeckt."
         }
       }
     }
