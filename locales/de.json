@@ -695,6 +695,26 @@
         "discount_codes_removed_or_modified_summary": {
           "many": "%{count} Rabattcodes wurden entfernt oder geändert"
         }
+      },
+      "shipping_errors": {
+        "shipping_method_not_available_updated": {
+          "many": "Ein oder mehrere hinzugefügte Artikel werden nicht an deinen Standort versendet. Entferne sie, um den Checkout abzuschließen, oder kontaktiere den Shop."
+        }
+      },
+      "processing": {
+        "wait": {
+          "medium": {
+            "many": "Deine Bestellung wird bearbeitet. Geschätzte Wartezeit: %{count} Minuten."
+          }
+        }
+      },
+      "thank_you": {
+        "login_reorder_link_text": {
+          "many": "Kaufen Sie auch diese Produkte"
+        },
+        "gift_card_confirmation_by_email_typ": {
+          "many": "Du erhältst in wenigen Minuten eine E-Mail mit den Geschenkgutscheinen."
+        }
       }
     }
   }
