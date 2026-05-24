@@ -840,6 +840,15 @@
           "title_with_item": {
             "many": "Die nächste Filiale mit deinen Artikeln ist mehr als %{distance} von %{location} entfernt"
           }
+        },
+        "location_nearby_short": {
+          "many": "%{count} Filialen in deiner Nähe mit diesem Artikel"
+        },
+        "location_far_away": {
+          "many": "%{count} Standorte mit deinem Artikel"
+        },
+        "toggle_more_locations": {
+          "many": "%{count} weitere Standorte"
         }
       }
     }
