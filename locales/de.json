@@ -278,7 +278,8 @@
       "menu": "Menü",
       "cart_count": {
         "one": "{{ count }} Artikel",
-        "other": "{{ count }} Artikel"
+        "other": "{{ count }} Artikel",
+        "many": "{{ count }} Artikel"
       }
     },
     "cart": {
@@ -364,11 +365,13 @@
       "variant_total": "Varianten insgesamt",
       "items_added": {
         "one": "{{ quantity }} Artikel hinzugefügt",
-        "other": "{{ quantity }} Artikel hinzugefügt"
+        "other": "{{ quantity }} Artikel hinzugefügt",
+        "many": "{{ quantity }} Artikel hinzugefügt"
       },
       "items_removed": {
         "one": "{{ quantity }} Artikel entfernt",
-        "other": "{{ quantity }} Artikel entfernt"
+        "other": "{{ quantity }} Artikel entfernt",
+        "many": "{{ quantity }} Artikel entfernt"
       },
       "product_variants": "Produktvarianten",
       "total_items": "Artikel gesamt",
@@ -631,6 +634,16 @@
       },
       "month": {
         "many": "Monate"
+      },
+      "mapClusterTitle": {
+        "many": "Gruppierung von {{number}} Indikatoren"
+      }
+    },
+    "date": {
+      "humanize": {
+        "lessThanOneHourAgo": {
+          "many": "{{count}} Minuten vor"
+        }
       }
     }
   },
