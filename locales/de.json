@@ -540,6 +540,18 @@
           "generic": "Es gab ein Problem mit PayPal. Versuchen Sie es erneut oder verwenden Sie eine andere Zahlungsmethode."
         }
       }
+    },
+    "orders": {
+      "order_list": {
+        "items": {
+          "many": "{{count}} Artikel"
+        }
+      },
+      "order_status": {
+        "gift_card_label": {
+          "many": "Geschenkgutscheine"
+        }
+      }
     }
   },
   "shopify": {
@@ -919,6 +931,18 @@
         "detail_item_label": {
           "many": "{{count}} Artikel"
         }
+      }
+    },
+    "notices": {
+      "order": {
+        "cancel_reason": {
+          "many": "Sonstiges"
+        }
+      }
+    },
+    "page_titles": {
+      "search_results": {
+        "many": "Suche: %{count} Ergebnisse gefunden für \"%{terms}\""
       }
     }
   }
