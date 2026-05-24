@@ -714,6 +714,21 @@
         },
         "gift_card_confirmation_by_email_typ": {
           "many": "Du erhältst in wenigen Minuten eine E-Mail mit den Geschenkgutscheinen."
+        },
+        "gift_card_email_title": {
+          "many": "Geschenkgutscheine per E-Mail versendet"
+        },
+        "gift_card_text_title": {
+          "many": "Geschenkgutscheine per SMS versendet"
+        },
+        "gift_card_resent_confirmation": {
+          "many": "Die Geschenkgutscheine wurden erneut versendet."
+        },
+        "gift_card_resend_failure": {
+          "many": "Es ist ein Problem beim wiederholten Versand der Geschenkgutscheine aufgetreten. Versuchen Sie es erneut oder kontaktieren Sie uns."
+        },
+        "thank_you_unconfirmed_items_heading": {
+          "many": "Einige Artikel sind nicht bestätigt"
         }
       }
     }
