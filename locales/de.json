@@ -682,6 +682,18 @@
           "cashback_descriptor": {
             "many": "Du erhältst das Cashback nach %{count} Tagen"
           }
+        },
+        "discount_show_more_warnings": {
+          "many": "Weitere %{count} anzeigen"
+        },
+        "discount_codes_removed_summary": {
+          "many": "%{count} Rabattcodes wurden entfernt"
+        },
+        "discount_codes_modified_summary": {
+          "many": "%{count} Rabattcodes wurden geändert"
+        },
+        "discount_codes_removed_or_modified_summary": {
+          "many": "%{count} Rabattcodes wurden entfernt oder geändert"
         }
       }
     }
