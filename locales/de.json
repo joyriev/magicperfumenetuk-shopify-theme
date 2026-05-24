@@ -550,6 +550,15 @@
       "order_status": {
         "gift_card_label": {
           "many": "Geschenkgutscheine"
+        },
+        "confirmed_gift_card_additional_description": {
+          "many": "Jeder Geschenkgutschein wird in einer separaten E-Mail versendet."
+        },
+        "delivered_description_gift_card_text": {
+          "many": "Die Geschenkgutscheine wurden per Nachricht versendet."
+        },
+        "gift_resend_success": {
+          "many": "Geschenkgutscheine erneut versendet"
         }
       }
     }
