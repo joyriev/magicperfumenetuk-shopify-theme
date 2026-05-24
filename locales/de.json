@@ -784,6 +784,24 @@
         },
         "products_not_available": {
           "many": "Diese Produkte werden aus deinem Warenkorb entfernt, da sie in deinem Land/in deiner geografischen Region nicht verfügbar sind."
+        },
+        "all_products_in_cart_unavailable": {
+          "many": "Diese Produkte sind in deinem Land/in deiner geografischen Region nicht verfügbar."
+        }
+      },
+      "throttle": {
+        "estimated_wait_time": {
+          "many": "Geschätzte Wartezeit: {{count}} Minuten"
+        }
+      },
+      "deliverability": {
+        "not_deliverable": {
+          "title": {
+            "many": "Keine Lieferung verfügbar für %{count} Artikel"
+          },
+          "message": {
+            "many": "Diese Artikel werden aus deinem Warenkorb entfernt, da für deine Adresse keine Liefermethoden verfügbar sind."
+          }
         }
       }
     }
