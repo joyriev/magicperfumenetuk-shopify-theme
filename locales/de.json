@@ -562,6 +562,26 @@
         },
         "item_label": {
           "many": "{{count}} Artikel"
+        },
+        "unfulfillable_product": {
+          "message": {
+            "many": "%{delivery_method} ist für diese Artikel nicht mehr verfügbar."
+          }
+        }
+      },
+      "order_summary": {
+        "unit_price": {
+          "per_item": {
+            "many": "%{price} pro %{count} Artikel"
+          }
+        },
+        "collapse_component_information": {
+          "many": "Verberge %{count} Artikel"
+        },
+        "discount_discovery": {
+          "merchandise_quantity_label": {
+            "many": "%{count} Artikel"
+          }
         }
       }
     }
