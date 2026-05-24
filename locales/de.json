@@ -764,7 +764,26 @@
           },
           "week": {
             "many": "%{count} Wochen"
+          },
+          "month": {
+            "many": "%{count} Monate"
+          },
+          "year": {
+            "many": "%{count} Jahre"
           }
+        },
+        "recurring_totals_with_initial_order_shipping_discount_with_policies": {
+          "first_cycles": {
+            "many": "danach %{count} Zahlungen, jeweils zum Preis von %{total_price}"
+          }
+        }
+      },
+      "contextual_availability": {
+        "title": {
+          "many": "Produkte nicht verfügbar"
+        },
+        "products_not_available": {
+          "many": "Diese Produkte werden aus deinem Warenkorb entfernt, da sie in deinem Land/in deiner geografischen Region nicht verfügbar sind."
         }
       }
     }
