@@ -803,6 +803,26 @@
             "many": "Diese Artikel werden aus deinem Warenkorb entfernt, da für deine Adresse keine Liefermethoden verfügbar sind."
           }
         }
+      },
+      "pickup_point": {
+        "paginator": {
+          "selected_pickup_point_label": {
+            "many": "%{pickup_point_index} von %{count} Punkten"
+          },
+          "selected_page": {
+            "many": "%{first} - %{last} von %{count} Punkten"
+          }
+        },
+        "pickup_unavailable_banner_title": {
+          "many": "Keine Abholstelle für deine Artikel verfügbar"
+        }
+      },
+      "notice_banner": {
+        "validation_errors_banner": {
+          "heading": {
+            "many": "Es gibt {{count}} Fehler:"
+          }
+        }
       }
     }
   }
