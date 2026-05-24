@@ -612,6 +612,23 @@
         "subscription_delivery_description": {
           "prepaid_delivery_frequency": {
             "many": "für %{count} Lieferungen"
+          },
+          "subscription_delivery_frequency": {
+            "day": {
+              "many": "alle %{count} Tage"
+            },
+            "week": {
+              "many": "alle %{count} Wochen"
+            },
+            "month": {
+              "many": "alle %{count} Monate"
+            },
+            "year": {
+              "many": "alle %{count} Jahre"
+            }
+          },
+          "first_n_order_free": {
+            "many": "Erste %{count} Bestellungen kostenlos"
           }
         }
       }
