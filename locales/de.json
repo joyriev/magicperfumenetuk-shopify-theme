@@ -629,6 +629,21 @@
           },
           "first_n_order_free": {
             "many": "Erste %{count} Bestellungen kostenlos"
+          },
+          "free_for_first_n_order": {
+            "many": "Für die ersten %{count} Bestellungen"
+          },
+          "free_shipping_cycles_delivery_not_included": {
+            "many": "Kostenloser Versand für %{count} Lieferungen"
+          },
+          "first_n_order_free_with_cycle": {
+            "many": "Kostenloser Versand für weitere %{count} Lieferungen, dann zum Preis von %{recurring_order_shipping_price}"
+          },
+          "first_n_order_free_with_cycle_delivery_not_included": {
+            "many": "Kostenloser Versand für %{count} Lieferungen, dann zum Preis von %{recurring_order_shipping_price}"
+          },
+          "max_cycles_base_shipping": {
+            "many": "%{count} weitere Lieferungen zu je %{shipping_price}"
           }
         }
       }
