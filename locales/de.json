@@ -900,6 +900,24 @@
           "remove_item_only": {
             "many": "Artikel entfernen"
           }
+        },
+        "ship_items_count": {
+          "many": "Versende %{count} Artikel"
+        }
+      },
+      "merchandise_unavailable_in_buyer_location": {
+        "remove_items_action": {
+          "many": "Nicht verfügbare Artikel entfernen"
+        }
+      },
+      "review_address_modal": {
+        "subtitle": {
+          "many": "Diese Bestellung wird an eine von {{merchant}} bereitgestellte Adresse versandt. Wählen Sie eine Lieferadresse aus."
+        }
+      },
+      "remote_merchandise_only": {
+        "detail_item_label": {
+          "many": "{{count}} Artikel"
         }
       }
     }
