@@ -559,7 +559,26 @@
         },
         "gift_resend_success": {
           "many": "Geschenkgutscheine erneut versendet"
+        },
+        "tracking_number": {
+          "many": "Verfolgungsnummern"
+        },
+        "gift_card_resend_button": {
+          "many": "Geschenkgutscheine erneut senden"
         }
+      }
+    },
+    "order_details": {
+      "image_gallery": {
+        "load_more_items": {
+          "many": "Lade {{count}} weiteren Artikel"
+        }
+      },
+      "subtotal_label_with_quantity": {
+        "many": "Zwischensumme · {{count}} Artikel"
+      },
+      "discount_order_stacking": {
+        "many": "Rabatte auf die Bestellung"
       }
     }
   },
