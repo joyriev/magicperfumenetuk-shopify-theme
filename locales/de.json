@@ -539,6 +539,13 @@
         "errors": {
           "generic": "Es gab ein Problem mit PayPal. Versuchen Sie es erneut oder verwenden Sie eine andere Zahlungsmethode."
         }
+      },
+      "add_payment_method": {
+        "subscription_contracts": {
+          "more_items": {
+            "many": "{{count}} weitere Produkte"
+          }
+        }
       }
     },
     "orders": {
@@ -579,6 +586,34 @@
       },
       "discount_order_stacking": {
         "many": "Rabatte auf die Bestellung"
+      }
+    },
+    "B2B": {
+      "orders": {
+        "draft_order_list": {
+          "pending_tab_accessibility_label": {
+            "pending_orders": {
+              "many": "Du hast {{count}} ausstehende Bestellungen"
+            }
+          }
+        }
+      },
+      "draft_order_details": {
+        "payment_status": {
+          "pending": {
+            "banner_overdue": {
+              "many": "Die Zahlung ist um {{count}} Tage überfällig"
+            },
+            "banner_overdue_for_single_fulfillment": {
+              "many": "Die Zahlung von {{amount}} ist {{count}} Tage überfällig. {{link}}"
+            }
+          }
+        }
+      }
+    },
+    "errors": {
+      "banner_title": {
+        "many": "Es sind {{count}} Fehler aufgetreten"
       }
     }
   },
