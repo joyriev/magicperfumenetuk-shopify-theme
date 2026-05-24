@@ -877,6 +877,30 @@
         "location_far_away_other_items": {
           "many": "%{count} Standorte mit Artikeln"
         }
+      },
+      "split_delivery": {
+        "inventory_issue_banner": {
+          "heading": {
+            "cannot_be_picked_up": {
+              "many": "%{count} Artikel können nicht abgeholt werden"
+            },
+            "cannot_be_shipped": {
+              "many": "%{count} Artikel können nicht versendet werden"
+            }
+          },
+          "remove_item": {
+            "many": "Artikel entfernen"
+          },
+          "ship_separately": {
+            "many": "Separat versenden"
+          },
+          "pick_them_up_in_store": {
+            "many": "Abholen im Geschäft"
+          },
+          "remove_item_only": {
+            "many": "Artikel entfernen"
+          }
+        }
       }
     }
   }
