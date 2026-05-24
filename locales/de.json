@@ -671,6 +671,17 @@
       "payment": {
         "order_covered_by_gift_cards_notice": {
           "many": "Deine Bestellung ist durch deine Geschenkgutscheine abgedeckt."
+        },
+        "expired_cards_info": {
+          "many": "Es gibt %{count} abgelaufene Karten, die du in deinem Konto einsehen und bearbeiten kannst."
+        },
+        "order_edit_banner_items_added": {
+          "many": "%{count} hinzugefügt"
+        },
+        "crypto_payment_method": {
+          "cashback_descriptor": {
+            "many": "Du erhältst das Cashback nach %{count} Tagen"
+          }
         }
       }
     }
