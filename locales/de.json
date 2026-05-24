@@ -544,7 +544,16 @@
         "subscription_contracts": {
           "more_items": {
             "many": "{{count}} weitere Produkte"
+          },
+          "product_count": {
+            "many": "{{count}} Produkte"
           }
+        },
+        "updating_contracts": {
+          "many": "Aktualisierung von {{count}} Abonnementverträgen..."
+        },
+        "contracts_updated": {
+          "many": "{{count}} Abonnementverträge erfolgreich aktualisiert"
         }
       }
     },
@@ -614,6 +623,14 @@
     "errors": {
       "banner_title": {
         "many": "Es sind {{count}} Fehler aufgetreten"
+      }
+    },
+    "ui_components": {
+      "autocompleteOptionsAvailable": {
+        "many": "{{count}} Artikel verfügbar"
+      },
+      "month": {
+        "many": "Monate"
       }
     }
   },
