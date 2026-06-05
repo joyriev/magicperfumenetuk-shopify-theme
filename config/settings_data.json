@@ -429,5 +429,10 @@
         }
       }
     }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      "#snize-product-14982651937135,#snize-ac-product-14982651937135 {display: none !important;}"
+    ]
   }
 }
