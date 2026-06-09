@@ -226,6 +226,10 @@
     margin-bottom: 0px !important
 }
 
+.\!mb-1 {
+    margin-bottom: 4px !important
+}
+
 .\!mb-12 {
     margin-bottom: 48px !important
 }
@@ -340,10 +344,6 @@
 
 .mt-6 {
     margin-top: 24px
-}
-
-.\!mb-1 {
-    margin-bottom: 4px !important
 }
 
 .line-clamp-1 {
@@ -816,6 +816,12 @@
     --tw-space-y-reverse: 0;
     margin-top: calc(8px * calc(1 - var(--tw-space-y-reverse)));
     margin-bottom: calc(8px * var(--tw-space-y-reverse))
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(16px * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(16px * var(--tw-space-y-reverse))
 }
 
 .space-y-5 > :not([hidden]) ~ :not([hidden]) {
