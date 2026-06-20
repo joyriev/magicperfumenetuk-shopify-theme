@@ -99,32 +99,32 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Consegna in 3–4 giorni. Tracciata, garantita.",
-            "perk_content": "Spedizione gratuita su tutti gli ordini superiori a 40€"
+            "perk_title": "Delivered in 3–7days. Tracked & guaranteed",
+            "perk_content": "Free shipping on all orders over 40 €"
           }
         },
         "perks_x8n9DF": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SAVINGS.avif",
-            "perk_title": "Più acquisti, più risparmi",
-            "perk_content": "fino a 100€ di voucher"
+            "perk_title": "The more you explore, the more you earn",
+            "perk_content": "Up to €100 in rewards"
           }
         },
         "perks_yTdgqz": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/icon-refund.svg",
-            "perk_title": "Garanzia 60 giorni soddisfatti o rimborsati.",
-            "perk_content": "Provalo, amalo — o ti rimborsiamo ogni centesimo."
+            "perk_title": "60-day money-back guarantee. ",
+            "perk_content": "Try it, love it — or we'll refund every cent."
           }
         },
         "perks_7zj6gB": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SSUPPORT.webp",
-            "perk_title": "Sempre qualcuno disponibile",
-            "perk_content": "7 giorni su 7"
+            "perk_title": "Always here for you",
+            "perk_content": " 7 days a week"
           }
         }
       },
