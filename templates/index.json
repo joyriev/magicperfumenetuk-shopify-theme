@@ -242,7 +242,7 @@
         "collection_gRbYPe": {
           "type": "collection",
           "settings": {
-            "tab_title": "🔥I più venduti",
+            "tab_title": "🔥Bestsellers",
             "collection": "best-sellers",
             "button_text": "View All"
           }
@@ -250,7 +250,7 @@
         "collection_xgUpzQ": {
           "type": "collection",
           "settings": {
-            "tab_title": "Per donna",
+            "tab_title": "For Her",
             "collection": "woman",
             "button_text": "Scopri tutto"
           }
@@ -258,7 +258,7 @@
         "collection_3WBTm3": {
           "type": "collection",
           "settings": {
-            "tab_title": "Per uomo",
+            "tab_title": "For Him",
             "collection": "man",
             "button_text": "Scopri tutto"
           }
