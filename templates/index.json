@@ -123,8 +123,8 @@
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/SSUPPORT.webp",
-            "perk_title": "Always here for you",
-            "perk_content": " 7 days a week"
+            "perk_title": "Personal support, every day",
+            "perk_content": "Real people. 7 days a week."
           }
         }
       },
@@ -146,7 +146,7 @@
       "name": "Popular Products",
       "settings": {
         "background_color": "#f7f7f7",
-        "heading": "The ones people keep coming back for",
+        "heading": "Our most-loved. For good reason.",
         "subheading": "",
         "collection": "best-sellers",
         "show_all_button_text": "See all bestsellers",
