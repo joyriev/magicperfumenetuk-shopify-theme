@@ -146,10 +146,10 @@
       "name": "Popular Products",
       "settings": {
         "background_color": "#f7f7f7",
-        "heading": "Quelli che si riordinano senza pensarci",
+        "heading": "The ones people keep coming back for",
         "subheading": "",
         "collection": "best-sellers",
-        "show_all_button_text": "Scopri tutti i più venduti",
+        "show_all_button_text": "See all bestsellers",
         "padding_top": 72,
         "padding_bottom": 72
       }
