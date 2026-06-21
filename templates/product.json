@@ -106,7 +106,7 @@
         "collapsible_tab_FAAFhb": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Profilo Olfattivo",
+            "heading": "Description",
             "icon": "none",
             "content": "{{ product.description }}",
             "page": ""
@@ -115,9 +115,9 @@
         "collapsible_tab_GUrz86": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Perché i vostri profumi sono così economici?",
+            "heading": "Why are your perfumes so inexpensive?",
             "icon": "none",
-            "content": "<p>Ci concentriamo sulla fragranza in sé. Niente flaconi lussuosi, niente confezioni speciali, niente negozi costosi e niente accordi con influencer: per profumare di lusso senza spendere una fortuna.</p>",
+            "content": "<p>We focus on the fragrance itself. No luxurious bottles, no special packaging, no expensive stores, and no deals with influencers: so you can smell like luxury without spending a fortune.</p>",
             "page": ""
           }
         },
@@ -134,9 +134,9 @@
         "collapsible_tab_bKn87j": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "Quanto dura il profumo?",
+            "heading": "How long does the perfume last?",
             "icon": "none",
-            "content": "<p>La durata del profumo varia da persona a persona, da 3 a 8 ore per una fragranza delicata e intensa. Dopo un periodo più lungo, il profumo svanisce.</p>",
+            "content": "<p>The scent's longevity varies from person to person, ranging from 6 to 12 hours for a delicate or intense fragrance. </p>",
             "page": ""
           }
         },
@@ -153,18 +153,18 @@
         "collapsible_tab_4eJxqg": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "La fragranza ispirata è diversa?",
+            "heading": "Is the inspired fragrance different?",
             "icon": "none",
-            "content": "<p>No, questa fragranza è ispirata a note olfattive simili e appartiene alla stessa famiglia olfattiva.</p>",
+            "content": "<p>No, this fragrance is inspired by similar scent notes and belongs to the same fragrance family.</p>",
             "page": ""
           }
         },
         "collapsible_tab_TKfWP3": {
           "type": "collapsible_tab",
           "settings": {
-            "heading": "AVVISO Legale",
+            "heading": "Legal Notice",
             "icon": "none",
-            "content": "<p>Le composizioni olfattive non sono intrinsecamente protette da diritti di proprietà intellettuale e possono quindi essere liberamente riprodotte e utilizzate come fonte di ispirazione. Questo spiega perché molti profumi di marca siano molto simili e talvolta difficilmente distinguibili l'uno dall'altro.<br/><br/>Analogamente, i profumi Magyx possono essere ispirati ad altre fragranze e descritti come appartenenti alla stessa categoria olfattiva di altri profumi.<br/><br/>Si prega di notare che tutti i nomi di fragranze di terze parti menzionati sul nostro sito web appartengono esclusivamente ai rispettivi proprietari e sono forniti a solo scopo informativo. Non devono in alcun caso essere confusi con prodotti venduti con tali nomi.<br/><br/>Magyx Parfums non è affiliata, approvata o raccomandata da nessuno dei marchi di terze parti menzionati.</p>",
+            "content": "<p>Fragrance compositions are not inherently protected by intellectual property rights and may therefore be freely reproduced and used as a source of inspiration. </p><p>This explains why many branded perfumes are very similar and sometimes difficult to distinguish from one another. </p><p>Similarly, Magyx perfumes may be inspired by other fragrances and described as belonging to the same olfactory category as other perfumes. Please note that all third-party fragrance names mentioned on our website belong exclusively to their respective owners and are provided for informational purposes only. </p><p>They should under no circumstances be confused with products sold under those names. Magyx Parfums is not affiliated with, endorsed by, or recommended by any of the third-party brands mentioned.</p>",
             "page": ""
           }
         },
@@ -237,33 +237,33 @@
         "perks_iNhz9P": {
           "type": "perks",
           "settings": {
-            "perk_image": "shopify://shop_images/DELIVERY.webp",
-            "perk_title": "Consegna in 3–4 giorni. Tracciata, garantita.",
-            "perk_content": "Spedizione gratuita su tutti gli ordini superiori a 40€"
+            "perk_image": "shopify://shop_images/icons_eu_2.webp",
+            "perk_title": "Made in the EU",
+            "perk_content": "Vegan, cruelty-free, and made in the EU."
           }
         },
         "perks_EtC9aR": {
           "type": "perks",
           "settings": {
-            "perk_image": "shopify://shop_images/SAVINGS.avif",
-            "perk_title": "Più acquisti, più risparmi",
-            "perk_content": "fino a 100€ di voucher"
+            "perk_image": "shopify://shop_images/icons_quality_2.webp",
+            "perk_title": "French quality standard",
+            "perk_content": "Made with the same attention to detail as designer brands."
           }
         },
         "perks_cAqQXb": {
           "type": "perks",
           "settings": {
             "perk_image": "shopify://shop_images/icon-refund.svg",
-            "perk_title": "Garanzia 60 giorni soddisfatti o rimborsati.",
-            "perk_content": "Provalo, amalo — o ti rimborsiamo ogni centesimo."
+            "perk_title": "60-day money-back guarantee.",
+            "perk_content": "Try it, love it — or we'll refund every penny."
           }
         },
         "perks_6hEHiJ": {
           "type": "perks",
           "settings": {
-            "perk_image": "shopify://shop_images/SSUPPORT.webp",
-            "perk_title": "Sempre qualcuno disponibile",
-            "perk_content": "7 giorni su 7"
+            "perk_image": "shopify://shop_images/icons_time_2.webp",
+            "perk_title": "Last long",
+            "perk_content": "Lasts for 12+ hours (some say even longer)."
           }
         }
       },
