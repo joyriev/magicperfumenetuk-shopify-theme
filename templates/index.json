@@ -284,45 +284,45 @@
         "collapsible_row_b44n9F": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Perché i vostri profumi sono così convenienti?",
+            "heading": "Why are your perfumes so affordable?",
             "icon": "none",
-            "row_content": "<p><br/>Ci concentriamo su ciò che conta davvero: la fragranza. Niente flaconi di lusso, niente packaging elaborato, nessun costo per negozi fisici o collaborazioni costose con influencer. In questo modo puoi goderti un profumo di qualità, dal carattere raffinato, senza spendere una fortuna.</p>",
+            "row_content": "<p>We focus on what really matters: the fragrance. No luxury bottles, no elaborate packaging, no costs for brick-and-mortar stores, and no expensive collaborations with influencers. This way, you can enjoy a high-quality perfume with a refined character without spending a fortune.</p>",
             "page": ""
           }
         },
         "collapsible_row_rCVDnP": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "È un Eau de Parfum?",
+            "heading": "Is it an Eau de Parfum?",
             "icon": "none",
-            "row_content": "<p>Sì, si tratta di un Eau de Parfum — con una concentrazione di oli profumati tra il 19% e il 21%.”</p><p>“Per confronto, un’Eau de Toilette contiene generalmente circa il 5–8%, mentre l’estratto di profumo puro parte da una concentrazione di circa il 41% in su.</p>",
+            "row_content": "<p>Yes, it’s an Eau de Parfum—with a concentration of fragrance oils between 19% and 21%.</p><p>By comparison, an Eau de Toilette generally contains about 5–8%, while pure perfume extract starts at a concentration of about 41% and up.</p>",
             "page": ""
           }
         },
         "collapsible_row_rNbx6p": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Quanto dura il profumo?",
+            "heading": "How long does the perfume last?",
             "icon": "none",
-            "row_content": "<p>La durata del profumo varia generalmente dalle 4 fino a 12 ore. Può cambiare da persona a persona, offrendo una fragranza equilibrata e intensa per diverse ore. Successivamente, il profumo svanisce gradualmente.</p>",
+            "row_content": "<p>The scent generally lasts from 6 to 12 hours. It can vary from person to person, offering a balanced and intense fragrance for several hours. After that, the scent gradually fades.</p>",
             "page": ""
           }
         },
         "collapsible_row_irweNa": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "La fragranza ispirata ha un profumo diverso?",
+            "heading": "Does the inspired fragrance smell different?",
             "icon": "none",
-            "row_content": "<p>No, la fragranza riprende fedelmente il profilo olfattivo dell’originale, offrendo un’esperienza molto simile.</p>",
+            "row_content": "<p>No, the fragrance faithfully recreates the original's scent profile, offering a very similar experience.</p>",
             "page": ""
           }
         },
         "collapsible_row_gJVQkB": {
           "type": "collapsible_row",
           "settings": {
-            "heading": "Cosa significa 19–21% di profumo?",
+            "heading": "What does “19–21% fragrance” mean?",
             "icon": "none",
-            "row_content": "<p><br/>Significa che il contenuto del flacone contiene fino al 19–21% di oli profumati. </p><p>Le fragranze Eau de Parfum originali presentano generalmente una concentrazione compresa tra il 16% e il 21%.</p>",
+            "row_content": "<p>This means that the bottle contains up to 19–21% fragrance oils. </p><p>Original Eau de Parfum fragrances generally have a concentration ranging from 16% to 21%.</p>",
             "page": ""
           }
         }
