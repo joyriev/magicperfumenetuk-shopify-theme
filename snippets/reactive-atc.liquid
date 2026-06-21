@@ -69,8 +69,8 @@
 {% if product.variants.size > 1 %}
   {% comment %} Variant Selector {% endcomment %}
   <div class="flex justify-between items-center mb-3 !mt-6">
-    <h2 class="m-0 text-base font-semibold">Seleziona il formato:</h2>
-    <div class="text-sm italic text-gray-500">L’80% dei nostri clienti sceglie 50 ml o più</div>
+    <h2 class="m-0 text-base font-semibold">Select the size:</h2>
+    <div class="text-sm italic text-gray-500">80% of our customers choose 50 ml</div>
   </div>
 
   <div class="flex gap-3" id="variant-selector">
@@ -86,7 +86,7 @@
           <div class="text-base font-semibold">{{ variant.title }}</div>
         </div>
         {% if variant.title == '50ml' %}
-          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#c8202f] px-2 py-0.5">Popolare</span>
+          <span class="text-xs italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#c8202f] px-2 py-0.5">Popular</span>
         {% endif %}
         {% if variant.title == '100ml' %}
           <span class="text-xs text-nowrap italic text-white rounded absolute -top-2.5 left-1/2 [transform:translateX(-50%)] bg-[#22613a] px-2 py-0.5">Best seller</span>
