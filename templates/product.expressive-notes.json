@@ -253,14 +253,14 @@
       "type": "you-may-like",
       "name": "You May Like",
       "settings": {
-        "background_color": "#F7F7F7",
+        "background_color": "#f7f7f7",
         "title": "You may also like",
         "description": "",
         "collection": "best-sellers",
         "button_text": "View All",
         "button_link": "shopify://collections/all",
-        "padding_top": 36,
-        "padding_bottom": 36
+        "padding_top": 0,
+        "padding_bottom": 72
       }
     },
     "feature_heighlights_NpGkmP": {
