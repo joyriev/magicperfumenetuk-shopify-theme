@@ -385,6 +385,10 @@
     margin-top: 2px
 }
 
+.mt-8 {
+    margin-top: 32px
+}
+
 .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
@@ -715,6 +719,10 @@
 
 .max-w-16 {
     max-width: 64px
+}
+
+.max-w-\[400px\] {
+    max-width: 400px
 }
 
 .flex-1 {
@@ -2199,6 +2207,10 @@
 
 .\[display\:none\] {
     display: none
+}
+
+.\[filter\:grayscale\(1\)\] {
+    filter: grayscale(1)
 }
 
 .\[filter\:grayscale\(100\%\)\] {

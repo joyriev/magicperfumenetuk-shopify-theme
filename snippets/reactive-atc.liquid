@@ -85,6 +85,24 @@
   {%- endform -%}
 </product-form>
 
+<div>
+  <img
+    class="max-w-[400px] mx-auto mt-8 block [filter:grayscale(1)]"
+    src="{{ 'payment-badge.svg' | asset_url }}"
+    alt="Payment methods"
+    width="100%"
+    height="auto"
+    loading="lazy">
+</div>
+
+<div class="!my-6">
+  <p class="my-0 text-center font-semibold tracking-normal">
+    Delivered to
+    <span class="shipping_location">Worldwide</span>
+    in 5 business days.
+  </p>
+</div>
+
 <script>
   (function() {
     // Variant data object
@@ -163,6 +181,22 @@
         updateVariant(variantId);
       });
     });
+
+    // Update shipping location under ATC
+    const shippingLocation = document.querySelector('.shipping_location');
+    if (shippingLocation) {
+    fetch('https://ipapi.co/country_name/')
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.text();
+      })
+      .then((countryName) => {
+        shippingLocation.textContent = countryName.trim();
+      })
+      .catch(() => {
+        // Leave existing text in place if lookup fails
+      });
+    }
   })();
 </script>
 

@@ -51,7 +51,6 @@
         <hr class="border-0 border-b border-solid border-gray-200 my-4">
 
         <div class="space-y-3">
-          {% for note in product.metafields.custom.top_notes.value %}
             <div class="flex items-start gap-3">
               <svg
                 width="20"
@@ -70,16 +69,14 @@
               <div class="min-w-0">
                 <p class="text-sm m-0">
                   <strong class="font-bold">Top notes:</strong>
-                  {{ note.heading }}
+                  {{ product.metafields.custom.top_notes.value.heading }}
                 </p>
                 <p class="text-sm text-gray-700 m-0">
-                  {{ note.description | metafield_text }}
+                  {{ product.metafields.custom.top_notes.value.description | metafield_text }}
                 </p>
               </div>
             </div>
-          {% endfor %}
 
-          {% for note in product.metafields.custom.middle_notes.value %}
             <div class="flex items-start gap-3">
               <svg
                 width="20"
@@ -107,16 +104,13 @@
               <div class="min-w-0">
                 <p class="text-sm m-0">
                   <strong class="font-bold">Heart notes:</strong>
-                  {{ note.heading }}
+                  {{ product.metafields.custom.middle_notes.value.heading }}
                 </p>
                 <p class="text-sm text-gray-700 m-0">
-                  {{ note.description | metafield_text }}
+                  {{ product.metafields.custom.middle_notes.value.description | metafield_text }}
                 </p>
               </div>
             </div>
-          {% endfor %}
-
-          {% for note in product.metafields.custom.base_notes.value %}
             <div class="flex items-start gap-3">
               <svg
                 width="20"
@@ -144,14 +138,13 @@
               <div class="min-w-0">
                 <p class="text-sm m-0">
                   <strong class="font-bold">Base notes:</strong>
-                  {{ note.heading }}
+                  {{ product.metafields.custom.base_notes.value.heading }}
                 </p>
                 <p class="text-sm text-gray-700 m-0">
-                  {{ note.description | metafield_text }}
+                  {{ product.metafields.custom.base_notes.value.description | metafield_text }}
                 </p>
               </div>
             </div>
-          {% endfor %}
         </div>
 
         <hr class="border-0 border-b border-solid border-gray-200 my-4">
