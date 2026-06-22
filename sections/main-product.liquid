@@ -132,7 +132,7 @@
                 </a>
               {%- when 'title' -%}
                 <div class="product__title relative" {{ block.shopify_attributes }}>
-                  {%- if product.tags contains 'bestseller' or product.tags contains 'onsale' -%}
+                  {%- if product.tags contains 'bestseller' or product.tags contains 'onsale' or product.template_suffix == 'expressive-notes' -%}
                     <div class="absolute top-0 left-0">
                       {% if product.tags contains 'onsale' and product.compare_at_price > product.price %}
                         {%- assign discount_percent = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
@@ -145,9 +145,18 @@
                           Bestseller
                         </span>
                       {% endif %}
+                      {% if product.template_suffix == 'expressive-notes' %}
+                        <span class="inline-flex items-center px-3 py-1 rounded-md border border-solid border-[#3b82f6] text-[#3b82f6] text-sm font-medium bg-white">
+                          {% if product.tags contains 'Woman' or product.tags contains 'fuer-frauen' %}
+                          Women
+                          {% else %}
+                          Men
+                          {% endif %}
+                        </span>
+                      {% endif %}
                     </div>
                   {%- endif -%}  
-                  <h1 class="font-[700] leading-tight capitalize !tracking-normal flex flex-col {% if product.tags contains 'bestseller' or product.tags contains 'onsale' %}pt-12{% endif %}">
+                  <h1 class="font-[700] leading-tight capitalize !tracking-normal flex flex-col {% if product.tags contains 'bestseller' or product.tags contains 'onsale' or product.template_suffix == 'expressive-notes'  %}pt-12{% endif %}">
                       {{ product.title }}
                   </h1>
                 </div>
