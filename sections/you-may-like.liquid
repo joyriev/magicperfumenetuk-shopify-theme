@@ -48,13 +48,12 @@
                   width="216"
                   class="w-full h-full object-cover">
               </a>
-              <p class="text-xs text-gray-500 m-0 mb-1 line-clamp-1">Inspired By: {{ product.metafields.custom.inspiration.value.name }}</p>
+              <p class="text-xs text-gray-500 m-0 mb-1 line-clamp-1">Inspired By: {{ product.metafields.custom.inspired_by.value.title }}</p>
               <h3 class="text-sm font-semibold m-0 mb-2 line-clamp-1">
                 <a class="text-black no-underline" href="{{ product.url }}">{{ product.title }}</a>
               </h3>
               <div class="flex items-center gap-2 mb-2">
                 <span class="text-sm font-bold text-gray-900">{{ product.price | money }}</span>
-                <span class="text-xs text-gray-400 line-through">{{ product.compare_at_price | money }}</span>
               </div>
               {% comment %} Add to cart form {% endcomment %}
               <product-form
