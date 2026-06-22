@@ -242,7 +242,7 @@
     animation: animateLocalization var(--duration-default) ease;
   }
 
-  .disclosure__list-wrapper.country-selector {
+  .disclosure__list-wrapper.country-selector_default {
     position: fixed;
     bottom: -1rem;
     left: 0;
