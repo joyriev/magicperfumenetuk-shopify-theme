@@ -9,7 +9,7 @@
           <span>Bestseller</span>
         </div>
       {% elsif product.tags contains 'onsale' %}
-        <div class="bg-red-50 text-red-600 px-2 py-1 text-xs rounded-full">⚡ Angebot</div>
+        <div class="bg-red-50 text-red-600 px-2 py-1 text-xs rounded-full">⚡ Offer</div>
       {% endif %}
     </div>
   {% endif %}
@@ -23,18 +23,18 @@
       width="{{ product.images.first.width }}"
     >
     {% unless product.tags contains 'Bundle_Price_Show' %}
-      <div class="card__promo-marquee absolute left-0 right-0 bottom-0 bg-[#137c44] text-white" aria-label="Köp 3, få 1 gratis">
+      <div class="card__promo-marquee absolute left-0 right-0 bottom-0 bg-[#137c44] text-white" aria-label="Buy 3, get 1 free">
         <div class="card__promo-marquee-rail">
           <div class="card__promo-marquee-group">
-            <span class="card__promo-marquee-text">Kaufe 4 Zum Preis von 3</span>
+            <span class="card__promo-marquee-text">Buy 4 for the price of 3</span>
             <span class="card__promo-marquee-dot" aria-hidden="true"></span>
-            <span class="card__promo-marquee-text">Kaufe 4 Zum Preis von 3</span>
+            <span class="card__promo-marquee-text">Buy 4 for the price of 3</span>
             <span class="card__promo-marquee-dot" aria-hidden="true"></span>
           </div>
           <div class="card__promo-marquee-group" aria-hidden="true">
-            <span class="card__promo-marquee-text">Kaufe 4 Zum Preis von 3</span>
+            <span class="card__promo-marquee-text">Buy 4 for the price of 3</span>
             <span class="card__promo-marquee-dot" aria-hidden="true"></span>
-            <span class="card__promo-marquee-text">Kaufe 4 Zum Preis von 3</span>
+            <span class="card__promo-marquee-text">Buy 4 for the price of 3</span>
             <span class="card__promo-marquee-dot" aria-hidden="true"></span>
           </div>
         </div>
@@ -48,19 +48,19 @@
     </a>
   </h3>
 
-  {% if product.metafields.custom.inspiration != blank %}
+  {% if product.metafields.custom.inspired_by != blank %}
     <div class="flex items-center gap-2 mt-2">
       <img 
         style="filter: blur(2px);" 
         class="object-contain object-center bg-white"
-        src="{{ product.metafields.custom.inspiration.value.image | image_url }}"
-        alt="{{ product.metafields.custom.inspiration.value.image.alt | escape }}"
+        src="{{ product.metafields.custom.inspired_by.value.image | image_url }}"
+        alt="{{ product.metafields.custom.inspired_by.value.image.alt | escape }}"
         width="35" 
         height="35"
       >
       <div>
-        <p class="text-xs my-0">Inspiriert von:</p>
-        <h4 class="text-sm font-semibold my-0 line-clamp-1 inspiration_heading">{{ product.metafields.custom.inspiration.value.name }}</h4>
+        <p class="text-xs my-0">Inspired By:</p>
+        <h4 class="text-sm font-semibold my-0 line-clamp-1 inspiration_heading">{{ product.metafields.custom.inspired_by.value.title }}</h4>
       </div>
     </div>
   {% endif %}
@@ -79,7 +79,7 @@
       class="hover:bg-[#17803d] bg-[#146b32] text-white uppercase text-sm font-semibold tracking-[2px] py-3 px-4 rounded-lg no-underline w-full text-center block" 
       href="{{ product.url }}"
     >
-      Jetzt kaufen
+      Shop now
     </a>
   </div>
 </div>
