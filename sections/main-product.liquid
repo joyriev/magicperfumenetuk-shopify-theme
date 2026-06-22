@@ -160,6 +160,25 @@
                       {{ product.title }}
                   </h1>
                 </div>
+              {% when 'inspired_by' %}
+                {% if product.metafields.custom.inspired_by != blank %}
+                  <div class="flex items-center gap-2 mb-3">
+                    {% if product.metafields.custom.inspired_by.value.image != blank %}
+                      <img
+                        class="object-contain object-center bg-white"
+                        src="{{ product.metafields.custom.inspired_by.value.image |  image_url }}"
+                        alt="{{ product.metafields.custom.inspired_by.value.image.alt | escape }}"
+                        width="45"
+                        height="45">
+                    {% endif %}
+                    {% if product.metafields.custom.inspired_by.value.title != blank %}
+                      <div>
+                        <p class="text-sm my-0">Inspired By:</p>
+                        <h4 class="font-semibold my-0 line-clamp-1">{{ product.metafields.custom.inspired_by.value.title }}</h4>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
                   {%- render 'price',
@@ -1174,6 +1193,11 @@
     {
       "type": "title",
       "name": "t:sections.main-product.blocks.title.name",
+      "limit": 1
+    },
+    {
+      "type": "inspired_by",
+      "name": "Inspired By",
       "limit": 1
     },
     {

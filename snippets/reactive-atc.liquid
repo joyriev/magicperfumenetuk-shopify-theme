@@ -10,24 +10,6 @@
   endfor
 %}
 
-{% if product.metafields.custom.inspired_by != blank %}
-  <div class="flex items-center gap-2 mb-3">
-    {% if product.metafields.custom.inspired_by.value.image != blank %}
-      <img
-        class="object-contain object-center bg-white"
-        src="{{ product.metafields.custom.inspired_by.value.image |  image_url }}"
-        alt="{{ product.metafields.custom.inspired_by.value.image.alt | escape }}"
-        width="45"
-        height="45">
-    {% endif %}
-    {% if product.metafields.custom.inspired_by.value.title != blank %}
-      <div>
-        <p class="text-sm my-0">Ispirato a:</p>
-        <h4 class="font-semibold my-0 line-clamp-1">{{ product.metafields.custom.inspired_by.value.title }}</h4>
-      </div>
-    {% endif %}
-  </div>
-{% endif %}
 <div>
   {% if product.metafields.custom.original_retail_price != blank %}
     <div>(Retail Price: {{ product.metafields.custom.original_retail_price.value | money }})</div>
@@ -43,19 +25,8 @@
         {% endfor %}
       </div>
     </div>
-  {% endif %}</div>
-
-{% comment %} <div>
-                        <div class="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-white font-semibold">
-                          <img
-                            src="https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg"
-                            alt="🇪🇺"
-                            height="20"
-                            width="20"
-                            class="object-cover size-5 rounded-full">
-                          <span>Made in the EU</span>
-                        </div>
-</div> {% endcomment %}
+  {% endif %}
+</div>
 
 {% assign selling_points = product.metafields.custom.selling_points.value %}
 {% if selling_points %}
