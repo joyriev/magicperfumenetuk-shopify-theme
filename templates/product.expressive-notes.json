@@ -249,6 +249,20 @@
         "padding_bottom": 72
       }
     },
+    "you_may_like_Laaqqx": {
+      "type": "you-may-like",
+      "name": "You May Like",
+      "settings": {
+        "background_color": "#F7F7F7",
+        "title": "You may also like",
+        "description": "",
+        "collection": "best-sellers",
+        "button_text": "View All",
+        "button_link": "shopify://collections/all",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "feature_heighlights_NpGkmP": {
       "type": "feature-heighlights",
       "blocks": {
@@ -907,6 +921,7 @@
   },
   "order": [
     "main",
+    "you_may_like_Laaqqx",
     "feature_heighlights_NpGkmP",
     "scent_breakdown_pqKDL9",
     "stacks_up_WR4y4d",
