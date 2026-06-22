@@ -165,6 +165,7 @@
                   <div class="flex items-center gap-2 mb-3">
                     {% if product.metafields.custom.inspired_by.value.image != blank %}
                       <img
+                        style="filter: blur(2px);" 
                         class="object-contain object-center bg-white"
                         src="{{ product.metafields.custom.inspired_by.value.image |  image_url }}"
                         alt="{{ product.metafields.custom.inspired_by.value.image.alt | escape }}"
