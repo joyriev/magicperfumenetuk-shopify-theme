@@ -133,6 +133,10 @@
     top: 16px
 }
 
+.top-6 {
+    top: 24px
+}
+
 .isolate {
     isolation: isolate
 }
@@ -225,6 +229,11 @@
 .my-6 {
     margin-top: 24px;
     margin-bottom: 24px
+}
+
+.-mx-\[15px\] {
+    margin-left: -15px;
+    margin-right: -15px
 }
 
 .\!mb-0 {
@@ -355,6 +364,10 @@
     margin-top: auto
 }
 
+.\!mt-0 {
+    margin-top: 0px !important
+}
+
 .line-clamp-1 {
     overflow: hidden;
     display: -webkit-box;
@@ -394,6 +407,10 @@
 
 .flex {
     display: flex
+}
+
+.\!flex {
+    display: flex !important
 }
 
 .inline-flex {
@@ -488,6 +505,11 @@
 .size-\[60px\] {
     width: 60px;
     height: 60px
+}
+
+.\!size-10 {
+    width: 40px !important;
+    height: 40px !important
 }
 
 .h-10 {
@@ -590,6 +612,10 @@
     width: 100%
 }
 
+.w-28 {
+    width: 112px
+}
+
 .min-w-0 {
     min-width: 0px
 }
@@ -648,6 +674,10 @@
 
 .max-w-xl {
     max-width: 576px
+}
+
+.max-w-16 {
+    max-width: 64px
 }
 
 .flex-1 {
@@ -736,6 +766,10 @@
 
 .grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr))
+}
+
+.grid-rows-3 {
+    grid-template-rows: repeat(3, minmax(0, 1fr))
 }
 
 .flex-col {
@@ -1947,6 +1981,10 @@
     opacity: 0.75
 }
 
+.opacity-70 {
+    opacity: 0.7
+}
+
 .shadow {
     --tw-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
@@ -2327,6 +2365,11 @@
         order: 0
     }
 
+    .md\:mx-0 {
+        margin-left: 0px;
+        margin-right: 0px
+    }
+
     .md\:\!mb-12 {
         margin-bottom: 48px !important
     }
@@ -2369,6 +2412,10 @@
         display: flex
     }
 
+    .md\:grid {
+        display: grid
+    }
+
     .md\:hidden {
         display: none
     }
@@ -2404,6 +2451,14 @@
 
     .md\:w-full {
         width: 100%
+    }
+
+    .md\:w-\[calc\(100\%-144px\)\] {
+        width: calc(100% - 144px)
+    }
+
+    .md\:max-w-24 {
+        max-width: 96px
     }
 
     .md\:scale-105 {
@@ -2471,6 +2526,10 @@
 
     .md\:rounded-xl {
         border-radius: 12px
+    }
+
+    .md\:rounded-lg {
+        border-radius: 8px
     }
 
     .md\:bg-center {
@@ -2569,12 +2628,26 @@
         width: 41.666667%
     }
 
+    .lg\:w-36 {
+        width: 144px
+    }
+
     .lg\:grid-cols-\[0\.9fr_1\.1fr\] {
         grid-template-columns: 0.9fr 1.1fr
     }
 
     .lg\:grid-cols-\[1fr_1fr\] {
         grid-template-columns: 1fr 1fr
+    }
+
+    .lg\:px-4 {
+        padding-left: 16px;
+        padding-right: 16px
+    }
+
+    .lg\:text-sm {
+        font-size: 14px;
+        line-height: 20px
     }
 }
 
@@ -2584,6 +2657,15 @@
 
 .\[\&\>\.active\]\:\[border\:2px_solid_\#000000\]>.active {
     border: 2px solid #000000
+}
+
+.\[\&\>\.swiper-slide-thumb-active\]\:border-black>.swiper-slide-thumb-active {
+    --tw-border-opacity: 1;
+    border-color: rgb(0 0 0 / var(--tw-border-opacity, 1))
+}
+
+.\[\&\>\.swiper-slide-thumb-active\]\:opacity-100>.swiper-slide-thumb-active {
+    opacity: 1
 }
 
 .\[\&\>p\:first-child\]\:mt-0>p:first-child {
@@ -2600,6 +2682,18 @@
 
 .\[\&\>ul\]\:text-left>ul {
     text-align: left
+}
+
+.\[\&\]\:after\:\!text-xl::after {
+    content: var(--tw-content);
+    font-size: 20px !important;
+    line-height: 28px !important
+}
+
+.\[\&\]\:after\:text-gray-900::after {
+    content: var(--tw-content);
+    --tw-text-opacity: 1;
+    color: rgb(17 24 39 / var(--tw-text-opacity, 1))
 }
 
 .\[\&_button\]\:font-\[\'Oswald\'\] button {
