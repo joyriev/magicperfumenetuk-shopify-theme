@@ -1045,6 +1045,9 @@
             {%- endfor -%}
           <div>
             {% for block in section.blocks %}
+              {% if block.type == 'expanded_notes' %}
+                {% render 'expanded-notes' %}
+              {% endif %}
               {% if block.type == 'collapsible_tab' %}
                 <div class="product__accordion accordion quick-add-hidden" {{ block.shopify_attributes }}>
                   <details id="Details-{{ block.id }}-{{ section.id }}">
@@ -1199,6 +1202,11 @@
     {
       "type": "inspired_by",
       "name": "Inspired By",
+      "limit": 1
+    },
+    {
+      "type": "expanded_notes",
+      "name": "Expanded Notes",
       "limit": 1
     },
     {
