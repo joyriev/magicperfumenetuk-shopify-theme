@@ -24,7 +24,14 @@
         },
         "inspired_by_cMD9f8": {
           "type": "inspired_by",
+          "disabled": true,
           "settings": {}
+        },
+        "custom_liquid_epUFF4": {
+          "type": "custom_liquid",
+          "settings": {
+            "custom_liquid": "{% render 'scent-profiling' %}"
+          }
         },
         "price_MG94AW": {
           "type": "price",
@@ -203,6 +210,7 @@
         "title_DkyBTh",
         "custom_rating_text_ehyqmQ",
         "inspired_by_cMD9f8",
+        "custom_liquid_epUFF4",
         "price_MG94AW",
         "variant_picker_hH3Diz",
         "buy_buttons_eXWBwX",
