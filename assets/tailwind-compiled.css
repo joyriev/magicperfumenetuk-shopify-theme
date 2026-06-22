@@ -560,6 +560,10 @@
     height: 1px
 }
 
+.h-16 {
+    height: 64px
+}
+
 .max-h-full {
     max-height: 100%
 }
@@ -1963,6 +1967,11 @@
     color: rgb(59 130 246 / var(--tw-text-opacity, 1))
 }
 
+.text-gray-800 {
+    --tw-text-opacity: 1;
+    color: rgb(31 41 55 / var(--tw-text-opacity, 1))
+}
+
 .underline {
     text-decoration-line: underline
 }
@@ -1973,6 +1982,14 @@
 
 .no-underline {
     text-decoration-line: none
+}
+
+.decoration-2 {
+    text-decoration-thickness: 2px
+}
+
+.underline-offset-4 {
+    text-underline-offset: 4px
 }
 
 .opacity-0 {
@@ -2346,6 +2363,10 @@
 
 .hover\:underline:hover {
     text-decoration-line: underline
+}
+
+.hover\:decoration-\[\#22613A\]:hover {
+    text-decoration-color: #22613A
 }
 
 .hover\:opacity-90:hover {
