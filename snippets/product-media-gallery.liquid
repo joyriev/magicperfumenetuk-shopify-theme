@@ -206,57 +206,116 @@
     </div>
   </div>
 
+  {% assign marketing_images = shop.metaobjects['marketing_images']['spanish'].images.value %}
+  {% assign pl_marketing_images = shop.metaobjects['marketing_images']['for-pl'].images.value %}
+
   <script>
-      // Swiper Slider For product images with thumbnail sync
-      window.addEventListener("DOMContentLoaded", function () {
-    var productThumbnails = new Swiper('#productThumbnails', {
-      slidesPerView: 5,
-      spaceBetween: 8,
-      freeMode: true,
-      watchSlidesProgress: true,
-      watchOverflow: true,
-      direction: 'horizontal',
-      slideToClickedSlide: true,
-      breakpoints: {
-        320: {
-          slidesPerView: 4,
+    // Local images to load for Weglot languages
+    const localImages = {
+      de: {
+        main: [
+          {% for item in marketing_images %}
+            "{{ item | image_url: width: 1024, height: 1024 }}"{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ],
+        thumbnail: [
+          {% for item in marketing_images %}
+            "{{ item | image_url: width: 300, height: 300 }}"{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      },
+      pl: {
+        main: [
+          {% for item in pl_marketing_images %}
+            "{{ item | image_url: width: 1024, height: 1024 }}"{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ],
+        thumbnail: [
+          {% for item in pl_marketing_images %}
+            "{{ item | image_url: width: 300, height: 300 }}"{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        ]
+      }
+    };
+    // Swiper Slider For product images with thumbnail sync
+    window.addEventListener("DOMContentLoaded", function () {
+      var productThumbnails = new Swiper('#productThumbnails', {
+        slidesPerView: 5,
+        spaceBetween: 8,
+        freeMode: true,
+        watchSlidesProgress: true,
+        watchOverflow: true,
+        direction: 'horizontal',
+        slideToClickedSlide: true,
+        breakpoints: {
+          320: {
+            slidesPerView: 4,
+          },
+          600: {
+            slidesPerView: 4,
+          },
+          900: {
+            slidesPerView: 5,
+          }
+        }
+      });
+
+      var productImages = new Swiper('#productSwiper', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        observer: true,
+        observeParents: true,
+        navigation: {
+          prevEl: "#productSwiperPrev",
+          nextEl: "#productSwiperNext",
         },
-        600: {
-          slidesPerView: 4,
+        thumbs: {
+          swiper: productThumbnails
         },
-        900: {
-          slidesPerView: 5,
+        breakpoints: {
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 10,
+          },
+          600: {
+            slidesPerView: 1,
+            spaceBetween: 20,
+          },
+          800: {
+            slidesPerView: 1,
+            spaceBetween: 20,
+          },
+        },
+      });
+      function changeLocalImages(newLang, _previousLang) {
+        console.log('Language Changed: ', newLang);
+    
+        const marketingMainImages = Array.from(document.querySelectorAll('#productSwiper .marketing_image'));
+        const marketingThumbnailImages = Array.from(document.querySelectorAll('#productThumbnails .marketing_image'));
+
+        if (localImages[newLang]) {
+          const localizedImages = localImages[newLang];
+          const hasMatchingMainCount = localizedImages.main.length === marketingMainImages.length;
+          const hasMatchingThumbnailCount = localizedImages.thumbnail.length === marketingThumbnailImages.length;
+
+          if (hasMatchingMainCount && hasMatchingThumbnailCount) {
+            marketingMainImages.forEach((image, index) => {
+              image.src = localizedImages.main[index];
+            });
+
+            marketingThumbnailImages.forEach((image, index) => {
+              image.src = localizedImages.thumbnail[index];
+            });
+          }
+        } else {
+          marketingMainImages.forEach((image) => image.remove());
+          marketingThumbnailImages.forEach((image) => image.remove());
         }
       }
-    });
 
-    var productImages = new Swiper('#productSwiper', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      observer: true,
-      observeParents: true,
-      navigation: {
-        prevEl: "#productSwiperPrev",
-        nextEl: "#productSwiperNext",
-      },
-      thumbs: {
-        swiper: productThumbnails
-      },
-      breakpoints: {
-        320: {
-          slidesPerView: 1,
-          spaceBetween: 10,
-        },
-        600: {
-          slidesPerView: 1,
-          spaceBetween: 20,
-        },
-        800: {
-          slidesPerView: 1,
-          spaceBetween: 20,
-        },
-      },
+      const currentLang = (window.Weglot && typeof Weglot.getCurrentLang === 'function' && Weglot.getCurrentLang()) || 'de';
+      changeLocalImages(currentLang, null);
+      Weglot.on("languageChanged", changeLocalImages);
     });
-      });
   </script>
 </div>
