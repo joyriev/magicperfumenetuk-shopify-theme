@@ -24,9 +24,9 @@
       "name": "Homepage Hero",
       "settings": {
         "background_color": "#d2bfa8",
-        "background_image": "shopify://shop_images/magyx_header_desktop.webp",
-        "mobile_background_image": "shopify://shop_images/magyx_header_mobile.webp",
-        "title": "The scent of luxury. Not the bill.",
+        "background_image": "shopify://shop_images/summer_header_desktop_magic.png",
+        "mobile_background_image": "shopify://shop_images/summer_header_mobile_magic.png",
+        "title": "The scent of luxury. <br>Not the bill.",
         "subtitle": "Buy 3, get your 4th free.",
         "button_text": "Fir Him",
         "button_link": "shopify://collections/man",
