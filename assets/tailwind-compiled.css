@@ -1365,6 +1365,11 @@
     background-color: rgb(255 255 255 / 0.6)
 }
 
+.bg-\[\#0c5224\] {
+    --tw-bg-opacity: 1;
+    background-color: rgb(12 82 36 / var(--tw-bg-opacity, 1))
+}
+
 .bg-opacity-20 {
     --tw-bg-opacity: 0.2
 }
@@ -1548,6 +1553,11 @@
 .py-8 {
     padding-top: 32px;
     padding-bottom: 32px
+}
+
+.\!py-3 {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important
 }
 
 .\!pb-3 {
