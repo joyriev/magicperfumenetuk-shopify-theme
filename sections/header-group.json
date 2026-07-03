@@ -77,6 +77,19 @@
         "padding_bottom": 16
       }
     },
+    "offer_timebar_ikdWJp": {
+      "type": "offer-timebar",
+      "disabled": true,
+      "name": "Offer Timebar",
+      "settings": {
+        "background_color": "#15803d",
+        "forground_color": "#15803d",
+        "prepend_text": "Exclusive Offer",
+        "countdown_date": "",
+        "append_text": "Shop Now 👉",
+        "link": ""
+      }
+    },
     "header": {
       "type": "header",
       "settings": {
@@ -100,6 +113,7 @@
   "order": [
     "offer_annoucement_4tnBfB",
     "blocky_lys_scrolling_text_bar_GLkKNr",
+    "offer_timebar_ikdWJp",
     "header"
   ]
 }
