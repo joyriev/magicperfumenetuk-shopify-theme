@@ -877,6 +877,11 @@
     gap: 5px
 }
 
+.gap-x-3 {
+    -moz-column-gap: 12px;
+         column-gap: 12px
+}
+
 .gap-x-4 {
     -moz-column-gap: 16px;
          column-gap: 16px
@@ -1174,6 +1179,11 @@
     background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1))
 }
 
+.bg-\[\#0c5224\] {
+    --tw-bg-opacity: 1;
+    background-color: rgb(12 82 36 / var(--tw-bg-opacity, 1))
+}
+
 .bg-\[\#111118\] {
     --tw-bg-opacity: 1;
     background-color: rgb(17 17 24 / var(--tw-bg-opacity, 1))
@@ -1293,11 +1303,6 @@
     background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1))
 }
 
-.bg-gray-800 {
-    --tw-bg-opacity: 1;
-    background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1))
-}
-
 .bg-green-50 {
     --tw-bg-opacity: 1;
     background-color: rgb(240 253 244 / var(--tw-bg-opacity, 1))
@@ -1363,11 +1368,6 @@
 
 .bg-white\/60 {
     background-color: rgb(255 255 255 / 0.6)
-}
-
-.bg-\[\#0c5224\] {
-    --tw-bg-opacity: 1;
-    background-color: rgb(12 82 36 / var(--tw-bg-opacity, 1))
 }
 
 .bg-opacity-20 {
@@ -1448,6 +1448,11 @@
 .\!px-2 {
     padding-left: 8px !important;
     padding-right: 8px !important
+}
+
+.\!py-3 {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important
 }
 
 .\!py-4 {
@@ -1553,11 +1558,6 @@
 .py-8 {
     padding-top: 32px;
     padding-bottom: 32px
-}
-
-.\!py-3 {
-    padding-top: 12px !important;
-    padding-bottom: 12px !important
 }
 
 .\!pb-3 {
