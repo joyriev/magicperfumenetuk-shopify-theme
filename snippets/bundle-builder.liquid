@@ -4,6 +4,8 @@
 {% assign bundle_ml = dropdown_ml | append: "ml" %}
 {% assign selected_variant = product.selected_or_first_available_variant %}
 
+{% assign fixed_bundle_products = product.metafields.custom.fixed_bundle_products.value %}
+
 {% if product.metafields.custom.short_description != blank %}
   <div class="flex items-center gap-1 font-normal text-black leading-[normal]">
     <span class="cheaper_than_text" style="font-size: 14px; line-height: normal;">
@@ -80,13 +82,15 @@
           :alt="product.name"
           width="40"
           height="40">
-        <div class="text-left flex flex-col gap-1">
+        <div class="text-left flex flex-col gap-1 mr-auto">
           <div class="font-semibold text-base leading-tight text-black line-clamp-1" x-text="product.name"></div>
         {% comment %} <div class="text-sm line-clamp-1" x-text="product.nuta"></div> {% endcomment %}
         </div>
-        <button @click="$store.bundleBuilder.removeProduct(index)" class="ml-auto size-8 bg-red-50 flex items-center justify-center rounded text-xs cursor-pointer border-0">
-          {% render 'icon-trash' %}
-        </button>
+        {% unless product.tags contains 'fixed_bundle' %}
+          <button @click="$store.bundleBuilder.removeProduct(index)" class="ml-auto size-8 bg-red-50 flex items-center justify-center rounded text-xs cursor-pointer border-0">
+            {% render 'icon-trash' %}
+          </button>
+        {% endunless %}
       </div>
     </template>
     <template x-for="i in ({{ product_count }} - $store.bundleBuilder.selectedProducts.length)" :key="i">
@@ -153,7 +157,23 @@
       activeCategory: "All",
       searchText: "",
       addingToCart: false,
-      selectedProducts: [],
+      selectedProducts: [
+        {% if product.tags contains 'fixed_bundle' %}
+          {% for fixed_var in fixed_bundle_products %}
+            {
+              id: {{ fixed_var.product.id }},
+              name: "{{ fixed_var.product.title }}",
+              image: "{{ fixed_var.product.featured_image | image_url }}",
+              nuta: "{{ fixed_var.product.metafields.custom.nuta |  replace: ',', '' }}",
+              variants: {
+                "{{ fixed_var.title |  downcase |  replace: ' ml', 'ml' }}": {
+                  id: {{ fixed_var.id }}
+                },
+              }
+            },
+          {% endfor %}
+        {% endif %}
+      ],
       availableProducts: [
         {% for bundle_product in bundle_collection.products %}
           {
@@ -164,7 +184,7 @@
             tags: {{ bundle_product.tags | json }},
             variants: {
               {% for variant in bundle_product.variants %}
-                "{{ variant.title }}": {
+                "{{ variant.title |  downcase |  replace: ' ml', 'ml' }}": {
                   id: {{ variant.id }}
                 },
               {% endfor %}
