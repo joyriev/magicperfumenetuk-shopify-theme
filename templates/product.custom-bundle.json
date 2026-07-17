@@ -45,11 +45,11 @@
         },
         "reactive_atc_LBDQE9": {
           "type": "reactive_atc",
-          "disabled": true,
           "settings": {}
         },
         "custom_liquid_QcxgR4": {
           "type": "custom_liquid",
+          "disabled": true,
           "settings": {
             "custom_liquid": "{% render 'custom-offer-bundle' %}"
           }
