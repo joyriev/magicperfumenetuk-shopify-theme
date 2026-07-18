@@ -133,6 +133,10 @@
     top: 24px
 }
 
+.top-\[7px\] {
+    top: 7px
+}
+
 .isolate {
     isolation: isolate
 }
@@ -379,6 +383,10 @@
 
 .mt-auto {
     margin-top: auto
+}
+
+.mr-auto {
+    margin-right: auto
 }
 
 .line-clamp-1 {
@@ -894,6 +902,10 @@
     gap: 5px
 }
 
+.gap-1\.5 {
+    gap: 6px
+}
+
 .gap-x-3 {
     -moz-column-gap: 12px;
          column-gap: 12px
@@ -1036,6 +1048,10 @@
 
 .border-2 {
     border-width: 2px
+}
+
+.border-\[1\.5px\] {
+    border-width: 1.5px
 }
 
 .border-b {
@@ -1194,6 +1210,16 @@
 .border-\[\#cfe6d8\] {
     --tw-border-opacity: 1;
     border-color: rgb(207 230 216 / var(--tw-border-opacity, 1))
+}
+
+.border-\[\#22613A\] {
+    --tw-border-opacity: 1;
+    border-color: rgb(34 97 58 / var(--tw-border-opacity, 1))
+}
+
+.border-\[\#e3e8e5\] {
+    --tw-border-opacity: 1;
+    border-color: rgb(227 232 229 / var(--tw-border-opacity, 1))
 }
 
 .bg-\[\#0A0A0F\] {
@@ -1397,6 +1423,11 @@
     background-color: rgb(242 248 244 / var(--tw-bg-opacity, 1))
 }
 
+.bg-\[\#f1f4f2\] {
+    --tw-bg-opacity: 1;
+    background-color: rgb(241 244 242 / var(--tw-bg-opacity, 1))
+}
+
 .bg-opacity-20 {
     --tw-bg-opacity: 0.2
 }
@@ -1423,6 +1454,10 @@
 
 .fill-black {
     fill: #000
+}
+
+.fill-\[\#22613A\] {
+    fill: #22613A
 }
 
 .object-contain {
@@ -1657,6 +1692,10 @@
 
 .pt-8 {
     padding-top: 32px
+}
+
+.pt-0 {
+    padding-top: 0px
 }
 
 .text-left {
@@ -2451,9 +2490,24 @@
     background-color: rgb(15 23 42 / var(--tw-bg-opacity, 1))
 }
 
+.hover\:bg-red-600:hover {
+    --tw-bg-opacity: 1;
+    background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1))
+}
+
 .hover\:text-white:hover {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+}
+
+.hover\:\!text-white:hover {
+    --tw-text-opacity: 1 !important;
+    color: rgb(255 255 255 / var(--tw-text-opacity, 1)) !important
+}
+
+.hover\:text-\[\#22613A\]:hover {
+    --tw-text-opacity: 1;
+    color: rgb(34 97 58 / var(--tw-text-opacity, 1))
 }
 
 .hover\:underline:hover {
@@ -2466,6 +2520,26 @@
 
 .hover\:opacity-90:hover {
     opacity: 0.9
+}
+
+.focus\:border-2:focus {
+    border-width: 2px
+}
+
+.focus\:border-\[\#22613A\]:focus {
+    --tw-border-opacity: 1;
+    border-color: rgb(34 97 58 / var(--tw-border-opacity, 1))
+}
+
+.focus\:shadow-none:focus {
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-colored: 0 0 #0000;
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+}
+
+.focus\:outline-none:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px
 }
 
 .disabled\:\!pointer-events-auto:disabled {
@@ -2492,6 +2566,14 @@
 
     .md\:-top-2 {
         top: -8px
+    }
+
+    .md\:right-2 {
+        right: 8px
+    }
+
+    .md\:top-2 {
+        top: 8px
     }
 
     .md\:-order-1 {
