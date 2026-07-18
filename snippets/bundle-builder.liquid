@@ -175,6 +175,7 @@
             variants: {
               {% for variant in bundle_product.variants %}
                 "{{ variant.title | downcase |  replace: ' ml', 'ml' }}": {
+                  title: "{{ variant.title }}",
                   id: "{{ variant.id }}"
                 },
               {% endfor %}
@@ -184,7 +185,9 @@
       ],
       addRemoveProduct(product) {
         if (this.selectedProducts.length < {{ product_count }} && !this.isProductSelected(product.id)) {
+          product.variant = product.variants[this.selectedVariant]
           this.selectedProducts.push(product);
+
           if (this.selectedProducts.length === {{ product_count }}) {
             this.showModal = false;
             // Do auto ATC and redirect to checkout
@@ -204,17 +207,6 @@
       isProductSelected(productId) {
         return this.selectedProducts.some(product => product.id === productId);
       },
-      doCheckout() {
-
-        this.addingToCart = true;
-
-        const items = this.selectedProducts.map(product => {
-          const variantId = product.variants[this.selectedVariant].id;
-          return `${variantId}:1`;
-        }).join(',');
-
-        window.location = `https://tryscent.co/cart/${items}`;
-      },
       doATCandCheckout() {
         // Set loading state
         this.addingToCart = true;
@@ -222,13 +214,13 @@
         // Create properties object with bundle items
         const properties = {
           "_bundle_items": this.selectedProducts.map(product => 
-            product.variants[this.selectedVariant].id
+            product.variant.id
           ).join(',')
         };
         // Add each selected product as a separate property
         this.selectedProducts.forEach((product, index) => {
           properties[`Bottle ${index + 1}`] = 
-            `${product.name} Inspired by ${product.nuta} - ${this.selectedVariant}`;
+            `${product.name} Inspired by ${product.inspiration_name} - ${product.variant.title}`;
         });
         // Prepare cart items
         const items = {
