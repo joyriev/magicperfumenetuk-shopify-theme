@@ -344,11 +344,11 @@ body {
       }
     </script>
     <script type="text/javascript" src="https://cdn.weglot.com/weglot.min.js"></script>
-<script>
-    Weglot.initialize({
+    <script>
+          Weglot.initialize({
         api_key: 'wg_40f9c2f8f967537cdb1686498d17391d0'
-    });
-</script>
+          });
+    </script>
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
@@ -381,7 +381,7 @@ body {
       window.shopUrl = '{{ request.origin }}';
       window.routes = {
         cart_add_url: '{{ routes.cart_add_url }}',
-        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_change_url: 'https://magyx.it/cart/change',
         cart_update_url: '{{ routes.cart_update_url }}',
         cart_url: '{{ routes.cart_url }}',
         predictive_search_url: '{{ routes.predictive_search_url }}',
