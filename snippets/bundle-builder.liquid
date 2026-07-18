@@ -93,11 +93,14 @@
             >
             <div class="text-left min-w-0 flex-1 flex flex-col gap-1">
                 <div class="font-bold text-sm leading-tight text-black line-clamp-1" x-text="$store.bundleBuilder.selectedProducts[index - 1].name"></div>
-                <div class="text-xs line-clamp-1 text-[#6b7280]" x-text="$store.bundleBuilder.selectedProducts[index - 1].nuta"></div>
+                <div class="text-xs line-clamp-1 text-[#6b7280]"><span x-text="$store.bundleBuilder.selectedProducts[index - 1].inspiration_name"></span> - <span x-text="$store.bundleBuilder.selectedProducts[index - 1].variant.title"></span></div>
             </div>
-            <button @click.stop.prevent="$store.bundleBuilder.removeProduct(index - 1)" class="ml-auto size-7 shrink-0 bg-red-50 flex items-center justify-center rounded text-xs cursor-pointer border-0">
-                {% render 'icon-trash' %}
-            </button>
+            {% unless product.tags contains 'fixed_bundle' %}
+              <button @click.stop.prevent="$store.bundleBuilder.removeProduct(index - 1)" class="ml-auto size-7 shrink-0 bg-red-50 flex items-center justify-center rounded text-xs cursor-pointer border-0">
+                  {% render 'icon-trash' %}
+              </button>
+            {% else %}
+            {% endunless %}
         </div>
       </div>
     </template>
