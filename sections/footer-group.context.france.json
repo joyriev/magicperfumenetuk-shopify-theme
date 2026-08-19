@@ -1,0 +1,27 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "context": {
+    "market": "france"
+  },
+  "parent": "footer-group.json",
+  "sections": {
+    "footer": {
+      "settings": {},
+      "blocks": {
+        "text_x89MfR": {
+          "settings": {
+            "subtext": "<p>Magyx™ vous aide à trouver votre parfum signature parmis une proposition de parfums de grande qualité, disponibles en formats d'essai pratiques. </p>"
+          }
+        }
+      }
+    }
+  }
+}
