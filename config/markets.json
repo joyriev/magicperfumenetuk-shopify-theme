@@ -17,6 +17,9 @@
     },
     "spain": {
       "parent": "@default"
+    },
+    "france": {
+      "parent": "@default"
     }
   }
 }
