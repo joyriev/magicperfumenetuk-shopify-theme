@@ -11,10 +11,28 @@
   "sections": {
     "banner": {
       "type": "main-collection-banner",
+      "disabled": true,
       "settings": {
         "show_collection_description": true,
         "show_collection_image": false,
         "color_scheme": "scheme-2"
+      }
+    },
+    "collection_header_cRfwUN": {
+      "type": "collection-header",
+      "name": "Collection Header",
+      "settings": {
+        "background_color": "#242833",
+        "text_color": "#000000",
+        "social_proof_text": "Join 10,000+ happy customers",
+        "collection_title": "Collection Title",
+        "collection_description": "Best scents you've ever smelled or your money back.",
+        "btn_link": "",
+        "btn_text": "",
+        "padding_top": 72,
+        "padding_bottom": 72,
+        "mobile_padding_top": 40,
+        "mobile_padding_bottom": 40
       }
     },
     "product-grid": {
@@ -40,6 +58,7 @@
   },
   "order": [
     "banner",
+    "collection_header_cRfwUN",
     "product-grid"
   ]
 }
