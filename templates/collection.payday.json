@@ -20,15 +20,67 @@
     },
     "collection_header_cRfwUN": {
       "type": "collection-header",
+      "blocks": {
+        "step_iFG4n8": {
+          "type": "step",
+          "settings": {
+            "step_title": "Ricevi il 30% di sconto su tutto il carrello",
+            "step_description": "Scegli le tue fragranze preferite e mettile nel carrello"
+          }
+        },
+        "step_HhNQEy": {
+          "type": "step",
+          "settings": {
+            "step_title": "Risparmia ancora di più con i pacchetti!",
+            "step_description": "Acquista 3 – risparmia il 40%. Acquista 6 – risparmia il 48%."
+          }
+        },
+        "step_ADpq49": {
+          "type": "step",
+          "settings": {
+            "step_title": "Acquista per almeno 710 SEK",
+            "step_description": "Ricevi la spedizione GRATUITA e regali GRATUITI!"
+          }
+        },
+        "guarantee_f7VNpU": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shopify://shop_images/sandwatch.svg",
+            "text": "Dura più di 12 ore"
+          }
+        },
+        "guarantee_dYJyiq": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shopify://shop_images/icons_quality.webp",
+            "text": "Concentrazione di olio profumato al 19–21%"
+          }
+        },
+        "guarantee_Y3gwRj": {
+          "type": "guarantee",
+          "settings": {
+            "icon": "shopify://shop_images/sheild-star.svg",
+            "text": "Garanzia di rimborso di 60 giorni"
+          }
+        }
+      },
+      "block_order": [
+        "step_iFG4n8",
+        "step_HhNQEy",
+        "step_ADpq49",
+        "guarantee_f7VNpU",
+        "guarantee_dYJyiq",
+        "guarantee_Y3gwRj"
+      ],
       "name": "Collection Header",
       "settings": {
-        "background_color": "#242833",
+        "background_color": "#F5F1E9",
         "text_color": "#000000",
         "bg_image": "shopify://shop_images/payday_banner.png",
         "bg_mobile_image": "shopify://shop_images/payday_mobile_Nobottles.jpg",
-        "social_proof_text": "Join 10,000+ happy customers",
-        "collection_title": "Collection Title",
-        "collection_description": "Best scents you've ever smelled or your money back.",
+        "social_proof_text": "Approvato da oltre 10.000 appassionati di profumi soddisfatti",
+        "collection_title": "Saldi del giorno di paga!",
+        "collection_description": "Acquista le tue fragranze preferite a prezzi ancora migliori! E risparmia ancora di più con le offerte pacchetto!",
         "btn_link": "",
         "btn_text": "",
         "padding_top": 72,
