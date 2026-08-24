@@ -20,9 +20,9 @@
     },
     "blocky_image_embedded_UPXpAA": {
       "type": "blocky-image-embedded",
-      "disabled": true,
       "name": "Blocky Image Embed",
       "settings": {
+        "image": "shopify://shop_images/PaydayDeal_Header_-_Magic_Perfume_-_FR.webp",
         "section_height": "550px",
         "mobile_height": "500px",
         "image_fit": "cover",
@@ -89,6 +89,7 @@
         "guarantee_dYJyiq",
         "guarantee_Y3gwRj"
       ],
+      "disabled": true,
       "name": "Collection Header",
       "settings": {
         "background_color": "#f5f1e9",
