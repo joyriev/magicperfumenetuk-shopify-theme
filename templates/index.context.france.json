@@ -12,5 +12,34 @@
     "market": "france"
   },
   "parent": "index.json",
-  "sections": {}
+  "sections": {
+    "feature_heighlights_EpJcyT": {
+      "settings": {},
+      "blocks": {
+        "perks_dXcKFz": {
+          "settings": {
+            "perk_content": ""
+          }
+        },
+        "perks_x8n9DF": {
+          "settings": {
+            "perk_content": "",
+            "perk_title": "Jusqu'a 100€ de récompenses fidélité"
+          }
+        },
+        "perks_yTdgqz": {
+          "settings": {
+            "perk_title": "Garantie « satisfait ou remboursé »",
+            "perk_content": ""
+          }
+        },
+        "perks_7zj6gB": {
+          "settings": {
+            "perk_title": "Une équipe client à vos côtés, 7 jours sur 7",
+            "perk_content": ""
+          }
+        }
+      }
+    }
+  }
 }
