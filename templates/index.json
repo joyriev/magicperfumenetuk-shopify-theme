@@ -172,7 +172,7 @@
         "subheading": "",
         "collection": "best-sellers",
         "show_all_button_text": "See all bestsellers",
-        "padding_top": 8,
+        "padding_top": 16,
         "padding_bottom": 72
       }
     },
