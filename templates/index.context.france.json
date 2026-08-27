@@ -52,6 +52,12 @@
         "subheading": "Fragrances that grow with your style and stay with you for longer."
       },
       "blocks": {}
+    },
+    "collapsible_content_JWRDn8": {
+      "settings": {
+        "padding_top": 40
+      },
+      "blocks": {}
     }
   },
   "order": [
