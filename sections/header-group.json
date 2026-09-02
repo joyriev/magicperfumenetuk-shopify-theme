@@ -79,10 +79,30 @@
     },
     "offer_timebar_ikdWJp": {
       "type": "offer-timebar",
+      "blocks": {
+        "payment_icon_LdKcXg": {
+          "type": "payment_icon",
+          "settings": {
+            "icon": "shopify://shop_images/inpost.png",
+            "label": "Fast"
+          }
+        },
+        "payment_icon_M4XA7t": {
+          "type": "payment_icon",
+          "settings": {
+            "icon": "shopify://shop_images/65f2284e66ff1dcb1a272319f1ef543c429f73e2.png",
+            "label": "From EU"
+          }
+        }
+      },
+      "block_order": [
+        "payment_icon_LdKcXg",
+        "payment_icon_M4XA7t"
+      ],
       "name": "Offer Timebar",
       "settings": {
         "primary_color": "#000000",
-        "secondary_color": "#F0F0F0",
+        "secondary_color": "#f0f0f0",
         "top_banner_text": "",
         "prepend_text": "Soldes du jour de paie",
         "countdown_date": "2026/09/06",
