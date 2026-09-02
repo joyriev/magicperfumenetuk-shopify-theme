@@ -22,6 +22,16 @@
           }
         }
       }
+    },
+    "feature_heighlights_NpGkmP": {
+      "settings": {},
+      "blocks": {
+        "perks_iNhz9P": {
+          "settings": {
+            "perk_title": "Fabriqué en France."
+          }
+        }
+      }
     }
   }
 }
