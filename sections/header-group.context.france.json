@@ -14,7 +14,9 @@
   "parent": "header-group.json",
   "sections": {
     "offer_timebar_ikdWJp": {
-      "settings": {},
+      "settings": {
+        "prepend_text": "Soldes de la rentrée"
+      },
       "blocks": {
         "payment_icon_LdKcXg": {
           "settings": {
