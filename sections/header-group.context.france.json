@@ -20,8 +20,8 @@
       "blocks": {
         "payment_icon_LdKcXg": {
           "settings": {
-            "label": "Livraison rapide",
-            "icon": "shopify://shop_images/dhl.webp"
+            "icon": "shopify://shop_images/dhl.webp",
+            "label": "Livraison rapide"
           }
         },
         "payment_icon_M4XA7t": {
