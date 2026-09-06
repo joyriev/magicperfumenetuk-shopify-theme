@@ -190,6 +190,7 @@
             inspiration_image: "{% if bundle_product.metafields.custom.inspired_by.value %}{{ bundle_product.metafields.custom.inspired_by.value.image | image_url: width: 90, height: 90 }}{% endif %}",
             inspiration_name: "{% if bundle_product.metafields.custom.inspired_by.value %}{{ bundle_product.metafields.custom.inspired_by.value.title }}{% endif %}",
             tags: {{ bundle_product.tags | json }},
+            occasion: {{ bundle_product.metafields.custom.occasion | default: '' | json }},
             collections: "{{ collection_handles }}",
             variants: {
               {% for variant in bundle_product.variants %}
