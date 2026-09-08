@@ -15,7 +15,9 @@
   "sections": {
     "offer_timebar_ikdWJp": {
       "settings": {
-        "prepend_text": "Soldes de la rentrée"
+        "prepend_text": "RETOUR AU BUREAU",
+        "countdown_date": "",
+        "append_text": "3 ACHETÉS, 1 OFFERT"
       },
       "blocks": {
         "payment_icon_LdKcXg": {
