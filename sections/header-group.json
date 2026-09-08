@@ -104,10 +104,10 @@
         "primary_color": "#000000",
         "secondary_color": "#f0f0f0",
         "top_banner_text": "",
-        "prepend_text": "Soldes du jour de paie",
-        "countdown_date": "2026/09/06 23:59:59",
-        "append_text": "30% DE RÉDUCTION",
-        "link": ""
+        "prepend_text": "RITORNO IN UFFICIO",
+        "countdown_date": "",
+        "append_text": "ACQUISTA 3, RICEVI 1 IN OMAGGIO",
+        "link": "shopify://collections/bundle-profumi"
       }
     },
     "header": {
