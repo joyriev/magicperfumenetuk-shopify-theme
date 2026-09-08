@@ -17,7 +17,8 @@
       "settings": {
         "prepend_text": "RETOUR AU BUREAU",
         "countdown_date": "",
-        "append_text": "3 ACHETÉS, 1 OFFERT"
+        "append_text": "3 ACHETÉS, 1 OFFERT",
+        "link": "shopify://collections/bundle-profumi"
       },
       "blocks": {
         "payment_icon_LdKcXg": {
